@@ -11,11 +11,10 @@ import EnviromentalDevice from "./EnviromentalDevice";
 export default class EnviromentaDeviceLogic {
 
     // This atribute is used to manage the db interactions in the logic
-    private enviromentalDeviceDB: EnviromentalDeviceDatabaseHandler
+    private enviromentalDeviceDB: EnviromentalDeviceDatabaseHandler = new EnviromentalDeviceDatabaseHandler();
 
     // Constructor
     constructor() {
-        
     }
 
     // Logic Methods 
@@ -26,9 +25,16 @@ export default class EnviromentaDeviceLogic {
      * @param deviceId - ID of the enviromental device you want to get data from
      * @returns 
      */
-    public async getDeviceById( deviceId: number ) : Promise<EnviromentalDevice> {
-        var ed = new EnviromentalDevice();
-        return ed;
+    public async getDeviceById( deviceId: number ) : Promise<EnviromentalDevice> {        
+        return new Promise<EnviromentalDevice>((resolve, reject) => {
+            this.enviromentalDeviceDB.getDeviceByIdFromDB( deviceId )
+                .then( res => {
+                    resolve(res)
+                })
+                .catch( err => {
+                    reject(err)
+                })
+        })   
     }
 
     /**
@@ -39,12 +45,15 @@ export default class EnviromentaDeviceLogic {
      * @returns 
      */
     public async getAllUserDevices( userId: number ): Promise<EnviromentalDevice[]> {
-        var ed = new EnviromentalDevice();
-        var array = [];
-        array.push(ed);
-        array.push(ed);
-
-        return array;
+        return new Promise<EnviromentalDevice[]>((resolve, reject) => {
+            this.enviromentalDeviceDB.getAllUserDevicesFromDB( userId )
+                .then( res => {
+                    resolve(res)
+                })
+                .catch( err => {
+                    reject(err)
+                })
+        }) 
     }
 
     /**
@@ -57,12 +66,15 @@ export default class EnviromentaDeviceLogic {
      * @returns 
      */
     public async getUserDevicePagination( userId: number, pageSize: number, pageIndex: number ): Promise<EnviromentalDevice[]> {
-        var ed = new EnviromentalDevice();
-        var array = [];
-        array.push(ed);
-        array.push(ed);
-        
-        return array;
+        return new Promise<EnviromentalDevice[]>((resolve, reject) => {
+            this.enviromentalDeviceDB.getUserDevicePaginationFromDB( userId, pageSize, pageIndex )
+                .then( res => {
+                    resolve(res)
+                })
+                .catch( err => {
+                    reject(err)
+                })
+        })
     }
 
     /**
@@ -73,12 +85,15 @@ export default class EnviromentaDeviceLogic {
      * @returns 
      */
     public async getAllCouncilDevices( councilId: number ): Promise<EnviromentalDevice[]> {
-        var ed = new EnviromentalDevice();
-        var array = [];
-        array.push(ed);
-        array.push(ed);
-        
-        return array;
+        return new Promise<EnviromentalDevice[]>((resolve, reject) => {
+            this.enviromentalDeviceDB.getAllCouncilDevicesFromDB( councilId )
+                .then( res => {
+                    resolve(res)
+                })
+                .catch( err => {
+                    reject(err)
+                })
+        }) 
     }
 
     /**
@@ -89,12 +104,15 @@ export default class EnviromentaDeviceLogic {
      * @returns 
      */
     public async getAllGatewayDevices( gatewayId: number ): Promise<EnviromentalDevice[]> {
-        var ed = new EnviromentalDevice();
-        var array = [];
-        array.push(ed);
-        array.push(ed);
-        
-        return array;
+        return new Promise<EnviromentalDevice[]>((resolve, reject) => {
+            this.enviromentalDeviceDB.getAllUserDevicesFromDB( gatewayId )
+                .then( res => {
+                    resolve(res)
+                })
+                .catch( err => {
+                    reject(err)
+                })
+        }) 
     }
 
     /**
@@ -105,7 +123,15 @@ export default class EnviromentaDeviceLogic {
      * @returns 
      */
     public async storeDevice( enviromentalDevice: EnviromentalDevice ): Promise<boolean> {
-        return true;
+        return new Promise<boolean>((resolve, reject) => {
+            this.enviromentalDeviceDB.storeDeviceInDB(enviromentalDevice)
+                .then( res => {
+                    resolve(true)
+                })
+                .catch( err => {
+                    reject(false)
+                })
+        })
     }
 
     /**
@@ -118,12 +144,15 @@ export default class EnviromentaDeviceLogic {
      * @returns 
      */
     public async getAdminDevicePagination( adminId: number, pageSize: number, pageIndex: number) : Promise<EnviromentalDevice[]> {
-        var ed = new EnviromentalDevice();
-        var array = [];
-        array.push(ed);
-        array.push(ed);
-        
-        return array;
+        return new Promise<EnviromentalDevice[]>((resolve, reject) => {
+            this.enviromentalDeviceDB.getAdminDevicePaginationFromDB( adminId, pageSize, pageIndex )
+                .then( res => {
+                    resolve(res)
+                })
+                .catch( err => {
+                    reject(err)
+                })
+        }) 
     }
 
     /**

@@ -1,3 +1,5 @@
+import EnviromentalDevice from "./enviromental-device/EnviromentalDevice";
+
 export default class Utils {
     /**
      * This method parse an array of enviromental devices to an array of objects

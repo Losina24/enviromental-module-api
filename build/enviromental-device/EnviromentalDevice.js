@@ -54,7 +54,10 @@ class EnviromentalDevice {
      * @returns coords: Enviromental device's coordinates
      */
     getCoords() {
-        return this.coords;
+        return {
+            latitude: this.coords[0],
+            longitude: this.coords[1]
+        };
     }
     /**
      * Gets the status of the enviromental device
@@ -115,7 +118,10 @@ class EnviromentalDevice {
             mac: this.mac,
             gatewayId: this.gatewayId,
             //sensors: this.sensors,
-            coords: this.coords,
+            coords: {
+                latitude: this.coords[0],
+                longitude: this.coords[1]
+            },
             status: this.status,
         };
     }

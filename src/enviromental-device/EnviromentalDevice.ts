@@ -69,8 +69,11 @@ export default class EnviromentalDevice {
      * 
      * @returns coords: Enviromental device's coordinates
      */
-    public getCoords(): [number, number] {
-        return this.coords;
+    public getCoords(): {latitude: number, longitude: number} {
+        return {
+            latitude: this.coords[0],
+            longitude: this.coords[1]
+        };
     }
 
     /**
@@ -140,7 +143,10 @@ export default class EnviromentalDevice {
 			mac: this.mac,
 			gatewayId: this.gatewayId,
 			//sensors: this.sensors,
-			coords: this.coords,
+			coords: {
+                latitude: this.coords[0],
+                longitude: this.coords[1]
+            },
 			status: this.status,
         }
     }

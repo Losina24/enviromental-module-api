@@ -283,7 +283,7 @@ class EnviromentalDeviceRestRouter {
         enviromentalDevice.setMac(req.body.mac);
         enviromentalDevice.setGatewayId(req.body.gatewayId);
         enviromentalDevice.setCoords([parseFloat(req.body.latitude), parseFloat(req.body.longitude)]);
-
+        
         this.enviromentalDeviceLogic.storeDevice(enviromentalDevice)
             .then( response => {
                 if(response == true) {

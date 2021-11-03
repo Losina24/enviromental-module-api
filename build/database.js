@@ -8,8 +8,7 @@ const mysql_1 = __importDefault(require("mysql"));
 const conn = mysql_1.default.createPool({
     host: 'localhost',
     user: 'root',
-    //password: 'Al8987154St12',
     password: 'root',
-    database: 'swat_gesinen'
+    database: 'proyectodb'
 });
 exports.default = conn;

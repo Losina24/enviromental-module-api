@@ -6,6 +6,7 @@
  */
 
 import EnviromentalDeviceDatabaseHandler from "./EnviromentalDeviceDatabaseHandler";
+import EnviromentalDevice from "./EnviromentalDevice";
 
 export default class EnviromentaDeviceLogic {
 
@@ -87,7 +88,7 @@ export default class EnviromentaDeviceLogic {
      * @param gatewayId - ID of the gateway that you want to get all enviromental devices
      * @returns 
      */
-    public async getGatewayDevices( gatewayId: number ): Promise<EnviromentalDevice[]> {
+    public async getAllGatewayDevices( gatewayId: number ): Promise<EnviromentalDevice[]> {
         var ed = new EnviromentalDevice();
         var array = [];
         array.push(ed);

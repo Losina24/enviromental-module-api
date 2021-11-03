@@ -5,7 +5,7 @@
  * Description: Model for enviromental device feature
  */
 
-class EnviromentalDevice {
+export default class EnviromentalDevice {
     
     // Atributes
     private id: number;
@@ -131,5 +131,17 @@ class EnviromentalDevice {
      */
     public setStatus( status: boolean ): void {
         this.status = status;
+    }
+
+    public toObject(): object {
+        return {
+            id: this.id,
+			name: this.name,
+			mac: this.mac,
+			gatewayId: this.gatewayId,
+			//sensors: this.sensors,
+			coords: this.coords,
+			status: this.status,
+        }
     }
 }

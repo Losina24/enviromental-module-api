@@ -6,6 +6,7 @@
  */
 
 import db from "../database";
+import EnviromentalDevice from "./EnviromentalDevice";
 
 export default class EnviromentalDeviceDatabaseHandler {
 

@@ -14,7 +14,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const EnviromentalDevice_1 = __importDefault(require("./EnviromentalDevice"));
 class EnviromentaDeviceLogic {
     // Constructor
     constructor() {
@@ -29,7 +33,7 @@ class EnviromentaDeviceLogic {
      */
     getDeviceById(deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
-            var ed = new EnviromentalDevice();
+            var ed = new EnviromentalDevice_1.default();
             return ed;
         });
     }
@@ -42,7 +46,7 @@ class EnviromentaDeviceLogic {
      */
     getAllUserDevices(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            var ed = new EnviromentalDevice();
+            var ed = new EnviromentalDevice_1.default();
             var array = [];
             array.push(ed);
             array.push(ed);
@@ -60,7 +64,7 @@ class EnviromentaDeviceLogic {
      */
     getUserDevicePagination(userId, pageSize, pageIndex) {
         return __awaiter(this, void 0, void 0, function* () {
-            var ed = new EnviromentalDevice();
+            var ed = new EnviromentalDevice_1.default();
             var array = [];
             array.push(ed);
             array.push(ed);
@@ -76,7 +80,7 @@ class EnviromentaDeviceLogic {
      */
     getAllCouncilDevices(councilId) {
         return __awaiter(this, void 0, void 0, function* () {
-            var ed = new EnviromentalDevice();
+            var ed = new EnviromentalDevice_1.default();
             var array = [];
             array.push(ed);
             array.push(ed);
@@ -90,9 +94,9 @@ class EnviromentaDeviceLogic {
      * @param gatewayId - ID of the gateway that you want to get all enviromental devices
      * @returns
      */
-    getGatewayDevices(gatewayId) {
+    getAllGatewayDevices(gatewayId) {
         return __awaiter(this, void 0, void 0, function* () {
-            var ed = new EnviromentalDevice();
+            var ed = new EnviromentalDevice_1.default();
             var array = [];
             array.push(ed);
             array.push(ed);
@@ -122,7 +126,7 @@ class EnviromentaDeviceLogic {
      */
     getAdminDevicePagination(adminId, pageSize, pageIndex) {
         return __awaiter(this, void 0, void 0, function* () {
-            var ed = new EnviromentalDevice();
+            var ed = new EnviromentalDevice_1.default();
             var array = [];
             array.push(ed);
             array.push(ed);
@@ -138,7 +142,7 @@ class EnviromentaDeviceLogic {
      */
     getAllAdminDevices(adminId) {
         return __awaiter(this, void 0, void 0, function* () {
-            var ed = new EnviromentalDevice();
+            var ed = new EnviromentalDevice_1.default();
             var array = [];
             array.push(ed);
             array.push(ed);
@@ -156,7 +160,7 @@ class EnviromentaDeviceLogic {
      */
     getCouncilDevicePagination(councilId, pageSize, pageIndex) {
         return __awaiter(this, void 0, void 0, function* () {
-            var ed = new EnviromentalDevice();
+            var ed = new EnviromentalDevice_1.default();
             var array = [];
             array.push(ed);
             array.push(ed);

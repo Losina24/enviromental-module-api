@@ -5,6 +5,7 @@
  * Author: Alejandro Losa García
  * Description: Model for enviromental device feature
  */
+Object.defineProperty(exports, "__esModule", { value: true });
 class EnviromentalDevice {
     // Constructor
     constructor() {
@@ -107,4 +108,16 @@ class EnviromentalDevice {
     setStatus(status) {
         this.status = status;
     }
+    toObject() {
+        return {
+            id: this.id,
+            name: this.name,
+            mac: this.mac,
+            gatewayId: this.gatewayId,
+            //sensors: this.sensors,
+            coords: this.coords,
+            status: this.status,
+        };
+    }
 }
+exports.default = EnviromentalDevice;

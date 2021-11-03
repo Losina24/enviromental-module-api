@@ -5,7 +5,7 @@
  * Description: Model for enviromental device feature
  */
 
-export default class EnviromentalDevice {
+class EnviromentalDevice {
     
     // Atributes
     private id: number;

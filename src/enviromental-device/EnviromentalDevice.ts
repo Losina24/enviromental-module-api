@@ -5,7 +5,7 @@
  * Description: Model for enviromental device feature
  */
 
-class EnviromentalDevice {
+export default class EnviromentalDevice {
     
     // Atributes
     private id: number;
@@ -69,9 +69,22 @@ class EnviromentalDevice {
      * 
      * @returns coords: Enviromental device's coordinates
      */
-    public getCoords(): [number, number] {
-        return this.coords;
+    public getCoords(): {latitude: number, longitude: number} {
+        return {
+            latitude: this.coords[0],
+            longitude: this.coords[1]
+        };
     }
+
+    /**
+     * Gets sensors of the enviromental device 
+     * -> getSensors() -> sensors: [Sensor]
+     * 
+     * @returns coords: Enviromental device's coordinates
+     */
+    //public getSensors(): [Sensor] {
+        //return this.sensors;
+    //} 
 
     /**
      * Gets the status of the enviromental device 
@@ -131,5 +144,28 @@ class EnviromentalDevice {
      */
     public setStatus( status: boolean ): void {
         this.status = status;
+    }
+
+    /**
+     * Sets the enviromental device's status
+     * status: boolean -> setStatus() ->
+     */
+    /*public addSensor( sensor: Sensor | [Sensor] ): void {
+        this.sensors.push(sensor);
+    }*/
+
+    public toObject(): object {
+        return {
+            id: this.id,
+			name: this.name,
+			mac: this.mac,
+			gatewayId: this.gatewayId,
+			//sensors: this.sensors,
+			coords: {
+                latitude: this.coords[0],
+                longitude: this.coords[1]
+            },
+			status: this.status,
+        }
     }
 }

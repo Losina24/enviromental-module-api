@@ -14,10 +14,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const EnviromentalDeviceDatabaseHandler_1 = __importDefault(require("./EnviromentalDeviceDatabaseHandler"));
 class EnviromentaDeviceLogic {
     // Constructor
     constructor() {
+        // This atribute is used to manage the db interactions in the logic
+        this.enviromentalDeviceDB = new EnviromentalDeviceDatabaseHandler_1.default();
     }
     // Logic Methods 
     /**
@@ -29,8 +35,15 @@ class EnviromentaDeviceLogic {
      */
     getDeviceById(deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
-            var ed = new EnviromentalDevice();
-            return ed;
+            return new Promise((resolve, reject) => {
+                this.enviromentalDeviceDB.getDeviceByIdFromDB(deviceId)
+                    .then(res => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
         });
     }
     /**
@@ -42,11 +55,15 @@ class EnviromentaDeviceLogic {
      */
     getAllUserDevices(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            var ed = new EnviromentalDevice();
-            var array = [];
-            array.push(ed);
-            array.push(ed);
-            return array;
+            return new Promise((resolve, reject) => {
+                this.enviromentalDeviceDB.getAllUserDevicesFromDB(userId)
+                    .then(res => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
         });
     }
     /**
@@ -60,11 +77,15 @@ class EnviromentaDeviceLogic {
      */
     getUserDevicePagination(userId, pageSize, pageIndex) {
         return __awaiter(this, void 0, void 0, function* () {
-            var ed = new EnviromentalDevice();
-            var array = [];
-            array.push(ed);
-            array.push(ed);
-            return array;
+            return new Promise((resolve, reject) => {
+                this.enviromentalDeviceDB.getUserDevicePaginationFromDB(userId, pageSize, pageIndex)
+                    .then(res => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
         });
     }
     /**
@@ -76,11 +97,15 @@ class EnviromentaDeviceLogic {
      */
     getAllCouncilDevices(councilId) {
         return __awaiter(this, void 0, void 0, function* () {
-            var ed = new EnviromentalDevice();
-            var array = [];
-            array.push(ed);
-            array.push(ed);
-            return array;
+            return new Promise((resolve, reject) => {
+                this.enviromentalDeviceDB.getAllCouncilDevicesFromDB(councilId)
+                    .then(res => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
         });
     }
     /**
@@ -90,13 +115,17 @@ class EnviromentaDeviceLogic {
      * @param gatewayId - ID of the gateway that you want to get all enviromental devices
      * @returns
      */
-    getGatewayDevices(gatewayId) {
+    getAllGatewayDevices(gatewayId) {
         return __awaiter(this, void 0, void 0, function* () {
-            var ed = new EnviromentalDevice();
-            var array = [];
-            array.push(ed);
-            array.push(ed);
-            return array;
+            return new Promise((resolve, reject) => {
+                this.enviromentalDeviceDB.getAllUserDevicesFromDB(gatewayId)
+                    .then(res => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
         });
     }
     /**
@@ -108,41 +137,37 @@ class EnviromentaDeviceLogic {
      */
     storeDevice(enviromentalDevice) {
         return __awaiter(this, void 0, void 0, function* () {
-            return true;
+            return new Promise((resolve, reject) => {
+                this.enviromentalDeviceDB.storeDeviceInDB(enviromentalDevice)
+                    .then(res => {
+                    resolve(true);
+                })
+                    .catch(err => {
+                    reject(false);
+                });
+            });
         });
     }
     /**
      * Get enviromental devices from an admin
      * adminId: N, pageSize: N, pageIndex: N -> getAdminDevicePagination() -> [EnviromentalDevice]
      *
-     * @param adminId - ID of the admin that you want to get all enviromental devices
+     * @param adminId - ID of the root admin that you want to get all enviromental devices
      * @param pageSize - Number of devices returned by the request
      * @param pageIndex - Index of the page that you want to receive from the request
      * @returns
      */
     getAdminDevicePagination(adminId, pageSize, pageIndex) {
         return __awaiter(this, void 0, void 0, function* () {
-            var ed = new EnviromentalDevice();
-            var array = [];
-            array.push(ed);
-            array.push(ed);
-            return array;
-        });
-    }
-    /**
-     * Get all enviromental devices from an admin
-     * adminId: N -> getAllAdminDevices() -> [EnviromentalDevice]
-     *
-     * @param adminId - ID of the admin that you want to get all enviromental devices
-     * @returns
-     */
-    getAllAdminDevices(adminId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            var ed = new EnviromentalDevice();
-            var array = [];
-            array.push(ed);
-            array.push(ed);
-            return array;
+            return new Promise((resolve, reject) => {
+                this.enviromentalDeviceDB.getAdminDevicePaginationFromDB(adminId, pageSize, pageIndex)
+                    .then(res => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
         });
     }
     /**
@@ -156,11 +181,15 @@ class EnviromentaDeviceLogic {
      */
     getCouncilDevicePagination(councilId, pageSize, pageIndex) {
         return __awaiter(this, void 0, void 0, function* () {
-            var ed = new EnviromentalDevice();
-            var array = [];
-            array.push(ed);
-            array.push(ed);
-            return array;
+            return new Promise((resolve, reject) => {
+                this.enviromentalDeviceDB.getAdminDevicePaginationFromDB(councilId, pageSize, pageIndex)
+                    .then(res => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
         });
     }
 }

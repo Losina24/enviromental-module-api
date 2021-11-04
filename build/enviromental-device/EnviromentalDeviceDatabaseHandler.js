@@ -225,8 +225,7 @@ class EnviromentalDeviceDatabaseHandler {
     getAdminDevicePaginationFromDB(adminId, pageSize, pageIndex) {
         const firstValue = (pageSize * pageIndex) - pageSize;
         const secondValue = (pageSize * pageIndex);
-        //var query = "SELECT d.* FROM device AS d INNER JOIN user_device AS u ON d.id = u.device_id INNER JOIN user ON u.user_id = user.id WHERE user.id = "+ adminId +" AND u.user_id IS NOT "+ adminI+" ORDER BY d.id DESC LIMIT "+ firstValue + ', ' + secondValue;
-        var query = "";
+        var query = "SELECT d.* FROM device ORDER BY d.id DESC LIMIT " + firstValue + ', ' + secondValue;
         return new Promise((resolve, reject) => {
             database_1.default.getConnection((error, conn) => {
                 // If connection fails
@@ -246,16 +245,6 @@ class EnviromentalDeviceDatabaseHandler {
         });
     }
     /**
-     * Get all enviromental devices from an admin
-     * adminId: N -> getAllAdminDevicesFromDB() -> [JSON]
-     *
-     * @param adminId - ID of the admin that you want to get all enviromental devices
-     * @returns
-     */
-    getAllAdminDevicesFromDB(adminId) {
-        return [{}];
-    }
-    /**
      * Get all enviromental devices from a council
      * councilId: N, pageSize: N, pageIndex: N -> getAllAdminDevicesFromDB() -> [JSON]
      *
@@ -265,7 +254,26 @@ class EnviromentalDeviceDatabaseHandler {
      * @returns
      */
     getCouncilDevicePaginationFromDB(councilId, pageSize, pageIndex) {
-        return [{}];
+        const firstValue = (pageSize * pageIndex) - pageSize;
+        const secondValue = (pageSize * pageIndex);
+        var query = "SELECT d.* FROM device AS d INNER JOIN gateway AS g ON d.gateway_id = g.id INNER JOIN council AS c ON c.id = g.council_id WHERE c.id = " + councilId + " ORDER BY d.id DESC LIMIT " + firstValue + ', ' + secondValue;
+        return new Promise((resolve, reject) => {
+            database_1.default.getConnection((error, conn) => {
+                // If connection fails
+                if (error) {
+                    reject();
+                }
+                conn.query(query, (err, results) => {
+                    conn.release();
+                    // If connection fails
+                    if (err || results == undefined || results.length == 0) {
+                        reject();
+                    }
+                    let enviromentalDevices = this.queryResultsToEnviromentalDevices(results);
+                    resolve(enviromentalDevices);
+                });
+            });
+        });
     }
 }
 exports.default = EnviromentalDeviceDatabaseHandler;

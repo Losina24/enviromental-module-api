@@ -19,7 +19,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const EnviromentalDeviceDatabaseHandler_1 = __importDefault(require("./EnviromentalDeviceDatabaseHandler"));
-const EnviromentalDevice_1 = __importDefault(require("./EnviromentalDevice"));
 class EnviromentaDeviceLogic {
     // Constructor
     constructor() {
@@ -153,7 +152,7 @@ class EnviromentaDeviceLogic {
      * Get enviromental devices from an admin
      * adminId: N, pageSize: N, pageIndex: N -> getAdminDevicePagination() -> [EnviromentalDevice]
      *
-     * @param adminId - ID of the admin that you want to get all enviromental devices
+     * @param adminId - ID of the root admin that you want to get all enviromental devices
      * @param pageSize - Number of devices returned by the request
      * @param pageIndex - Index of the page that you want to receive from the request
      * @returns
@@ -172,22 +171,6 @@ class EnviromentaDeviceLogic {
         });
     }
     /**
-     * Get all enviromental devices from an admin
-     * adminId: N -> getAllAdminDevices() -> [EnviromentalDevice]
-     *
-     * @param adminId - ID of the admin that you want to get all enviromental devices
-     * @returns
-     */
-    getAllAdminDevices(adminId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            var ed = new EnviromentalDevice_1.default();
-            var array = [];
-            array.push(ed);
-            array.push(ed);
-            return array;
-        });
-    }
-    /**
      * Get all enviromental devices from a council
      * councilId: N, pageSize: N, pageIndex: N -> getAllAdminDevices() -> [EnviromentalDevice]
      *
@@ -198,11 +181,15 @@ class EnviromentaDeviceLogic {
      */
     getCouncilDevicePagination(councilId, pageSize, pageIndex) {
         return __awaiter(this, void 0, void 0, function* () {
-            var ed = new EnviromentalDevice_1.default();
-            var array = [];
-            array.push(ed);
-            array.push(ed);
-            return array;
+            return new Promise((resolve, reject) => {
+                this.enviromentalDeviceDB.getAdminDevicePaginationFromDB(councilId, pageSize, pageIndex)
+                    .then(res => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
         });
     }
 }

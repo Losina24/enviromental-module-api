@@ -262,8 +262,7 @@ export default class EnviromentalDeviceDatabaseHandler {
         const firstValue = (pageSize * pageIndex) - pageSize;
         const secondValue = (pageSize * pageIndex);
 
-        //var query = "SELECT d.* FROM device AS d INNER JOIN user_device AS u ON d.id = u.device_id INNER JOIN user ON u.user_id = user.id WHERE user.id = "+ adminId +" AND u.user_id IS NOT "+ adminI+" ORDER BY d.id DESC LIMIT "+ firstValue + ', ' + secondValue;
-        var query = "";
+         var query = "SELECT d.* FROM device ORDER BY d.id DESC LIMIT "+ firstValue + ', ' + secondValue;
 
         return new Promise<EnviromentalDevice[]> ((resolve: any, reject: any) => {
             db.getConnection((error: any, conn: any) => {
@@ -290,17 +289,6 @@ export default class EnviromentalDeviceDatabaseHandler {
     }
 
     /**
-     * Get all enviromental devices from an admin
-     * adminId: N -> getAllAdminDevicesFromDB() -> [JSON]
-     * 
-     * @param adminId - ID of the admin that you want to get all enviromental devices
-     * @returns 
-     */
-    public getAllAdminDevicesFromDB( adminId: number ) : object[] {
-        return [{}]
-    }
-
-    /**
      * Get all enviromental devices from a council
      * councilId: N, pageSize: N, pageIndex: N -> getAllAdminDevicesFromDB() -> [JSON]
      * 
@@ -309,7 +297,33 @@ export default class EnviromentalDeviceDatabaseHandler {
      * @param pageIndex - Index of the page that you want to receive from the request
      * @returns 
      */
-    public getCouncilDevicePaginationFromDB( councilId: number, pageSize: number, pageIndex: number) : object[] {
-        return [{}]
+    public getCouncilDevicePaginationFromDB( councilId: number, pageSize: number, pageIndex: number) : Promise<EnviromentalDevice[]> {
+        const firstValue = (pageSize * pageIndex) - pageSize;
+        const secondValue = (pageSize * pageIndex);
+
+         var query = "SELECT d.* FROM device AS d INNER JOIN gateway AS g ON d.gateway_id = g.id INNER JOIN council AS c ON c.id = g.council_id WHERE c.id = "+ councilId +" ORDER BY d.id DESC LIMIT "+ firstValue + ', ' + secondValue;
+
+        return new Promise<EnviromentalDevice[]> ((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+
+                // If connection fails
+                if (error) {
+                    reject()
+                }
+
+                conn.query(query, (err: any, results: any) => {
+                    conn.release();
+                    
+                    // If connection fails
+                    if (err || results == undefined || results.length == 0) {
+                        reject()
+                    }
+                                     
+                    let enviromentalDevices: EnviromentalDevice[] = this.queryResultsToEnviromentalDevices(results)
+                    resolve(enviromentalDevices);
+                })
+
+            })
+        })
     }
 }

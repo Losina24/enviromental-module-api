@@ -138,7 +138,7 @@ export default class EnviromentaDeviceLogic {
      * Get enviromental devices from an admin
      * adminId: N, pageSize: N, pageIndex: N -> getAdminDevicePagination() -> [EnviromentalDevice]
      * 
-     * @param adminId - ID of the admin that you want to get all enviromental devices
+     * @param adminId - ID of the root admin that you want to get all enviromental devices
      * @param pageSize - Number of devices returned by the request
      * @param pageIndex - Index of the page that you want to receive from the request
      * @returns 
@@ -156,22 +156,6 @@ export default class EnviromentaDeviceLogic {
     }
 
     /**
-     * Get all enviromental devices from an admin
-     * adminId: N -> getAllAdminDevices() -> [EnviromentalDevice]
-     * 
-     * @param adminId - ID of the admin that you want to get all enviromental devices
-     * @returns 
-     */
-    public async getAllAdminDevices( adminId: number ) : Promise<EnviromentalDevice[]> {
-        var ed = new EnviromentalDevice();
-        var array = [];
-        array.push(ed);
-        array.push(ed);
-        
-        return array;
-    }
-
-    /**
      * Get all enviromental devices from a council
      * councilId: N, pageSize: N, pageIndex: N -> getAllAdminDevices() -> [EnviromentalDevice]
      * 
@@ -181,11 +165,14 @@ export default class EnviromentaDeviceLogic {
      * @returns 
      */
     public async getCouncilDevicePagination( councilId: number, pageSize: number, pageIndex: number) : Promise<EnviromentalDevice[]> {
-        var ed = new EnviromentalDevice();
-        var array = [];
-        array.push(ed);
-        array.push(ed);
-        
-        return array;
+        return new Promise<EnviromentalDevice[]>((resolve, reject) => {
+            this.enviromentalDeviceDB.getAdminDevicePaginationFromDB( councilId, pageSize, pageIndex )
+                .then( res => {
+                    resolve(res)
+                })
+                .catch( err => {
+                    reject(err)
+                })
+        })
     }
 }

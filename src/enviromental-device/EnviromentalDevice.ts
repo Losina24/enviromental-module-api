@@ -77,6 +77,16 @@ export default class EnviromentalDevice {
     }
 
     /**
+     * Gets sensors of the enviromental device 
+     * -> getSensors() -> sensors: [Sensor]
+     * 
+     * @returns coords: Enviromental device's coordinates
+     */
+    //public getSensors(): [Sensor] {
+        //return this.sensors;
+    //} 
+
+    /**
      * Gets the status of the enviromental device 
      * -> getStatus() -> status: boolean
      * 
@@ -135,6 +145,14 @@ export default class EnviromentalDevice {
     public setStatus( status: boolean ): void {
         this.status = status;
     }
+
+    /**
+     * Sets the enviromental device's status
+     * status: boolean -> setStatus() ->
+     */
+    /*public addSensor( sensor: Sensor | [Sensor] ): void {
+        this.sensors.push(sensor);
+    }*/
 
     public toObject(): object {
         return {

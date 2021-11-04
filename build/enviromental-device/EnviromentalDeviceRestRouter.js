@@ -322,45 +322,6 @@ class EnviromentalDeviceRestRouter {
             });
         });
         /**
-         * Get all enviromental devices of an admin
-         * GET /admin/:adminId
-         *
-         * Response: {
-         *  "http": 200,
-         *  "status": "OK",
-         *  "response": [{
-         *      "id": 32,
-         *      "name": "Device 32",
-         *      "mac": "2c549188c9e3",
-         *      "gatewayId": 6,
-         *      "sensors": [100, 101, 102, 103, 104],
-         *      "coords": [21.2222, -34.3333],
-         *      "status": true
-         *  }]
-         * }
-         *
-         */
-        this.getAllAdminDevices = () => this.router.get('/admin/:adminId', (req, res) => {
-            const adminId = parseInt(req.params.adminId);
-            this.enviromentalDeviceLogic.getAllAdminDevices(adminId)
-                .then(response => {
-                let enviromentalDevices = utils_1.default.enviromentalDevicesToObjects(response);
-                // Sending the response
-                res.status(200).send({
-                    http: 200,
-                    status: 'OK',
-                    response: enviromentalDevices
-                });
-            })
-                .catch(err => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                });
-            });
-        });
-        /**
          * Get enviromental devices of a council in pagination format
          * GET /council/:councilId/:pageSize/:pageIndex
          *
@@ -408,7 +369,6 @@ class EnviromentalDeviceRestRouter {
         this.getAllGatewayDevices();
         this.storeDevice();
         this.getAdminDevicePagination();
-        this.getAllAdminDevices();
         this.getCouncilDevicePagination();
     }
 }

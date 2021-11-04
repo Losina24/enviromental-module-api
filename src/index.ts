@@ -5,6 +5,7 @@ import cors from 'cors';
 import enviromentalDeviceRestRouter from './enviromental-device/EnviromentalDeviceRestRouter';
 import measureRestRouter from './measures/MeasureRestRouter';
 import MeasureMqttRouter from './measures/MeasureMqttRouter';
+import sensorRestRouter from './sensor/SensorRestRouter';
 
 
 class Server {
@@ -29,6 +30,7 @@ class Server {
     routes(): void {
         // Enviromental devices
         this.app.use('/'+ this.version +'/enviromental/devices', enviromentalDeviceRestRouter);
+        this.app.use('/'+ this.version +'/enviromental/sensors', sensorRestRouter);
 
         // Measures 
         this.app.use('/'+ this.version +'/enviromental/measures', measureRestRouter);

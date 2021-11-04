@@ -44,7 +44,6 @@ export default class MeasureMqttRouter extends MqttRouter {
 
             this.measureLogic.storeMeasure(measure)
                 .then(() => {
-
                 })
                 .catch(() => {
 

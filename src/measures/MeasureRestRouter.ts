@@ -25,14 +25,12 @@ class MeasureRestRouter {
     public getAllMeasuresByDeviceId = () => this.router.get('/:deviceId', (req: Request, res: Response) => {
         const deviceId = parseInt(req.params.deviceId);
 
-        /*this.measureLogic.getDeviceById(id)
+        this.measureLogic.getAllMeasuresByDeviceId(deviceId)
             .then( response => {
-                let deviceInObject = response.toObject();
-
                 res.status(200).send({
                     http: 200,
                     status: 'OK',
-                    response: deviceInObject
+                    response: response
                 })
             })
             .catch( err => {
@@ -41,7 +39,7 @@ class MeasureRestRouter {
                     status: 'Error',
                     error: err
                 })
-            })*/
+            })
     })
 }
 

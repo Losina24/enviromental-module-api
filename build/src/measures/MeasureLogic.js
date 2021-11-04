@@ -36,14 +36,13 @@ class MeasureLogic {
     getAllMeasuresByDeviceId(deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => {
-                resolve([]);
-                /*this.enviromentalDeviceDB.getDeviceByIdFromDB( deviceId )
-                    .then( res => {
-                        resolve(res)
-                    })
-                    .catch( err => {
-                        reject(err)
-                    })*/
+                this.measureDB.getAllMeasuresByDeviceIdFromDB(deviceId)
+                    .then(res => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
             });
         });
     }

@@ -14,7 +14,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const Measure_1 = __importDefault(require("./Measure"));
 const fs = require('fs');
 class MeasureDatabaseHandler {
     /**
@@ -26,10 +30,21 @@ class MeasureDatabaseHandler {
      */
     getAllMeasuresByDeviceIdFromDB(deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
-            // Get the measures from the json/csv
             return new Promise((resolve, reject) => {
-                reject();
-                resolve();
+                let measur = fs.readFileSync("/Users/losina/Desktop/Desarrollo/enviromental-module-api/db/measures.json", 'utf-8');
+                let array = JSON.parse(measur);
+                let res = [];
+                array.forEach((element) => {
+                    let measure = new Measure_1.default();
+                    let ss = JSON.parse(element);
+                    measure.setSensorId(ss.sensor_id);
+                    measure.setDate(ss.date);
+                    measure.setType(ss.type);
+                    measure.setValue(ss.value);
+                    measure.setUnit(ss.unit);
+                    res.push(measure);
+                });
+                resolve(res);
             });
         });
     }

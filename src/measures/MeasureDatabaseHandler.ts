@@ -19,11 +19,24 @@ export default class MeasureDatabaseHandler {
      * @returns [Measure]
      */
     public async getAllMeasuresByDeviceIdFromDB( deviceId: number ) : Promise<Measure[]> {
-        // Get the measures from the json/csv
 
-        return new Promise< Measure[]> ((resolve: any, reject: any) => {
-            reject()
-            resolve()
+        return new Promise<Measure[]> ((resolve: any, reject: any) => {
+            let measur = fs.readFileSync("/Users/losina/Desktop/Desarrollo/enviromental-module-api/db/measures.json", 'utf-8');
+            let array = JSON.parse(measur);
+            let res: any = [];
+            
+            array.forEach((element:any) => {
+                let measure = new Measure();
+                let ss = JSON.parse(element)
+                measure.setSensorId(ss.sensor_id)
+                measure.setDate(ss.date)
+                measure.setType(ss.type)
+                measure.setValue(ss.value)
+                measure.setUnit(ss.unit)
+                res.push(measure)
+            });
+
+            resolve(res)
         })
     }
 

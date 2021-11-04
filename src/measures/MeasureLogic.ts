@@ -27,14 +27,13 @@ export default class MeasureLogic {
      */
     public async getAllMeasuresByDeviceId( deviceId: number ) : Promise<Measure[]> {
         return new Promise<Measure[]>((resolve, reject) => {
-            resolve([]);
-            /*this.enviromentalDeviceDB.getDeviceByIdFromDB( deviceId )
+            this.measureDB.getAllMeasuresByDeviceIdFromDB(deviceId)
                 .then( res => {
                     resolve(res)
                 })
                 .catch( err => {
                     reject(err)
-                })*/
+                })
         })   
     }
 

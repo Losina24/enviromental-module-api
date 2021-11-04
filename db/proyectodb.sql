@@ -1,3 +1,12 @@
+-- phpMyAdmin SQL Dump
+-- version 5.1.1
+-- https://www.phpmyadmin.net/
+--
+-- Servidor: 127.0.0.1
+-- Tiempo de generación: 04-11-2021 a las 18:08:25
+-- Versión del servidor: 10.4.20-MariaDB
+-- Versión de PHP: 8.0.8
+
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
@@ -29,6 +38,7 @@ CREATE TABLE `council` (
   `iban` varchar(32) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+
 -- --------------------------------------------------------
 
 --
@@ -37,13 +47,14 @@ CREATE TABLE `council` (
 
 CREATE TABLE `device` (
   `id` int(11) NOT NULL,
-  `identifier` int(11) NOT NULL,
+  `device_EUI` int(11) NOT NULL,
   `gateway_id` int(11) NOT NULL,
   `name` varchar(32) NOT NULL,
   `latitude` decimal(8,6) NOT NULL,
   `longitude` decimal(9,6) NOT NULL,
   `status` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 
 -- --------------------------------------------------------
 
@@ -60,6 +71,7 @@ CREATE TABLE `gateway` (
   `longitude` decimal(9,6) NOT NULL,
   `status` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 
 -- --------------------------------------------------------
 
@@ -116,6 +128,7 @@ CREATE TABLE `role` (
   `name` varchar(32) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+
 -- --------------------------------------------------------
 
 --
@@ -125,11 +138,12 @@ CREATE TABLE `role` (
 CREATE TABLE `sensor` (
   `id` int(11) NOT NULL,
   `sensor_type_id` int(11) NOT NULL,
-  `device_id` int(11) NOT NULL,
-  `device_eui` varchar(64) NOT NULL,
+  `device_id` int(11) DEFAULT NULL,
+  `device_EUI` varchar(64) NOT NULL,
   `name` varchar(64) NOT NULL,
   `status` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 
 -- --------------------------------------------------------
 
@@ -142,6 +156,7 @@ CREATE TABLE `sensor_type` (
   `name` varchar(32) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+
 -- --------------------------------------------------------
 
 --
@@ -152,14 +167,15 @@ CREATE TABLE `user` (
   `id` int(11) NOT NULL,
   `role_id` int(11) NOT NULL,
   `council_id` int(11) NOT NULL,
-  `name` int(64) NOT NULL,
-  `surnames` int(128) NOT NULL,
-  `password` int(128) NOT NULL,
-  `address` int(128) DEFAULT NULL,
-  `phone_number` int(32) NOT NULL,
-  `email` int(64) NOT NULL,
-  `postal_code` int(32) DEFAULT NULL
+  `name` varchar(64) NOT NULL,
+  `surnames` varchar(128) NOT NULL,
+  `password` varchar(128) NOT NULL,
+  `address` varchar(128) DEFAULT NULL,
+  `phone_number` varchar(32) NOT NULL,
+  `email` varchar(64) NOT NULL,
+  `postal_code` varchar(32) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 
 -- --------------------------------------------------------
 
@@ -172,6 +188,7 @@ CREATE TABLE `user_device` (
   `user_id` int(11) NOT NULL,
   `device_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 
 --
 -- Índices para tablas volcadas
@@ -235,7 +252,7 @@ ALTER TABLE `role`
 --
 ALTER TABLE `sensor`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `device_eui_unique_index` (`device_eui`),
+  ADD UNIQUE KEY `device_eui_unique_index` (`device_EUI`),
   ADD KEY `Foreign_key_sensor_type_id` (`sensor_type_id`),
   ADD KEY `Foreign_key_device_id` (`device_id`);
 
@@ -272,19 +289,19 @@ ALTER TABLE `user_device`
 -- AUTO_INCREMENT de la tabla `council`
 --
 ALTER TABLE `council`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `device`
 --
 ALTER TABLE `device`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `gateway`
 --
 ALTER TABLE `gateway`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `gateway_network_server`
@@ -308,31 +325,31 @@ ALTER TABLE `notification`
 -- AUTO_INCREMENT de la tabla `role`
 --
 ALTER TABLE `role`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `sensor`
 --
 ALTER TABLE `sensor`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `sensor_type`
 --
 ALTER TABLE `sensor_type`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `user_device`
 --
 ALTER TABLE `user_device`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Restricciones para tablas volcadas

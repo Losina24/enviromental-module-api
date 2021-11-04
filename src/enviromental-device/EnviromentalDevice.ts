@@ -4,6 +4,7 @@
  * Author: Alejandro Losa García
  * Description: Model for enviromental device feature
  */
+import Sensor from "../sensor/Sensor";
 
 export default class EnviromentalDevice {
     
@@ -13,7 +14,7 @@ export default class EnviromentalDevice {
     private name: string;
     private gatewayId: number;
     private coords: [number, number];
-    //private sensors: [Sensor];
+    private sensors: [Sensor];
     private status: boolean;
 
     // Constructor
@@ -82,9 +83,9 @@ export default class EnviromentalDevice {
      * 
      * @returns coords: Enviromental device's coordinates
      */
-    //public getSensors(): [Sensor] {
-        //return this.sensors;
-    //} 
+    public getSensors(): [Sensor] {
+        return this.sensors;
+    } 
 
     /**
      * Gets the status of the enviromental device 
@@ -147,12 +148,13 @@ export default class EnviromentalDevice {
     }
 
     /**
-     * Sets the enviromental device's status
-     * status: boolean -> setStatus() ->
+     * Add a sensor to the enviromental device
+     * sensor:Sensor -> addSensor() ->
      */
-    /*public addSensor( sensor: Sensor | [Sensor] ): void {
+    public addSensor( sensor: Sensor | Sensor[] ): void {
+        //@ts-ignore
         this.sensors.push(sensor);
-    }*/
+    }
 
     public toObject(): object {
         return {

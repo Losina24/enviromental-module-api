@@ -261,7 +261,8 @@ class SensorRestRouter {
                 res.status(200).send({
                     http: 200,
                     status: 'OK',
-                    response: "Sensor created succesfully"
+                    response: "Sensor created succesfully",
+                    lastInsertId: response
                 })
             })
             .catch( err => {

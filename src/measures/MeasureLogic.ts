@@ -32,6 +32,8 @@ import Measure from "./Measure";
 
     public async storeMeasure( measure: Measure ): Promise<boolean> {
         return new Promise<boolean>((resolve, reject) => {
+            console.log('MEASUREMENT', measure);
+            
             resolve(true);
             /*this.enviromentalDeviceDB.getDeviceByIdFromDB( deviceId )
                 .then( res => {

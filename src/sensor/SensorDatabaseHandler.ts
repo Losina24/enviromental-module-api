@@ -244,11 +244,11 @@ export default class SensorDatabaseHandler {
      * @param sensor - Sensor we want to store in database
      * @returns
      */
-    public storeSensorInDB(sensor: Sensor): Promise<void> {
+    public storeSensorInDB(sensor: Sensor): Promise<number> {
         var query = "INSERT INTO `sensor` (`sensor_type_id`, `device_id`, `device_EUI`, `name`, `status`)" +
             " VALUES ('"+sensor.getType()+"', '"+sensor.getDeviceId()+"', '"+sensor.getDeviceEUI()+"', '"+
             sensor.getName()+"', '"+sensor.getStatus()+"');"
-        return new Promise<void>((resolve: any, reject: any) => {
+        return new Promise<number>((resolve: any, reject: any) => {
             db.getConnection((error: any, conn: any) => {
 
                 // If connection fails
@@ -262,7 +262,11 @@ export default class SensorDatabaseHandler {
                     if (err) {
                         reject()
                     }
+                    console.log(results)
 
+                    if (results != undefined){
+                        resolve(results.insertId)
+                    }
                     resolve()
                 })
 

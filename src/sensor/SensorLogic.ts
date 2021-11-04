@@ -107,8 +107,8 @@ export default class SensorLogic {
      * @param sensor - Sensor we want to store
      * @returns 
      */
-    public async storeSensor( sensor: Sensor ): Promise<void> {
-        return new Promise<void>((resolve, reject) => {
+    public async storeSensor( sensor: Sensor ): Promise<number> {
+        return new Promise<number>((resolve, reject) => {
             this.sensorDB.storeSensorInDB( sensor )
                 .then( res => {
                     resolve(res)

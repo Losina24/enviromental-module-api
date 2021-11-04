@@ -22,6 +22,23 @@ class MeasureRestRouter {
         this.getAllMeasuresByDeviceId();
     }
 
+    /**
+     * Get measures
+     * GET /measures/:deviceId
+     * 
+     * Response: {
+     *  "http": 200,
+     *  "status": "OK",
+     *  "response": [{
+     *      "sensorId": 32,
+     *      "value": 12.25,
+     *      "date": "21-10-2021 21:20:15",
+     *      "unit": "ppm",
+     *      "unit": "CO2" 
+     *  }]
+     * }
+     * 
+     */
     public getAllMeasuresByDeviceId = () => this.router.get('/:deviceId', (req: Request, res: Response) => {
         const deviceId = parseInt(req.params.deviceId);
 

@@ -17,6 +17,23 @@ class MeasureRestRouter {
         this.measureLogic = new MeasureLogic_1.default(); // FIX: este atributo está mal en el diseño
         // This is Rest entry point that the express server uses.
         this.router = (0, express_1.Router)();
+        /**
+         * Get measures
+         * GET /measures/:deviceId
+         *
+         * Response: {
+         *  "http": 200,
+         *  "status": "OK",
+         *  "response": [{
+         *      "sensorId": 32,
+         *      "value": 12.25,
+         *      "date": "21-10-2021 21:20:15",
+         *      "unit": "ppm",
+         *      "unit": "CO2"
+         *  }]
+         * }
+         *
+         */
         this.getAllMeasuresByDeviceId = () => this.router.get('/:deviceId', (req, res) => {
             const deviceId = parseInt(req.params.deviceId);
             this.measureLogic.getAllMeasuresByDeviceId(deviceId)

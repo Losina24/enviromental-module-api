@@ -7,6 +7,8 @@ const express_1 = __importDefault(require("express"));
 const morgan_1 = __importDefault(require("morgan"));
 const cors_1 = __importDefault(require("cors"));
 const EnviromentalDeviceRestRouter_1 = __importDefault(require("./enviromental-device/EnviromentalDeviceRestRouter"));
+const MeasureRestRouter_1 = __importDefault(require("./measures/MeasureRestRouter"));
+const MeasureMqttRouter_1 = __importDefault(require("./measures/MeasureMqttRouter"));
 class Server {
     constructor() {
         this.version = 'v2';
@@ -22,7 +24,12 @@ class Server {
         this.app.use(express_1.default.urlencoded({ extended: false }));
     }
     routes() {
+        // Enviromental devices
         this.app.use('/' + this.version + '/enviromental/devices', EnviromentalDeviceRestRouter_1.default);
+        // Measures 
+        this.app.use('/' + this.version + '/enviromental/measures', MeasureRestRouter_1.default);
+        const measureMqttRouter = new MeasureMqttRouter_1.default();
+        //measureMqttRouter.
     }
     start() {
         this.app.listen(this.app.get('port'), () => {

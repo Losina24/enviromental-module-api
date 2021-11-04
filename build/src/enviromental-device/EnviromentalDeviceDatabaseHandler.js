@@ -36,7 +36,7 @@ class EnviromentalDeviceDatabaseHandler {
         });
         return enviromentalDevices;
     }
-    // Logic Methods 
+    // Methods 
     /**
      * Get the information about a enviromental device given their ID from the database
      * deviceId: N -> getDeviceByIdFromDB() -> EnviromentalDevice

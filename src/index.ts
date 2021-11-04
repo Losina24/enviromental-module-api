@@ -3,6 +3,8 @@ import morgan from 'morgan';
 import cors from 'cors';
 
 import enviromentalDeviceRestRouter from './enviromental-device/EnviromentalDeviceRestRouter';
+import measureRestRouter from './measures/MeasureRestRouter';
+import MeasureMqttRouter from './measures/MeasureMqttRouter';
 
 
 class Server {
@@ -25,7 +27,13 @@ class Server {
     }
 
     routes(): void {
+        // Enviromental devices
         this.app.use('/'+ this.version +'/enviromental/devices', enviromentalDeviceRestRouter);
+
+        // Measures 
+        this.app.use('/'+ this.version +'/enviromental/measures', measureRestRouter);
+        const measureMqttRouter = new MeasureMqttRouter();
+        //measureMqttRouter.
 
     }
 

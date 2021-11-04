@@ -20,21 +20,35 @@ export default class MeasureMqttRouter extends MqttRouter {
         this.storeMeasure();
     }
 
-    // Methods
+    /**
+     * Save a new measure 
+     * GET postalcode/ambiental/1/#
+     * 
+     * Body: {
+     *  "deviceEui": 1,
+     *  "value": 10.32,
+     *  "unit": "ppm"
+     *  "type": "CO2"
+     * }
+     * 
+     */
     public storeMeasure = () => {
-
         this.suscribe('46701/ambiental/1/#');
         
         // When a message arrives
 		this.client.on("message", (topic: any, message: any) => {
             const msg = message.toString();
-			console.log('Payload', msg);
 
             let measure = new Measure();
             measure.formatPayload(msg)
-            console.log('Measure', measure);
-            
+
             this.measureLogic.storeMeasure(measure)
+                .then(() => {
+
+                })
+                .catch(() => {
+
+                })
 		});
     }
 }

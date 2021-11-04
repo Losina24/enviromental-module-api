@@ -6,17 +6,25 @@
  */
 
 import Measure from "./Measure";
+import MeasureDatabaseHandler from "./MeasureDatabaseHandler";
 
- export default class MeasureLogic {
+export default class MeasureLogic {
 
     // Database handler
-    //private measureDB: MeasureDatabaseHandler = new MeasureDatabaseHandler();
+    private measureDB: MeasureDatabaseHandler = new MeasureDatabaseHandler();
 
     // Constructor
     constructor() {
     }
 
     // Logic methods
+    /**
+     * Get the measures of a device
+     * deviceId: N -> getAllMeasuresByDeviceId() -> [Measure]
+     * 
+     * @param deviceId 
+     * @returns 
+     */
     public async getAllMeasuresByDeviceId( deviceId: number ) : Promise<Measure[]> {
         return new Promise<Measure[]>((resolve, reject) => {
             resolve([]);
@@ -31,17 +39,16 @@ import Measure from "./Measure";
     }
 
     public async storeMeasure( measure: Measure ): Promise<boolean> {
+
         return new Promise<boolean>((resolve, reject) => {
-            console.log('MEASUREMENT', measure);
-            
-            resolve(true);
-            /*this.enviromentalDeviceDB.getDeviceByIdFromDB( deviceId )
+                        
+            this.measureDB.storeMeasureInDB(measure)
                 .then( res => {
-                    resolve(res)
+                    resolve(true);
                 })
                 .catch( err => {
-                    reject(err)
-                })*/
+                    reject(false);
+                })
         }) 
     }
  }

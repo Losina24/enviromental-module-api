@@ -2,7 +2,7 @@
  * Name: MqttRouter.ts
  * Date: 04 - 11 - 2021
  * Author: Alejandro Losa García
- * Description: Manages the rest rules of the measure feature
+ * Description: Parent class that handles the mqtt routes
  */
 
 const mqtt = require("mqtt");
@@ -12,7 +12,6 @@ export default class MqttRouter {
     // Atributes
     protected client: any = null;
 	protected host: string = "mqtt://broker.hivemq.com";
-    //protected port: number = 1883;
     protected port: number = 8000;
 	protected username: string = "GTI3A-M2";
 	protected password: string = "gti3am2";

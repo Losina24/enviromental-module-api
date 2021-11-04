@@ -20,7 +20,6 @@ class MeasureRestRouter {
     // All methods created in a Rest Router class must be called in the constructor for them to work
     constructor() {
         this.getAllMeasuresByDeviceId();
-        this.storeMeasure();
     }
 
     public getAllMeasuresByDeviceId = () => this.router.get('/:deviceId', (req: Request, res: Response) => {
@@ -35,41 +34,6 @@ class MeasureRestRouter {
                     status: 'OK',
                     response: deviceInObject
                 })
-            })
-            .catch( err => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                })
-            })*/
-    })
-
-    public storeMeasure = () => this.router.post('/', (req: Request, res: Response) => {
-        /*let enviromentalDevice = new EnviromentalDevice();
-
-        enviromentalDevice.setName(req.body.name);
-        enviromentalDevice.setMac(req.body.mac);
-        enviromentalDevice.setGatewayId(req.body.gatewayId);
-        enviromentalDevice.setCoords([parseFloat(req.body.latitude), parseFloat(req.body.longitude)]);
-        
-        this.enviromentalDeviceLogic.storeDevice(enviromentalDevice)
-            .then( response => {
-                if(response == true) {
-                    // Sending the response
-                    res.status(200).send({
-                        http: 200,
-                        status: 'OK',
-                        response: 'Enviromental device created succesfully'
-                    })
-                } else {
-                    // Sending the response
-                    res.status(204).send({
-                        http: 204,
-                        status: 'OK',
-                        response: 'There are some problems creating a new enviromental device'
-                    })
-                }
             })
             .catch( err => {
                 res.status(401).send({

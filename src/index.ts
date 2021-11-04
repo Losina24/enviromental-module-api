@@ -3,6 +3,7 @@ import morgan from 'morgan';
 import cors from 'cors';
 
 import enviromentalDeviceRestRouter from './enviromental-device/EnviromentalDeviceRestRouter';
+import sensorRestRouter from './sensor/SensorRestRouter';
 
 
 class Server {
@@ -26,7 +27,7 @@ class Server {
 
     routes(): void {
         this.app.use('/'+ this.version +'/enviromental/devices', enviromentalDeviceRestRouter);
-
+        this.app.use('/'+ this.version +'/sensors', sensorRestRouter);
     }
 
     start(): void {

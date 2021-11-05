@@ -196,6 +196,7 @@ class EnviromentalDeviceRestRouter {
 
         this.enviromentalDeviceLogic.getAllCouncilDevices(councilId)
             .then( response => {
+                console.log(response);
                 let enviromentalDevices: object[] = Utils.enviromentalDevicesToObjects(response)
 
                 // Sending the response
@@ -380,6 +381,7 @@ class EnviromentalDeviceRestRouter {
 
         this.enviromentalDeviceLogic.getCouncilDevicePagination(councilId, pageSize, pageIndex)
             .then( response => {
+                
                 let enviromentalDevices: object[] = Utils.enviromentalDevicesToObjects(response)
 
                 // Sending the response

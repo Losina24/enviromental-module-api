@@ -277,12 +277,12 @@ class EnviromentalDeviceRestRouter {
      */
      public storeDevice = () => this.router.post('/', (req: Request, res: Response) => {
         let enviromentalDevice = new EnviromentalDevice();
-
+        
         enviromentalDevice.setName(req.body.name);
         enviromentalDevice.setMac(req.body.mac);
         enviromentalDevice.setGatewayId(req.body.gatewayId);
         enviromentalDevice.setCoords([parseFloat(req.body.latitude), parseFloat(req.body.longitude)]);
-        
+
         this.enviromentalDeviceLogic.storeDevice(enviromentalDevice)
             .then( response => {
                 if(response == true) {

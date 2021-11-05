@@ -1,10 +1,4 @@
 "use strict";
-/**
- * Name: EnviromentaDevice.ts
- * Date: 02 - 11 - 2021
- * Author: Alejandro Losa García
- * Description: Model for enviromental device feature
- */
 Object.defineProperty(exports, "__esModule", { value: true });
 class EnviromentalDevice {
     // Constructor
@@ -65,9 +59,9 @@ class EnviromentalDevice {
      *
      * @returns coords: Enviromental device's coordinates
      */
-    //public getSensors(): [Sensor] {
-    //return this.sensors;
-    //} 
+    getSensors() {
+        return this.sensors;
+    }
     /**
      * Gets the status of the enviromental device
      * -> getStatus() -> status: boolean
@@ -121,12 +115,13 @@ class EnviromentalDevice {
         this.status = status;
     }
     /**
-     * Sets the enviromental device's status
-     * status: boolean -> setStatus() ->
+     * Add a sensor to the enviromental device
+     * sensor:Sensor -> addSensor() ->
      */
-    /*public addSensor( sensor: Sensor | [Sensor] ): void {
+    addSensor(sensor) {
+        //@ts-ignore
         this.sensors.push(sensor);
-    }*/
+    }
     toObject() {
         return {
             id: this.id,

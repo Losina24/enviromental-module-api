@@ -232,6 +232,10 @@ class SensorDatabaseHandler {
                     if (err) {
                         reject();
                     }
+                    console.log(results);
+                    if (results != undefined) {
+                        resolve(results.insertId);
+                    }
                     resolve();
                 });
             });

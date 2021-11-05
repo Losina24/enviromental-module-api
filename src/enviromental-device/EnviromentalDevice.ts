@@ -162,7 +162,7 @@ export default class EnviromentalDevice {
 			name: this.name,
 			mac: this.mac,
 			gatewayId: this.gatewayId,
-			//sensors: this.sensors,
+			sensors: this.sensors,
 			coords: {
                 latitude: this.coords[0],
                 longitude: this.coords[1]

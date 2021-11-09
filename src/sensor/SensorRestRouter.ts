@@ -11,7 +11,7 @@ import SensorLogic from "./SensorLogic";
 import Sensor from "./Sensor";
 
 class SensorRestRouter {
-
+    // HAY QUE CAMBIAR LAS URL, NO CONCUERDAN CON LAS URL DE LOS DISPOSITIVOS, FALTA EL COMENTARIO DEL BODY EN EL MÉTODO DE STORESENSOR
     private sensorLogic = new SensorLogic();
 
     // This is Rest entry point that the express server uses.
@@ -29,7 +29,7 @@ class SensorRestRouter {
         this.getCouncilSensorPagination();
         this.getDeviceSensors();
         this.removeSensor();
-
+        // Falta el metodo para editar un sensor
     }
 
     /**
@@ -402,7 +402,7 @@ class SensorRestRouter {
          "response": true
      }
      */
-    public removeSensor = () => this.router.delete('/delete/:sensorId', (req: Request, res: Response) => {
+    public removeSensor = () => this.router.delete('/delete/:sensorId', (req: Request, res: Response) => { // HAY QUE CAMBIARLO POR "/"
         const sensorId = parseInt(req.params.sensorId);
 
         this.sensorLogic.removeSensor(sensorId)

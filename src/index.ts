@@ -30,12 +30,11 @@ class Server {
     routes(): void {
         // Enviromental devices
         this.app.use('/'+ this.version +'/enviromental/devices', enviromentalDeviceRestRouter);
+        // Sensors
         this.app.use('/'+ this.version +'/enviromental/sensors', sensorRestRouter);
-
         // Measures 
         this.app.use('/'+ this.version +'/enviromental/measures', measureRestRouter);
         const measureMqttRouter = new MeasureMqttRouter();
-        //measureMqttRouter.
 
     }
 

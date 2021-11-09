@@ -196,6 +196,7 @@ class EnviromentalDeviceRestRouter {
 
         this.enviromentalDeviceLogic.getAllCouncilDevices(councilId)
             .then( response => {
+                console.log(response);
                 let enviromentalDevices: object[] = Utils.enviromentalDevicesToObjects(response)
 
                 // Sending the response
@@ -277,12 +278,12 @@ class EnviromentalDeviceRestRouter {
      */
      public storeDevice = () => this.router.post('/', (req: Request, res: Response) => {
         let enviromentalDevice = new EnviromentalDevice();
-
+        
         enviromentalDevice.setName(req.body.name);
         enviromentalDevice.setMac(req.body.mac);
         enviromentalDevice.setGatewayId(req.body.gatewayId);
         enviromentalDevice.setCoords([parseFloat(req.body.latitude), parseFloat(req.body.longitude)]);
-        
+
         this.enviromentalDeviceLogic.storeDevice(enviromentalDevice)
             .then( response => {
                 if(response == true) {
@@ -380,6 +381,7 @@ class EnviromentalDeviceRestRouter {
 
         this.enviromentalDeviceLogic.getCouncilDevicePagination(councilId, pageSize, pageIndex)
             .then( response => {
+                
                 let enviromentalDevices: object[] = Utils.enviromentalDevicesToObjects(response)
 
                 // Sending the response

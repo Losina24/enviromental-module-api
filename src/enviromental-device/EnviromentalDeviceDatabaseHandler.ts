@@ -16,21 +16,22 @@ export default class EnviromentalDeviceDatabaseHandler {
 
         results.forEach( (element:any) => {
             let device = new EnviromentalDevice();
-                        
+            
             device.setId(element.id)
             device.setName(element.name);
-            device.setMac(element.identifier);
+            device.setMac(element.device_EUI);
             device.setGatewayId(element.gateway_id);
             device.setCoords([element.latitude, element.longitude]);
             device.setStatus(element.status);
-
+            console.log('ASDFASDF', device);
+            
             enviromentalDevices.push(device);
         });
 
         return enviromentalDevices;
     }
 
-    // Logic Methods 
+    // Methods 
     /**
      * Get the information about a enviromental device given their ID from the database
      * deviceId: N -> getDeviceByIdFromDB() -> EnviromentalDevice
@@ -61,7 +62,7 @@ export default class EnviromentalDeviceDatabaseHandler {
                     
                     device.setId(results[0].id)
                     device.setName(results[0].name);
-                    device.setMac(results[0].identifier);
+                    device.setMac(results[0].device_EUI);
                     device.setGatewayId(results[0].gateway_id);
                     device.setCoords([results[0].latitude, results[0].longitude]);
                     device.setStatus(results[0].status);
@@ -224,7 +225,7 @@ export default class EnviromentalDeviceDatabaseHandler {
     public storeDeviceInDB( enviromentalDevice: EnviromentalDevice ): Promise<boolean> {
 
         // Hay que cambiar la columna 'mac' de la base de datos para que sea un varchar()
-        var query = "INSERT INTO device (identifier, gateway_id, name, latitude, longitude, status) VALUES ('"+ enviromentalDevice.getMac() +"',"+ enviromentalDevice.getGatewayId() +", '"+ enviromentalDevice.getName() +"', "+ enviromentalDevice.getCoords().latitude +", "+ enviromentalDevice.getCoords().longitude +", 0)";
+        var query = "INSERT INTO device (device_EUI, gateway_id, name, latitude, longitude, status) VALUES ('"+ enviromentalDevice.getMac() +"',"+ enviromentalDevice.getGatewayId() +", '"+ enviromentalDevice.getName() +"', "+ enviromentalDevice.getCoords().latitude +", "+ enviromentalDevice.getCoords().longitude +", 0)";
 
         return new Promise<boolean> ((resolve: any, reject: any) => {
             db.getConnection((error: any, conn: any) => {

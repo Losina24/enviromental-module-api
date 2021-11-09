@@ -173,6 +173,7 @@ class EnviromentalDeviceRestRouter {
             const councilId = parseInt(req.params.councilId);
             this.enviromentalDeviceLogic.getAllCouncilDevices(councilId)
                 .then(response => {
+                console.log(response);
                 let enviromentalDevices = utils_1.default.enviromentalDevicesToObjects(response);
                 // Sending the response
                 res.status(200).send({

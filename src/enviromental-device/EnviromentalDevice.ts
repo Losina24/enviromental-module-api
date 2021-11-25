@@ -45,12 +45,12 @@ export default class EnviromentalDevice {
     }
 
     /**
-     * Gets the mac of the enviromental device 
+     * Gets the the enviromental device EUI
      * -> getMac() -> mac: Text
      * 
-     * @returns mac: Enviromental device's mac
+     * @returns mac: Enviromental device's EUI
      */
-    public getMac(): string {
+    public getDeviceEUI(): string {
         return this.mac;
     }
 
@@ -116,10 +116,10 @@ export default class EnviromentalDevice {
     }
 
     /**
-     * Sets the enviromental device's mac
-     * mac: Text -> setMac() ->
+     * Sets the enviromental device's EUI
+     * mac: Text -> setDeviceEUI() ->
      */
-    public setMac( mac: string ): void {
+    public setDeviceEUI(mac: string ): void {
         this.mac = mac;
     }
 
@@ -162,7 +162,7 @@ export default class EnviromentalDevice {
 			name: this.name,
 			mac: this.mac,
 			gatewayId: this.gatewayId,
-			sensors: this.sensors,
+			//sensors: this.sensors,
 			coords: {
                 latitude: this.coords[0],
                 longitude: this.coords[1]

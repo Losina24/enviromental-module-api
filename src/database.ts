@@ -4,8 +4,8 @@ import mysql from 'mysql';
 const conn = mysql.createPool({
     host: 'localhost',
     user: 'root',
-    password: 'root',
-    database: 'proyecto_s1'
+    password: '',
+    database: 'importproyectotest'
 });
 
 export default conn;

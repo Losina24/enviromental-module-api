@@ -223,6 +223,7 @@ class SensorRestRouter {
          *
          */
         this.storeSensor = () => this.router.post('/add', (req, res) => {
+            console.log(req.body);
             let sensor = new Sensor_1.default();
             sensor.setDeviceId(req.body.deviceId);
             sensor.setName(req.body.name);

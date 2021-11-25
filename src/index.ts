@@ -6,6 +6,11 @@ import enviromentalDeviceRestRouter from './enviromental-device/EnviromentalDevi
 import measureRestRouter from './measures/MeasureRestRouter';
 import MeasureMqttRouter from './measures/MeasureMqttRouter';
 import sensorRestRouter from './sensor/SensorRestRouter';
+import usersRestRouter from './users/UserRestRouter';
+import councilRestRouter from './councils/CouncilRestRouter';
+import gatewayRestRouter from './gateways/GatewayRestRouter';
+import networkServerRestRouter from './network-server/NetworkServerRestRouter';
+import sensorNotificationRestRouter from './notifications/SensorNotificationRestRouter';
 
 
 class Server {
@@ -36,6 +41,21 @@ class Server {
         this.app.use('/'+ this.version +'/enviromental/measures', measureRestRouter);
         const measureMqttRouter = new MeasureMqttRouter();
         //measureMqttRouter.
+
+        // User
+        this.app.use('/'+ this.version +'/user', usersRestRouter);
+
+        // Council
+        this.app.use('/'+ this.version +'/council', councilRestRouter);
+
+        // Gateway
+        this.app.use('/'+ this.version +'/gateway', gatewayRestRouter);
+
+        // Network server
+        this.app.use('/'+ this.version +'/NS', networkServerRestRouter);
+
+        // Notifications
+        this.app.use('/'+ this.version +'/notifications', sensorNotificationRestRouter);
 
     }
 

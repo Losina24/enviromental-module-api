@@ -28,11 +28,10 @@ class EnviromentalDeviceDatabaseHandler {
             let device = new EnviromentalDevice_1.default();
             device.setId(element.id);
             device.setName(element.name);
-            device.setMac(element.device_EUI);
+            device.setDeviceEUI(element.identifier);
             device.setGatewayId(element.gateway_id);
             device.setCoords([element.latitude, element.longitude]);
             device.setStatus(element.status);
-            console.log('ASDFASDF', device);
             enviromentalDevices.push(device);
         });
         return enviromentalDevices;
@@ -63,7 +62,7 @@ class EnviromentalDeviceDatabaseHandler {
                         let device = new EnviromentalDevice_1.default();
                         device.setId(results[0].id);
                         device.setName(results[0].name);
-                        device.setMac(results[0].device_EUI);
+                        device.setDeviceEUI(results[0].identifier);
                         device.setGatewayId(results[0].gateway_id);
                         device.setCoords([results[0].latitude, results[0].longitude]);
                         device.setStatus(results[0].status);
@@ -196,20 +195,20 @@ class EnviromentalDeviceDatabaseHandler {
      */
     storeDeviceInDB(enviromentalDevice) {
         // Hay que cambiar la columna 'mac' de la base de datos para que sea un varchar()
-        var query = "INSERT INTO device (device_EUI, gateway_id, name, latitude, longitude, status) VALUES ('" + enviromentalDevice.getMac() + "'," + enviromentalDevice.getGatewayId() + ", '" + enviromentalDevice.getName() + "', " + enviromentalDevice.getCoords().latitude + ", " + enviromentalDevice.getCoords().longitude + ", 0)";
+        var query = "INSERT INTO device (device_EUI, gateway_id, name, latitude, longitude, status) VALUES ('" + enviromentalDevice.getDeviceEUI() + "'," + enviromentalDevice.getGatewayId() + ", '" + enviromentalDevice.getName() + "', " + enviromentalDevice.getCoords().latitude + ", " + enviromentalDevice.getCoords().longitude + ", 0)";
         return new Promise((resolve, reject) => {
             database_1.default.getConnection((error, conn) => {
                 // If connection fails
                 if (error) {
-                    reject(false);
+                    reject(error);
                 }
                 conn.query(query, (err, results) => {
                     conn.release();
                     // Si la consulta falla
                     if (err) {
-                        reject(false);
+                        reject(err);
                     }
-                    resolve(true);
+                    resolve(results);
                 });
             });
         });
@@ -226,20 +225,23 @@ class EnviromentalDeviceDatabaseHandler {
     getAdminDevicePaginationFromDB(adminId, pageSize, pageIndex) {
         const firstValue = (pageSize * pageIndex) - pageSize;
         const secondValue = (pageSize * pageIndex);
-        var query = "SELECT d.* FROM device ORDER BY d.id DESC LIMIT " + firstValue + ', ' + secondValue;
+        var query = "SELECT * FROM device ORDER BY device.id DESC LIMIT " + firstValue + ', ' + secondValue;
         return new Promise((resolve, reject) => {
             database_1.default.getConnection((error, conn) => {
                 // If connection fails
                 if (error) {
-                    reject();
+                    reject(error);
                 }
                 conn.query(query, (err, results) => {
                     conn.release();
                     // If connection fails
                     if (err || results == undefined || results.length == 0) {
-                        reject();
+                        reject(err);
                     }
-                    let enviromentalDevices = this.queryResultsToEnviromentalDevices(results);
+                    let enviromentalDevices;
+                    if (results) {
+                        enviromentalDevices = this.queryResultsToEnviromentalDevices(results);
+                    }
                     resolve(enviromentalDevices);
                 });
             });

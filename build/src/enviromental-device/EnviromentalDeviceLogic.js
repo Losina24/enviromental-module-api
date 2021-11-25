@@ -140,10 +140,10 @@ class EnviromentaDeviceLogic {
             return new Promise((resolve, reject) => {
                 this.enviromentalDeviceDB.storeDeviceInDB(enviromentalDevice)
                     .then(res => {
-                    resolve(true);
+                    resolve(res);
                 })
                     .catch(err => {
-                    reject(false);
+                    reject(err);
                 });
             });
         });

@@ -122,14 +122,14 @@ export default class EnviromentaDeviceLogic {
      * @param enviromentalDevice - Enviromental device you want to store in the database
      * @returns 
      */
-    public async storeDevice( enviromentalDevice: EnviromentalDevice ): Promise<boolean> {
-        return new Promise<boolean>((resolve, reject) => {
+    public async storeDevice( enviromentalDevice: EnviromentalDevice ): Promise<any> {
+        return new Promise<any>((resolve, reject) => {
             this.enviromentalDeviceDB.storeDeviceInDB(enviromentalDevice)
                 .then( res => {
-                    resolve(true)
+                    resolve(res)
                 })
                 .catch( err => {
-                    reject(false)
+                    reject(err)
                 })
         })
     }

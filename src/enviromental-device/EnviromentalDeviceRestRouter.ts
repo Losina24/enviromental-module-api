@@ -5,7 +5,7 @@
  * Description: Manages the rest rules of the environmental devices feature
  */
 
-import { Router, Request, Response } from 'express';
+import {Router, Request, Response} from 'express';
 import EnviromentalDeviceLogic from './EnviromentalDeviceLogic';
 import EnviromentalDevice from './EnviromentalDevice';
 
@@ -33,7 +33,7 @@ class EnviromentalDeviceRestRouter {
     /**
      * Get the information about a enviromental device
      * GET /device/:id
-     * 
+     *
      * Response: {
      *  "http": 200,
      *  "status": "OK",
@@ -47,13 +47,13 @@ class EnviromentalDeviceRestRouter {
      *      "status": true
      *  }
      * }
-     * 
+     *
      */
     public getDeviceById = () => this.router.get('/:id', (req: Request, res: Response) => {
         const id = parseInt(req.params.id);
 
         this.enviromentalDeviceLogic.getDeviceById(id)
-            .then( response => {
+            .then(response => {
                 let deviceInObject = response.toObject();
 
                 res.status(200).send({
@@ -62,7 +62,7 @@ class EnviromentalDeviceRestRouter {
                     response: deviceInObject
                 })
             })
-            .catch( err => {
+            .catch(err => {
                 res.status(401).send({
                     http: 401,
                     status: 'Error',
@@ -74,7 +74,7 @@ class EnviromentalDeviceRestRouter {
     /**
      * Get all enviromental devices from a user
      * GET /user/:userId
-     * 
+     *
      * Response: {
      *  "http": 200,
      *  "status": "OK",
@@ -88,13 +88,13 @@ class EnviromentalDeviceRestRouter {
      *      "status": true
      *  }]
      * }
-     * 
+     *
      */
-     public getAllUserDevices = () => this.router.get('/user/:userId', (req: Request, res: Response) => {
+    public getAllUserDevices = () => this.router.get('/user/:userId', (req: Request, res: Response) => {
         const userId = parseInt(req.params.userId);
 
         this.enviromentalDeviceLogic.getAllUserDevices(userId)
-            .then( response => {
+            .then(response => {
                 let enviromentalDevices: any = [];
 
                 // Generating an object for each enviromental device
@@ -119,7 +119,7 @@ class EnviromentalDeviceRestRouter {
                     response: enviromentalDevices
                 })
             })
-            .catch( err => {
+            .catch(err => {
                 res.status(401).send({
                     http: 401,
                     status: 'Error',
@@ -131,7 +131,7 @@ class EnviromentalDeviceRestRouter {
     /**
      * Get enviromental devices from a user in pagination format
      * GET /user/:userId/:pageSize/:pageIndex
-     * 
+     *
      * Response: {
      *  "http": 200,
      *  "status": "OK",
@@ -145,15 +145,15 @@ class EnviromentalDeviceRestRouter {
      *      "status": true
      *  }]
      * }
-     * 
+     *
      */
-     public getUserDevicePagination = () => this.router.get('/user/:userId/:pageSize/:pageIndex', (req: Request, res: Response) => {
+    public getUserDevicePagination = () => this.router.get('/user/:userId/:pageSize/:pageIndex', (req: Request, res: Response) => {
         const userId = parseInt(req.params.userId);
         const pageSize = parseInt(req.params.pageSize);
         const pageIndex = parseInt(req.params.pageIndex);
 
         this.enviromentalDeviceLogic.getUserDevicePagination(userId, pageSize, pageIndex)
-            .then( response => {
+            .then(response => {
                 let enviromentalDevices: object[] = Utils.enviromentalDevicesToObjects(response)
 
                 // Sending the response
@@ -163,7 +163,7 @@ class EnviromentalDeviceRestRouter {
                     response: enviromentalDevices
                 })
             })
-            .catch( err => {
+            .catch(err => {
                 res.status(401).send({
                     http: 401,
                     status: 'Error',
@@ -175,7 +175,7 @@ class EnviromentalDeviceRestRouter {
     /**
      * Get all enviromental devices from a council
      * GET /council/:councilId
-     * 
+     *
      * Response: {
      *  "http": 200,
      *  "status": "OK",
@@ -189,14 +189,13 @@ class EnviromentalDeviceRestRouter {
      *      "status": true
      *  }]
      * }
-     * 
+     *
      */
-     public getAllCouncilDevices = () => this.router.get('/council/:councilId', (req: Request, res: Response) => {
+    public getAllCouncilDevices = () => this.router.get('/council/:councilId', (req: Request, res: Response) => {
         const councilId = parseInt(req.params.councilId);
 
         this.enviromentalDeviceLogic.getAllCouncilDevices(councilId)
-            .then( response => {
-                console.log(response);
+            .then(response => {
                 let enviromentalDevices: object[] = Utils.enviromentalDevicesToObjects(response)
 
                 // Sending the response
@@ -206,7 +205,7 @@ class EnviromentalDeviceRestRouter {
                     response: enviromentalDevices
                 })
             })
-            .catch( err => {
+            .catch(err => {
                 res.status(401).send({
                     http: 401,
                     status: 'Error',
@@ -218,7 +217,7 @@ class EnviromentalDeviceRestRouter {
     /**
      * Get all enviromental devices from a gateway
      * GET /gateway/:gatewayId
-     * 
+     *
      * Response: {
      *  "http": 200,
      *  "status": "OK",
@@ -232,13 +231,13 @@ class EnviromentalDeviceRestRouter {
      *      "status": true
      *  }]
      * }
-     * 
+     *
      */
-     public getAllGatewayDevices = () => this.router.get('/gateway/:gatewayId', (req: Request, res: Response) => {
+    public getAllGatewayDevices = () => this.router.get('/gateway/:gatewayId', (req: Request, res: Response) => {
         const gatewayId = parseInt(req.params.gatewayId);
 
         this.enviromentalDeviceLogic.getAllGatewayDevices(gatewayId)
-            .then( response => {
+            .then(response => {
                 let enviromentalDevices: object[] = Utils.enviromentalDevicesToObjects(response)
 
                 // Sending the response
@@ -248,7 +247,7 @@ class EnviromentalDeviceRestRouter {
                     response: enviromentalDevices
                 })
             })
-            .catch( err => {
+            .catch(err => {
                 res.status(401).send({
                     http: 401,
                     status: 'Error',
@@ -260,7 +259,7 @@ class EnviromentalDeviceRestRouter {
     /**
      * Save a new enviromental device
      * POST /
-     * 
+     *
      * Body: {
      *  "name": "Device 235",
      *  "mac": "2c549188c9e3",
@@ -268,41 +267,33 @@ class EnviromentalDeviceRestRouter {
      *  "latitude": 20.123,
      *  "longitude": 43.321,
      * }
-     * 
+     *
      * Response: {
      *  "http": 200,
      *  "status": "OK",
      *  "response": "Enviromental device created succesfully."
      * }
-     * 
+     *
      */
-     public storeDevice = () => this.router.post('/', (req: Request, res: Response) => {
+    public storeDevice = () => this.router.post('/', (req: Request, res: Response) => {
+        console.log("*****")
         let enviromentalDevice = new EnviromentalDevice();
-        
+
         enviromentalDevice.setName(req.body.name);
-        enviromentalDevice.setMac(req.body.mac);
+        enviromentalDevice.setDeviceEUI(req.body.deviceEUI);
         enviromentalDevice.setGatewayId(req.body.gatewayId);
         enviromentalDevice.setCoords([parseFloat(req.body.latitude), parseFloat(req.body.longitude)]);
 
         this.enviromentalDeviceLogic.storeDevice(enviromentalDevice)
-            .then( response => {
-                if(response == true) {
-                    // Sending the response
-                    res.status(200).send({
-                        http: 200,
-                        status: 'OK',
-                        response: 'Enviromental device created succesfully'
-                    })
-                } else {
-                    // Sending the response
-                    res.status(204).send({
-                        http: 204,
-                        status: 'OK',
-                        response: 'There are some problems creating a new enviromental device'
-                    })
-                }
+            .then(response => {
+                // Sending the response
+                res.status(200).send({
+                    http: 200,
+                    status: 'OK',
+                    response: response
+                })
             })
-            .catch( err => {
+            .catch(err => {
                 res.status(401).send({
                     http: 401,
                     status: 'Error',
@@ -314,7 +305,7 @@ class EnviromentalDeviceRestRouter {
     /**
      * Get enviromental devices of an admin in pagination format
      * GET /admin/:adminId/:pageSize/:pageIndex
-     * 
+     *
      * Response: {
      *  "http": 200,
      *  "status": "OK",
@@ -328,15 +319,15 @@ class EnviromentalDeviceRestRouter {
      *      "status": true
      *  }]
      * }
-     * 
+     *
      */
-     public getAdminDevicePagination = () => this.router.get('/admin/:adminId/:pageSize/:pageIndex', (req: Request, res: Response) => {
+    public getAdminDevicePagination = () => this.router.get('/admin/:adminId/:pageSize/:pageIndex', (req: Request, res: Response) => {
         const adminId = parseInt(req.params.adminId);
         const pageSize = parseInt(req.params.pageSize);
         const pageIndex = parseInt(req.params.pageIndex);
 
         this.enviromentalDeviceLogic.getAdminDevicePagination(adminId, pageSize, pageIndex)
-            .then( response => {
+            .then(response => {
                 let enviromentalDevices: object[] = Utils.enviromentalDevicesToObjects(response)
 
                 // Sending the response
@@ -346,7 +337,7 @@ class EnviromentalDeviceRestRouter {
                     response: enviromentalDevices
                 })
             })
-            .catch( err => {
+            .catch(err => {
                 res.status(401).send({
                     http: 401,
                     status: 'Error',
@@ -358,7 +349,7 @@ class EnviromentalDeviceRestRouter {
     /**
      * Get enviromental devices of a council in pagination format
      * GET /council/:councilId/:pageSize/:pageIndex
-     * 
+     *
      * Response: {
      *  "http": 200,
      *  "status": "OK",
@@ -372,16 +363,15 @@ class EnviromentalDeviceRestRouter {
      *      "status": true
      *  }]
      * }
-     * 
+     *
      */
-     public getCouncilDevicePagination = () => this.router.get('/council/:councilId/:pageSize/:pageIndex', (req: Request, res: Response) => {
+    public getCouncilDevicePagination = () => this.router.get('/council/:councilId/:pageSize/:pageIndex', (req: Request, res: Response) => {
         const councilId = parseInt(req.params.councilId);
         const pageSize = parseInt(req.params.pageSize);
         const pageIndex = parseInt(req.params.pageIndex);
 
         this.enviromentalDeviceLogic.getCouncilDevicePagination(councilId, pageSize, pageIndex)
-            .then( response => {
-                
+            .then(response => {
                 let enviromentalDevices: object[] = Utils.enviromentalDevicesToObjects(response)
 
                 // Sending the response
@@ -391,7 +381,7 @@ class EnviromentalDeviceRestRouter {
                     response: enviromentalDevices
                 })
             })
-            .catch( err => {
+            .catch(err => {
                 res.status(401).send({
                     http: 401,
                     status: 'Error',

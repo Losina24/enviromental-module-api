@@ -173,7 +173,6 @@ class EnviromentalDeviceRestRouter {
             const councilId = parseInt(req.params.councilId);
             this.enviromentalDeviceLogic.getAllCouncilDevices(councilId)
                 .then(response => {
-                console.log(response);
                 let enviromentalDevices = utils_1.default.enviromentalDevicesToObjects(response);
                 // Sending the response
                 res.status(200).send({
@@ -249,29 +248,20 @@ class EnviromentalDeviceRestRouter {
          *
          */
         this.storeDevice = () => this.router.post('/', (req, res) => {
+            console.log("*****");
             let enviromentalDevice = new EnviromentalDevice_1.default();
             enviromentalDevice.setName(req.body.name);
-            enviromentalDevice.setMac(req.body.mac);
+            enviromentalDevice.setDeviceEUI(req.body.deviceEUI);
             enviromentalDevice.setGatewayId(req.body.gatewayId);
             enviromentalDevice.setCoords([parseFloat(req.body.latitude), parseFloat(req.body.longitude)]);
             this.enviromentalDeviceLogic.storeDevice(enviromentalDevice)
                 .then(response => {
-                if (response == true) {
-                    // Sending the response
-                    res.status(200).send({
-                        http: 200,
-                        status: 'OK',
-                        response: 'Enviromental device created succesfully'
-                    });
-                }
-                else {
-                    // Sending the response
-                    res.status(204).send({
-                        http: 204,
-                        status: 'OK',
-                        response: 'There are some problems creating a new enviromental device'
-                    });
-                }
+                // Sending the response
+                res.status(200).send({
+                    http: 200,
+                    status: 'OK',
+                    response: response
+                });
             })
                 .catch(err => {
                 res.status(401).send({

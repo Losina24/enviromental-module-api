@@ -21,6 +21,7 @@ class SensorRestRouter {
     constructor() {
         this.getSensorById();
         this.getAllUserSensors();
+        this.getAllUserSensorsCount();
         this.getUserSensorPagination();
         this.getAllCouncilSensors();
         this.storeSensor();
@@ -29,7 +30,6 @@ class SensorRestRouter {
         this.getCouncilSensorPagination();
         this.getDeviceSensors();
         this.removeSensor();
-
     }
 
     /**
@@ -92,6 +92,46 @@ class SensorRestRouter {
         const userId = parseInt(req.params.userId);
 
         this.sensorLogic.getAllUserSensors(userId)
+            .then( response => {
+                // Sending the response
+                res.status(200).send({
+                    http: 200,
+                    status: 'OK',
+                    response: response
+                })
+            })
+            .catch( err => {
+                res.status(401).send({
+                    http: 401,
+                    status: 'Error',
+                    error: err
+                })
+            })
+    })
+
+    /**
+     * Get all sensors from a user ( * COUNT * )
+     * GET /sensors/list/:userId
+     *
+     * Response: {
+     *  "http": 200,
+     *  "status": "OK",
+     *  "response": [
+        {
+            "_id": 1,
+            "_deviceEUI": "AS63126",
+            "_deviceId": 1,
+            "_name": "ambientalSensor1",
+            "_type": 1,
+            "_status": 1
+        }]
+     * }
+     *
+     */
+    public getAllUserSensorsCount = () => this.router.get('/count/list/:userId', (req: Request, res: Response) => {
+        const userId = parseInt(req.params.userId);
+
+        this.sensorLogic.getAllUserSensorsCount(userId)
             .then( response => {
                 // Sending the response
                 res.status(200).send({

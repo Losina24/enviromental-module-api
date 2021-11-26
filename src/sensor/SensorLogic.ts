@@ -59,6 +59,26 @@ export default class SensorLogic {
     }
 
     /**
+     * Get all user sensors ( * COUNT * )
+     * userId: N -> getAllUserSensors() -> [Sensor]
+     *
+     * @param userId - ID of the user that you want to get all sensors from
+     * @returns
+     */
+    public async getAllUserSensorsCount( userId: number ): Promise<Sensor[]> {
+        return new Promise<Sensor[]>((resolve, reject) => {
+            this.sensorDB.getAllUserSensorsCountFromDB( userId )
+                .then( res => {
+                    console.log("logicaRes")
+                    resolve(res)
+                })
+                .catch( err => {
+                    reject(err)
+                })
+        })
+    }
+
+    /**
      * Get sensors from a user in a pagination format
      * userId: N, pageSize: N, pageIndex: N -> getUserSensorPagination() -> [Sensor]
      * 

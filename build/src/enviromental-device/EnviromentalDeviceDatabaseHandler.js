@@ -100,6 +100,32 @@ class EnviromentalDeviceDatabaseHandler {
         });
     }
     /**
+     * Get all enviroment devices of a user from the database ( * COUNT * )
+     * userId: N -> getAllUserDevicesFromDB() -> [JSON]
+     *
+     * @param userId - ID of the user that you want to get all enviromental devices
+     * @returns
+     */
+    getAllUserDevicesCountFromDB(userId) {
+        var query = "SELECT count(*) as count FROM device AS d INNER JOIN user_device AS ud ON d.id = ud.device_id WHERE ud.user_id = " + userId;
+        return new Promise((resolve, reject) => {
+            database_1.default.getConnection((error, conn) => {
+                // If connection fails
+                if (error) {
+                    reject(error);
+                }
+                conn.query(query, (err, results) => {
+                    conn.release();
+                    // If connection fails
+                    if (err) {
+                        reject(err);
+                    }
+                    resolve(results);
+                });
+            });
+        });
+    }
+    /**
      * Get enviromental devices from a user in a pagination format
      * userId: N, pageSize: N, pageIndex: N -> getUserDevicePaginationFromDB() -> [JSON]
      *
@@ -193,22 +219,60 @@ class EnviromentalDeviceDatabaseHandler {
      * @param enviromentalDevice - Enviromental device you want to store in the database
      * @returns
      */
-    storeDeviceInDB(enviromentalDevice) {
+    storeDeviceInDB(enviromentalDevice, userId) {
         // Hay que cambiar la columna 'mac' de la base de datos para que sea un varchar()
         var query = "INSERT INTO device (device_EUI, gateway_id, name, latitude, longitude, status) VALUES ('" + enviromentalDevice.getDeviceEUI() + "'," + enviromentalDevice.getGatewayId() + ", '" + enviromentalDevice.getName() + "', " + enviromentalDevice.getCoords().latitude + ", " + enviromentalDevice.getCoords().longitude + ", 0)";
+        console.log(query);
         return new Promise((resolve, reject) => {
             database_1.default.getConnection((error, conn) => {
                 // If connection fails
                 if (error) {
                     reject(error);
                 }
-                conn.query(query, (err, results) => {
+                conn.query(query, (err, results) => __awaiter(this, void 0, void 0, function* () {
                     conn.release();
                     // Si la consulta falla
                     if (err) {
                         reject(err);
                     }
-                    resolve(results);
+                    let lastInsertDeviceId = results.insertId;
+                    console.log("lastInsertDeviceId -> " + lastInsertDeviceId);
+                    yield this.linkDeviceToUser(lastInsertDeviceId, userId).then(resLink => {
+                        resolve(resLink);
+                    })
+                        .catch(errLink => {
+                        reject(errLink);
+                    });
+                }));
+            });
+        });
+    }
+    /**
+     * Create link between user and device
+     * enviromentalDevice: EnviromentalDevice -> linkDeviceToUser() ->
+     *
+     * @param enviromentalDevice - Enviromental device you want to store in the database
+     * @returns
+     */
+    linkDeviceToUser(deviceId, userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // Hay que cambiar la columna 'mac' de la base de datos para que sea un varchar()
+            var query = "INSERT INTO `user_device` (`user_id`, `device_id`) VALUES (" + userId + ", " + deviceId + ")";
+            console.log(query);
+            return new Promise((resolve, reject) => {
+                database_1.default.getConnection((error, conn) => {
+                    // If connection fails
+                    if (error) {
+                        reject(error);
+                    }
+                    conn.query(query, (err, results) => {
+                        conn.release();
+                        // Si la consulta falla
+                        if (err) {
+                            reject(err);
+                        }
+                        resolve(results);
+                    });
                 });
             });
         });

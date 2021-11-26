@@ -78,7 +78,7 @@ export default class SensorDatabaseHandler {
      * userId: N -> getAllUserSensorsFromDB() -> [JSON]
      *
      * @param userId - ID of the user that you want to get all enviromental devices
-     * @returns object[]:
+     * @returns
      */
     public getAllUserSensorsFromDB(userId: number): Promise<Sensor[]> {
         var query = "SELECT `sensor`.`id`,`sensor`.`sensor_type_id`,`sensor`.`device_id`,`sensor`." +
@@ -90,14 +90,14 @@ export default class SensorDatabaseHandler {
 
                 // If connection fails
                 if (error) {
-                    reject()
+                    reject(error)
                 }
 
                 conn.query(query, (err: any, results: any) => {
                     conn.release();
                     // If connection fails
                     if (err) {
-                        reject()
+                        reject(err)
                     }
 
                     let sensors: Sensor[] = []
@@ -105,6 +105,39 @@ export default class SensorDatabaseHandler {
                         sensors = this.queryResultsToSensors(results)
                     }
                     resolve(sensors)
+                })
+
+            })
+        })
+    }
+
+    /**
+     * Get all sensors of a user from the database ( * COUNT * )
+     * userId: N -> getAllUserSensorsFromDB() -> [JSON]
+     *
+     * @param userId - ID of the user that you want to get all enviromental devices
+     * @returns
+     */
+    public getAllUserSensorsCountFromDB(userId: number): Promise<Sensor[]> {
+        var query = "SELECT COUNT(*) as count FROM `user_device` INNER JOIN `device` ON" +
+            " `user_device`.`device_id` = `device`.`id` INNER JOIN `sensor` ON `device`.`id` = `sensor`.`device_id`" +
+            " WHERE `user_device`.`user_id` = " + userId + ";";
+        return new Promise<Sensor[]>((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+
+                // If connection fails
+                if (error) {
+                    reject(error)
+                }
+
+                conn.query(query, (err: any, results: any) => {
+                    conn.release();
+                    // If connection fails
+                    if (err) {
+                        reject(err)
+                    }
+
+                    resolve(results)
                 })
 
             })

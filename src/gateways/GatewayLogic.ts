@@ -40,6 +40,45 @@ export default class GatewayLogic {
     }
 
     /**
+     * Get user related gateways
+     * gatewayId: N -> getUserGateways() -> gateways: Gateway[]
+     *
+     * @param userId - ID of the user we want to get the gateways from
+     * @returns
+     */
+    public async getUserGateways( userId: number ) : Promise<Gateway> {
+        return new Promise<Gateway>((resolve, reject) => {
+            this.gatewayDB.getUserGatewaysFromDB( userId )
+                .then( res => {
+                    resolve(res)
+                })
+                .catch( err => {
+                    reject(err)
+                })
+        })
+    }
+
+    /**
+     * Get user related gateways
+     * gatewayId: N -> getUserGatewaysCount() -> count: N
+     *
+     * @param userId - ID of the user we want to get the gateways from
+     * @returns
+     */
+    public async getUserGatewaysCount( userId: number ) : Promise<Gateway> {
+        return new Promise<Gateway>((resolve, reject) => {
+            this.gatewayDB.getUserGatewaysCountFromDB( userId )
+                .then( res => {
+                    resolve(res)
+                })
+                .catch( err => {
+                    reject(err)
+                })
+        })
+    }
+
+
+    /**
      * Get all council related gateways
      * councilId: N -> getAllCouncilGateways() -> gateways: Gateway[]
      *

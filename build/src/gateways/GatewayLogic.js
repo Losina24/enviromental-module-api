@@ -47,6 +47,46 @@ class GatewayLogic {
         });
     }
     /**
+     * Get user related gateways
+     * gatewayId: N -> getUserGateways() -> gateways: Gateway[]
+     *
+     * @param userId - ID of the user we want to get the gateways from
+     * @returns
+     */
+    getUserGateways(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.gatewayDB.getUserGatewaysFromDB(userId)
+                    .then(res => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
+     * Get user related gateways
+     * gatewayId: N -> getUserGatewaysCount() -> count: N
+     *
+     * @param userId - ID of the user we want to get the gateways from
+     * @returns
+     */
+    getUserGatewaysCount(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.gatewayDB.getUserGatewaysCountFromDB(userId)
+                    .then(res => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
      * Get all council related gateways
      * councilId: N -> getAllCouncilGateways() -> gateways: Gateway[]
      *

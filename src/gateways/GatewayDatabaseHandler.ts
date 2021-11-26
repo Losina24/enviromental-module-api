@@ -71,6 +71,71 @@ export default class GatewayDatabaseHandler {
     }
 
     /**
+     * Get user related gateways
+     * gatewayId: N -> getUserGatewaysFromDB() -> count: N
+     *
+     * @param userId - ID of the user we want to get the gateways from
+     * @returns
+     */
+    public getUserGatewaysFromDB(userId: number): Promise<Gateway> {
+        var query = "SELECT gateway.* FROM `user` INNER JOIN council ON user.council_id=council.id INNER JOIN gateway ON gateway.council_id=council.id WHERE user.id="+userId;
+        return new Promise<Gateway>((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+
+                // If connection fails
+                if (error) {
+                    reject(error)
+                }
+
+                conn.query(query, (err: any, results: any) => {
+                    conn.release();
+                    // If connection fails
+                    if (err) {
+                        reject(err)
+                    }
+                    let gateways;
+                    if (results && results.length != 0){
+                        gateways = this.queryResultsToGateways(results)
+                    }
+                    resolve(gateways)
+                })
+
+            })
+        })
+    }
+
+    /**
+     * Get user related gateways
+     * gatewayId: N -> getUserGatewaysFromDB() -> count: N
+     *
+     * @param userId - ID of the user we want to get the gateways from
+     * @returns
+     */
+    public getUserGatewaysCountFromDB(userId: number): Promise<Gateway> {
+        var query = "SELECT COUNT(*) as count FROM `user` INNER JOIN council ON user.council_id=council.id INNER JOIN gateway ON gateway.council_id=council.id WHERE user.id="+userId;
+
+        return new Promise<Gateway>((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+
+                // If connection fails
+                if (error) {
+                    reject(error)
+                }
+
+                conn.query(query, (err: any, results: any) => {
+                    conn.release();
+                    // If connection fails
+                    if (err) {
+                        reject(err)
+                    }
+                    resolve(results)
+                })
+
+            })
+        })
+    }
+
+    /**
      * Get all council related gateways
      * councilId: N -> getAllCouncilGatewaysFromDB() -> gateways: Gateway[]
      *

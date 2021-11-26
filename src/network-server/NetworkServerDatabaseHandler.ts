@@ -10,6 +10,28 @@ import NetworkServer from "./NetworkServer";
 
 export default class NetworkServerDatabaseHandler {
 
+    // Private methods used to reuse code in EnviromentalDeviceDatabaseHandler class
+    private queryResultsToNetworkServers(results: object[]): NetworkServer[] {
+        let networkServers: NetworkServer[] = [];
+
+        results.forEach((networkServerRow: any) => {
+            let networkServer = new NetworkServer();
+
+            networkServer.setId(networkServerRow.id)
+            networkServer.setMac(networkServerRow.identifier)
+            networkServer.setName(networkServerRow.name);
+            networkServer.setCentralized(networkServerRow.centralized);
+            networkServer.setStatus(networkServerRow.status);
+            networkServer.setUrl(networkServerRow.url);
+            networkServer.setType(networkServerRow.type);
+            networkServer.setToken(networkServerRow.token);
+            networkServer.setProvider(networkServerRow.provider);
+            networkServers.push(networkServer)
+        });
+
+        return networkServers
+    }
+
     // Methods
     /**
      * Get the information about a network server given their ID
@@ -50,6 +72,77 @@ export default class NetworkServerDatabaseHandler {
                     networkServer.setProvider(results[0].provider);
 
                     resolve(networkServer)
+                })
+
+            })
+        })
+    }
+
+    /**
+     * Get user network servers
+     * userId: N -> getUserNetworkServersByIdFromDB() -> networkServers: NetworkServer
+     *
+     * @param userId - ID of the user you want to get the network servers from
+     * @returns
+     */
+    public async getUserNetworkServersByIdFromDB(userId: number): Promise<NetworkServer> {
+        var query = "SELECT gateway.* FROM `user` INNER JOIN council ON user.council_id=council.id INNER JOIN " +
+            "gateway ON gateway.council_id=council.id INNER JOIN gateway_network_server ON gateway_network_server.gateway_id=gateway.id" +
+            " WHERE user.id="+userId;
+
+        return new Promise<NetworkServer>((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+
+                // If connection fails
+                if (error) {
+                    reject(error)
+                }
+
+                conn.query(query, (err: any, results: any) => {
+                    conn.release();
+
+                    // If connection fails
+                    if (err) {
+                        reject(err)
+                    }
+
+                    let networkServers = this.queryResultsToNetworkServers(results)
+                    resolve(networkServers)
+                })
+
+            })
+        })
+    }
+
+    /**
+     * Get user network servers ( * COUNT * )
+     * userId: N -> getUserNetworkServersByIdCountFromDB() -> networkServers: NetworkServer[]
+     *
+     * @param userId - ID of the user you want to get the network servers from
+     * @returns
+     */
+    public async getUserNetworkServersByIdCountFromDB(userId: number): Promise<NetworkServer> {
+        var query = "SELECT COUNT(*) as count FROM `user` INNER JOIN council ON user.council_id=council.id INNER JOIN " +
+            "gateway ON gateway.council_id=council.id INNER JOIN gateway_network_server ON gateway_network_server.gateway_id=gateway.id" +
+            " WHERE user.id="+userId;
+
+        return new Promise<NetworkServer>((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+
+                // If connection fails
+                if (error) {
+                    reject(error)
+                }
+
+                conn.query(query, (err: any, results: any) => {
+                    conn.release();
+
+                    // If connection fails
+                    if (err) {
+                        reject(err)
+                    }
+
+                    resolve(results)
                 })
 
             })

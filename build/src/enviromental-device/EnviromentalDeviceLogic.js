@@ -135,15 +135,15 @@ class EnviromentaDeviceLogic {
      * @param enviromentalDevice - Enviromental device you want to store in the database
      * @returns
      */
-    storeDevice(enviromentalDevice) {
+    storeDevice(enviromentalDevice, userId) {
         return __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => {
-                this.enviromentalDeviceDB.storeDeviceInDB(enviromentalDevice)
+                this.enviromentalDeviceDB.storeDeviceInDB(enviromentalDevice, userId)
                     .then(res => {
-                    resolve(true);
+                    resolve(res);
                 })
                     .catch(err => {
-                    reject(false);
+                    reject(err);
                 });
             });
         });

@@ -222,7 +222,7 @@ export default class EnviromentalDeviceDatabaseHandler {
      * @param enviromentalDevice - Enviromental device you want to store in the database
      * @returns 
      */
-    public storeDeviceInDB( enviromentalDevice: EnviromentalDevice ): Promise<boolean> {
+    /* public storeDeviceInDB( enviromentalDevice: EnviromentalDevice ): Promise<boolean> {
 
         // Hay que cambiar la columna 'mac' de la base de datos para que sea un varchar()
         var query = "INSERT INTO device (device_EUI, gateway_id, name, latitude, longitude, status) VALUES ('"+ enviromentalDevice.getDeviceEUI() + "', " + enviromentalDevice.getGatewayId() + ", '" + enviromentalDevice.getName() + "', " + enviromentalDevice.getCoords().latitude + ", " + enviromentalDevice.getCoords().longitude + ", 0)";
@@ -244,6 +244,67 @@ export default class EnviromentalDeviceDatabaseHandler {
                     }
 
                     resolve(true)
+                })
+
+            })
+        })
+    } */
+    public storeDeviceInDB(enviromentalDevice: EnviromentalDevice, userId: any): Promise<any> {
+
+        // Hay que cambiar la columna 'mac' de la base de datos para que sea un varchar()
+        var query = "INSERT INTO device (device_EUI, gateway_id, name, latitude, longitude, status) VALUES ('" + enviromentalDevice.getDeviceEUI() + "'," + enviromentalDevice.getGatewayId() + ", '" + enviromentalDevice.getName() + "', " + enviromentalDevice.getCoords().latitude + ", " + enviromentalDevice.getCoords().longitude + ", 0)";
+        console.log(query)
+        return new Promise<any>((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+
+                // If connection fails
+                if (error) {
+                    reject(error)
+                }
+
+                conn.query(query, async (err: any, results: any) => {
+                    conn.release();
+
+                    // Si la consulta falla
+                    if (err) {
+                        reject(err)
+                    }
+                    let lastInsertDeviceId = results.insertId
+                    console.log("lastInsertDeviceId -> " + lastInsertDeviceId)
+                    this.linkDeviceToUser(lastInsertDeviceId, userId).then(resLink => {
+                        resolve(resLink)
+                    })
+                        .catch(errLink => {
+                            reject(errLink)
+                        })
+                })
+
+            })
+        })
+    }
+
+    public async linkDeviceToUser(deviceId: any, userId: any): Promise<any> {
+
+        // Hay que cambiar la columna 'mac' de la base de datos para que sea un varchar()
+        var query = "INSERT INTO user_device (user_id, device_id) VALUES (" + userId + ", " + deviceId + ")";
+        console.log(query)
+        return new Promise<any>((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+
+                // If connection fails
+                if (error) {
+                    reject(error)
+                }
+
+                conn.query(query, (err: any, results: any) => {
+                    conn.release();
+
+                    // Si la consulta falla
+                    if (err) {
+                        reject(err)
+                    }
+
+                    resolve(results)
                 })
 
             })

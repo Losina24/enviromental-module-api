@@ -194,23 +194,80 @@ class EnviromentalDeviceDatabaseHandler {
      * @param enviromentalDevice - Enviromental device you want to store in the database
      * @returns
      */
-    storeDeviceInDB(enviromentalDevice) {
+    /* public storeDeviceInDB( enviromentalDevice: EnviromentalDevice ): Promise<boolean> {
+
         // Hay que cambiar la columna 'mac' de la base de datos para que sea un varchar()
-        var query = "INSERT INTO device (device_EUI, gateway_id, name, latitude, longitude, status) VALUES ('" + enviromentalDevice.getDeviceEUI() + "', " + enviromentalDevice.getGatewayId() + ", '" + enviromentalDevice.getName() + "', " + enviromentalDevice.getCoords().latitude + ", " + enviromentalDevice.getCoords().longitude + ", 0)";
+        var query = "INSERT INTO device (device_EUI, gateway_id, name, latitude, longitude, status) VALUES ('"+ enviromentalDevice.getDeviceEUI() + "', " + enviromentalDevice.getGatewayId() + ", '" + enviromentalDevice.getName() + "', " + enviromentalDevice.getCoords().latitude + ", " + enviromentalDevice.getCoords().longitude + ", 0)";
+        
+        return new Promise<any>((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+
+                // If connection fails
+                if (error) {
+                    reject(false)
+                }
+
+                conn.query(query, (err: any, results: any) => {
+                    conn.release();
+                    console.log(err)
+                    // Si la consulta falla
+                    if (err) {
+                        reject(false)
+                    }
+
+                    resolve(true)
+                })
+
+            })
+        })
+    } */
+    storeDeviceInDB(enviromentalDevice, userId) {
+        // Hay que cambiar la columna 'mac' de la base de datos para que sea un varchar()
+        var query = "INSERT INTO device (device_EUI, gateway_id, name, latitude, longitude, status) VALUES ('" + enviromentalDevice.getDeviceEUI() + "'," + enviromentalDevice.getGatewayId() + ", '" + enviromentalDevice.getName() + "', " + enviromentalDevice.getCoords().latitude + ", " + enviromentalDevice.getCoords().longitude + ", 0)";
+        console.log(query);
         return new Promise((resolve, reject) => {
             database_1.default.getConnection((error, conn) => {
                 // If connection fails
                 if (error) {
-                    reject(false);
+                    reject(error);
                 }
-                conn.query(query, (err, results) => {
+                conn.query(query, (err, results) => __awaiter(this, void 0, void 0, function* () {
                     conn.release();
-                    console.log(err);
                     // Si la consulta falla
                     if (err) {
-                        reject(false);
+                        reject(err);
                     }
-                    resolve(true);
+                    let lastInsertDeviceId = results.insertId;
+                    console.log("lastInsertDeviceId -> " + lastInsertDeviceId);
+                    this.linkDeviceToUser(lastInsertDeviceId, userId).then(resLink => {
+                        resolve(resLink);
+                    })
+                        .catch(errLink => {
+                        reject(errLink);
+                    });
+                }));
+            });
+        });
+    }
+    linkDeviceToUser(deviceId, userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // Hay que cambiar la columna 'mac' de la base de datos para que sea un varchar()
+            var query = "INSERT INTO user_device (user_id, device_id) VALUES (" + userId + ", " + deviceId + ")";
+            console.log(query);
+            return new Promise((resolve, reject) => {
+                database_1.default.getConnection((error, conn) => {
+                    // If connection fails
+                    if (error) {
+                        reject(error);
+                    }
+                    conn.query(query, (err, results) => {
+                        conn.release();
+                        // Si la consulta falla
+                        if (err) {
+                            reject(err);
+                        }
+                        resolve(results);
+                    });
                 });
             });
         });

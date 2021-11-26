@@ -33,12 +33,13 @@ export default class MeasureMqttRouter extends MqttRouter {
      * 
      */
     public storeMeasure = () => {
-        this.suscribe('46701/ambiental/1/#');
+        this.suscribe('46701/#');
+        console.log('empieza');
         
         // When a message arrives
 		this.client.on("message", (topic: any, message: any) => {
             const msg = message.toString();
-
+            console.log(message)
             let measure = new Measure();
             measure.formatPayload(msg)
 

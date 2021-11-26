@@ -36,7 +36,6 @@ class Server {
         // Measures 
         this.app.use('/' + this.version + '/enviromental/measures', MeasureRestRouter_1.default);
         const measureMqttRouter = new MeasureMqttRouter_1.default();
-        //measureMqttRouter.
         // User
         this.app.use('/' + this.version + '/user', UserRestRouter_1.default);
         // Council

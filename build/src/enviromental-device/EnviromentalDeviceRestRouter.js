@@ -255,9 +255,11 @@ class EnviromentalDeviceRestRouter {
             enviromentalDevice.setGatewayId(parseInt(req.body.gatewayId));
             enviromentalDevice.setCoords([parseFloat(req.body.latitude), parseFloat(req.body.longitude)]);
             console.log(123, enviromentalDevice);
-            this.enviromentalDeviceLogic.storeDevice(enviromentalDevice)
+            this.enviromentalDeviceLogic.storeDevice(enviromentalDevice, req.body.userId)
                 .then(response => {
-                if (response == true) {
+                console.log(response);
+                //if(response == true) {
+                if (response.affectedRows > 0) {
                     // Sending the response
                     res.status(200).send({
                         http: 200,

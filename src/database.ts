@@ -5,7 +5,7 @@ const conn = mysql.createPool({
     host: 'localhost',
     user: 'root',
     password: 'root',
-    database: 'proyecto_s1'
+    database: 'importproyectotest'
 });
 
 export default conn;

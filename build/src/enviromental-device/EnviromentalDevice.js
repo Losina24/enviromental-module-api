@@ -29,7 +29,7 @@ class EnviromentalDevice {
      *
      * @returns mac: Enviromental device's mac
      */
-    getMac() {
+    getDeviceEUI() {
         return this.mac;
     }
     /**
@@ -90,7 +90,7 @@ class EnviromentalDevice {
      * Sets the enviromental device's mac
      * mac: Text -> setMac() ->
      */
-    setMac(mac) {
+    setDeviceEUI(mac) {
         this.mac = mac;
     }
     /**

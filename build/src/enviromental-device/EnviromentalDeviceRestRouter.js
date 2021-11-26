@@ -86,7 +86,7 @@ class EnviromentalDeviceRestRouter {
                     const device = {
                         id: element.getId(),
                         name: element.getName(),
-                        mac: element.getMac(),
+                        mac: element.getDeviceEUI(),
                         gatewayId: element.getGatewayId(),
                         //sensors: element.getSensors(),
                         coords: element.getCoords(),
@@ -251,9 +251,10 @@ class EnviromentalDeviceRestRouter {
         this.storeDevice = () => this.router.post('/', (req, res) => {
             let enviromentalDevice = new EnviromentalDevice_1.default();
             enviromentalDevice.setName(req.body.name);
-            enviromentalDevice.setMac(req.body.mac);
-            enviromentalDevice.setGatewayId(req.body.gatewayId);
+            enviromentalDevice.setDeviceEUI(req.body.deviceEUI);
+            enviromentalDevice.setGatewayId(parseInt(req.body.gatewayId));
             enviromentalDevice.setCoords([parseFloat(req.body.latitude), parseFloat(req.body.longitude)]);
+            console.log(123, enviromentalDevice);
             this.enviromentalDeviceLogic.storeDevice(enviromentalDevice)
                 .then(response => {
                 if (response == true) {

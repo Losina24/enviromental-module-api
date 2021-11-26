@@ -15,6 +15,7 @@ const Sensor_1 = __importDefault(require("./Sensor"));
 class SensorRestRouter {
     // All methods created in a Rest Router class must be called in the constructor for them to work
     constructor() {
+        // HAY QUE CAMBIAR LAS URL, NO CONCUERDAN CON LAS URL DE LOS DISPOSITIVOS, FALTA EL COMENTARIO DEL BODY EN EL MÉTODO DE STORESENSOR
         this.sensorLogic = new SensorLogic_1.default();
         // This is Rest entry point that the express server uses.
         this.router = (0, express_1.Router)();
@@ -398,6 +399,7 @@ class SensorRestRouter {
         this.getCouncilSensorPagination();
         this.getDeviceSensors();
         this.removeSensor();
+        // Falta el metodo para editar un sensor
     }
 }
 const sensorRestRouter = new SensorRestRouter();

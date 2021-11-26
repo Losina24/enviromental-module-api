@@ -50,7 +50,7 @@ export default class EnviromentalDevice {
      * 
      * @returns mac: Enviromental device's mac
      */
-    public getMac(): string {
+    public getDeviceEUI(): string {
         return this.mac;
     }
 
@@ -119,7 +119,7 @@ export default class EnviromentalDevice {
      * Sets the enviromental device's mac
      * mac: Text -> setMac() ->
      */
-    public setMac( mac: string ): void {
+    public setDeviceEUI( mac: string ): void {
         this.mac = mac;
     }
 

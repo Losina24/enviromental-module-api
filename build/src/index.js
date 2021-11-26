@@ -10,6 +10,11 @@ const EnviromentalDeviceRestRouter_1 = __importDefault(require("./enviromental-d
 const MeasureRestRouter_1 = __importDefault(require("./measures/MeasureRestRouter"));
 const MeasureMqttRouter_1 = __importDefault(require("./measures/MeasureMqttRouter"));
 const SensorRestRouter_1 = __importDefault(require("./sensor/SensorRestRouter"));
+const UserRestRouter_1 = __importDefault(require("./users/UserRestRouter"));
+const CouncilRestRouter_1 = __importDefault(require("./councils/CouncilRestRouter"));
+const GatewayRestRouter_1 = __importDefault(require("./gateways/GatewayRestRouter"));
+const NetworkServerRestRouter_1 = __importDefault(require("./network-server/NetworkServerRestRouter"));
+const SensorNotificationRestRouter_1 = __importDefault(require("./notifications/SensorNotificationRestRouter"));
 class Server {
     constructor() {
         this.version = 'v2';
@@ -32,6 +37,16 @@ class Server {
         this.app.use('/' + this.version + '/enviromental/measures', MeasureRestRouter_1.default);
         const measureMqttRouter = new MeasureMqttRouter_1.default();
         //measureMqttRouter.
+        // User
+        this.app.use('/' + this.version + '/user', UserRestRouter_1.default);
+        // Council
+        this.app.use('/' + this.version + '/council', CouncilRestRouter_1.default);
+        // Gateway
+        this.app.use('/' + this.version + '/gateway', GatewayRestRouter_1.default);
+        // Network server
+        this.app.use('/' + this.version + '/NS', NetworkServerRestRouter_1.default);
+        // Notifications
+        this.app.use('/' + this.version + '/notifications', SensorNotificationRestRouter_1.default);
     }
     start() {
         this.app.listen(this.app.get('port'), () => {

@@ -19,7 +19,7 @@ export default class EnviromentalDeviceDatabaseHandler {
             
             device.setId(element.id)
             device.setName(element.name);
-            device.setMac(element.device_EUI);
+            device.setDeviceEUI(element.device_EUI);
             device.setGatewayId(element.gateway_id);
             device.setCoords([element.latitude, element.longitude]);
             device.setStatus(element.status);
@@ -62,7 +62,7 @@ export default class EnviromentalDeviceDatabaseHandler {
                     
                     device.setId(results[0].id)
                     device.setName(results[0].name);
-                    device.setMac(results[0].device_EUI);
+                    device.setDeviceEUI(results[0].device_EUI);
                     device.setGatewayId(results[0].gateway_id);
                     device.setCoords([results[0].latitude, results[0].longitude]);
                     device.setStatus(results[0].status);
@@ -128,7 +128,7 @@ export default class EnviromentalDeviceDatabaseHandler {
 
                 // If connection fails
                 if (error) {
-                    reject()
+                    reject(error)
                 }
 
                 conn.query(query, (err: any, results: any) => {
@@ -136,7 +136,7 @@ export default class EnviromentalDeviceDatabaseHandler {
                     
                     // If connection fails
                     if (err || results == undefined || results.length == 0) {
-                        reject()
+                        reject(err)
                     }
                                      
                     let enviromentalDevices: EnviromentalDevice[] = this.queryResultsToEnviromentalDevices(results)
@@ -225,9 +225,9 @@ export default class EnviromentalDeviceDatabaseHandler {
     public storeDeviceInDB( enviromentalDevice: EnviromentalDevice ): Promise<boolean> {
 
         // Hay que cambiar la columna 'mac' de la base de datos para que sea un varchar()
-        var query = "INSERT INTO device (device_EUI, gateway_id, name, latitude, longitude, status) VALUES ('"+ enviromentalDevice.getMac() +"',"+ enviromentalDevice.getGatewayId() +", '"+ enviromentalDevice.getName() +"', "+ enviromentalDevice.getCoords().latitude +", "+ enviromentalDevice.getCoords().longitude +", 0)";
-
-        return new Promise<boolean> ((resolve: any, reject: any) => {
+        var query = "INSERT INTO device (device_EUI, gateway_id, name, latitude, longitude, status) VALUES ('"+ enviromentalDevice.getDeviceEUI() + "', " + enviromentalDevice.getGatewayId() + ", '" + enviromentalDevice.getName() + "', " + enviromentalDevice.getCoords().latitude + ", " + enviromentalDevice.getCoords().longitude + ", 0)";
+        
+        return new Promise<any>((resolve: any, reject: any) => {
             db.getConnection((error: any, conn: any) => {
 
                 // If connection fails
@@ -237,7 +237,7 @@ export default class EnviromentalDeviceDatabaseHandler {
 
                 conn.query(query, (err: any, results: any) => {
                     conn.release();
-
+                    console.log(err)
                     // Si la consulta falla
                     if (err) {
                         reject(false)

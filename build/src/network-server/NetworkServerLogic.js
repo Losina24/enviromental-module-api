@@ -47,6 +47,46 @@ class NetworkServerLogic {
         });
     }
     /**
+     * Get user network servers
+     * userId: N -> getUserNetworkServersById() -> networkServers: NetworkServer
+     *
+     * @param userId - ID of the user you want to get the network servers from
+     * @returns
+     */
+    getUserNetworkServersById(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.networkServerDB.getUserNetworkServersByIdFromDB(userId)
+                    .then((res) => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
+     * Get user network servers ( * COUNT * )
+     * userId: N -> getUserNetworkServersCountById() -> networkServers: NetworkServer[]
+     *
+     * @param userId - ID of the user you want to get the network servers from
+     * @returns
+     */
+    getUserNetworkServersCountById(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.networkServerDB.getUserNetworkServersByIdCountFromDB(userId)
+                    .then((res) => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
      * Create a network server
      * networkServer: NetworkServer -> createNetworkServer() ->
      *

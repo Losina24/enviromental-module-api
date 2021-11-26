@@ -67,6 +67,26 @@ class EnviromentaDeviceLogic {
         });
     }
     /**
+     * Get all enviroment devices of a user ( * COUNT * )
+     * userId: N -> getAllUserDevices() -> [EnviromentalDevice]
+     *
+     * @param userId - ID of the user that you want to get all enviromental devices
+     * @returns
+     */
+    getAllUserDevicesCount(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.enviromentalDeviceDB.getAllUserDevicesCountFromDB(userId)
+                    .then(res => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
      * Get enviromental devices from a user in a pagination format
      * userId: N, pageSize: N, pageIndex: N -> getUserDevicePagination() -> [EnviromentalDevice]
      *
@@ -135,10 +155,10 @@ class EnviromentaDeviceLogic {
      * @param enviromentalDevice - Enviromental device you want to store in the database
      * @returns
      */
-    storeDevice(enviromentalDevice) {
+    storeDevice(enviromentalDevice, userId) {
         return __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => {
-                this.enviromentalDeviceDB.storeDeviceInDB(enviromentalDevice)
+                this.enviromentalDeviceDB.storeDeviceInDB(enviromentalDevice, userId)
                     .then(res => {
                     resolve(res);
                 })

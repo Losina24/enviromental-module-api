@@ -86,7 +86,7 @@ class EnviromentalDeviceRestRouter {
                     const device = {
                         id: element.getId(),
                         name: element.getName(),
-                        mac: element.getMac(),
+                        mac: element.getDeviceEUI(),
                         gatewayId: element.getGatewayId(),
                         //sensors: element.getSensors(),
                         coords: element.getCoords(),
@@ -99,6 +99,44 @@ class EnviromentalDeviceRestRouter {
                     http: 200,
                     status: 'OK',
                     response: enviromentalDevices
+                });
+            })
+                .catch(err => {
+                res.status(401).send({
+                    http: 401,
+                    status: 'Error',
+                    error: err
+                });
+            });
+        });
+        /**
+         * Get all enviromental devices from a user ( * COUNT * )
+         * GET /user/:userId
+         *
+         * Response: {
+         *  "http": 200,
+         *  "status": "OK",
+         *  "response": [{
+         *      "id": 32,
+         *      "name": "Device 32",
+         *      "mac": "2c549188c9e3",
+         *      "gatewayId": 6,
+         *      "sensors": [100, 101, 102, 103, 104],
+         *      "coords": [21.2222, -34.3333],
+         *      "status": true
+         *  }]
+         * }
+         *
+         */
+        this.getAllUserDevicesCount = () => this.router.get('/count/user/:userId', (req, res) => {
+            const userId = parseInt(req.params.userId);
+            this.enviromentalDeviceLogic.getAllUserDevicesCount(userId)
+                .then(response => {
+                // Sending the response
+                res.status(200).send({
+                    http: 200,
+                    status: 'OK',
+                    response: response
                 });
             })
                 .catch(err => {
@@ -247,14 +285,14 @@ class EnviromentalDeviceRestRouter {
          * }
          *
          */
-        this.storeDevice = () => this.router.post('/', (req, res) => {
+        this.storeDevice = () => this.router.post('/:userId', (req, res) => {
             console.log("*****");
             let enviromentalDevice = new EnviromentalDevice_1.default();
             enviromentalDevice.setName(req.body.name);
             enviromentalDevice.setDeviceEUI(req.body.deviceEUI);
             enviromentalDevice.setGatewayId(req.body.gatewayId);
             enviromentalDevice.setCoords([parseFloat(req.body.latitude), parseFloat(req.body.longitude)]);
-            this.enviromentalDeviceLogic.storeDevice(enviromentalDevice)
+            this.enviromentalDeviceLogic.storeDevice(enviromentalDevice, req.params.userId)
                 .then(response => {
                 // Sending the response
                 res.status(200).send({
@@ -355,6 +393,7 @@ class EnviromentalDeviceRestRouter {
         });
         this.getDeviceById();
         this.getAllUserDevices();
+        this.getAllUserDevicesCount();
         this.getUserDevicePagination();
         this.getAllCouncilDevices();
         this.getAllGatewayDevices();

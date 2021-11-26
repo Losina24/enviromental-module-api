@@ -21,6 +21,8 @@ class NetworkServerRestRouter {
     // All methods created in a Rest Router class must be called in the constructor for them to work
     constructor() {
         this.getNetworkServerById();
+        this.getUserNetworkServersById();
+        this.getUserNetworkServersCountById();
         this.createNetworkServer();
         this.editNetworkServer();
         this.removeNetworkServer();
@@ -41,6 +43,60 @@ class NetworkServerRestRouter {
         const id = parseInt(req.params.id);
 
         this.networkServerLogic.getNetworkServerById(id)
+            .then( response => {
+                res.status(200).send({
+                    http: 200,
+                    status: 'OK',
+                    response: response
+                })
+            })
+            .catch( err => {
+                res.status(401).send({
+                    http: 401,
+                    status: 'Error',
+                    error: err
+                })
+            })
+    })
+
+    /**
+     * Get user network servers
+     * userId: N -> getUserNetworkServersById() -> networkServers: NetworkServer[]
+     *
+     * @param userId - ID of the user you want to get the network servers from
+     * @returns
+     */
+    public getUserNetworkServersById = () => this.router.get('/user/list/:id', (req: Request, res: Response) => {
+        const id = parseInt(req.params.id);
+
+        this.networkServerLogic.getUserNetworkServersById(id)
+            .then( response => {
+                res.status(200).send({
+                    http: 200,
+                    status: 'OK',
+                    response: response
+                })
+            })
+            .catch( err => {
+                res.status(401).send({
+                    http: 401,
+                    status: 'Error',
+                    error: err
+                })
+            })
+    })
+
+    /**
+     * Get user network servers ( * COUNT * )
+     * userId: N -> getUserNetworkServersById() -> networkServers: NetworkServer[]
+     *
+     * @param userId - ID of the user you want to get the network servers from
+     * @returns
+     */
+    public getUserNetworkServersCountById = () => this.router.get('/count/user/list/:id', (req: Request, res: Response) => {
+        const id = parseInt(req.params.id);
+
+        this.networkServerLogic.getUserNetworkServersCountById(id)
             .then( response => {
                 res.status(200).send({
                     http: 200,

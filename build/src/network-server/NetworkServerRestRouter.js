@@ -48,6 +48,56 @@ class NetworkServerRestRouter {
             });
         });
         /**
+         * Get user network servers
+         * userId: N -> getUserNetworkServersById() -> networkServers: NetworkServer[]
+         *
+         * @param userId - ID of the user you want to get the network servers from
+         * @returns
+         */
+        this.getUserNetworkServersById = () => this.router.get('/user/list/:id', (req, res) => {
+            const id = parseInt(req.params.id);
+            this.networkServerLogic.getUserNetworkServersById(id)
+                .then(response => {
+                res.status(200).send({
+                    http: 200,
+                    status: 'OK',
+                    response: response
+                });
+            })
+                .catch(err => {
+                res.status(401).send({
+                    http: 401,
+                    status: 'Error',
+                    error: err
+                });
+            });
+        });
+        /**
+         * Get user network servers ( * COUNT * )
+         * userId: N -> getUserNetworkServersById() -> networkServers: NetworkServer[]
+         *
+         * @param userId - ID of the user you want to get the network servers from
+         * @returns
+         */
+        this.getUserNetworkServersCountById = () => this.router.get('/count/user/list/:id', (req, res) => {
+            const id = parseInt(req.params.id);
+            this.networkServerLogic.getUserNetworkServersCountById(id)
+                .then(response => {
+                res.status(200).send({
+                    http: 200,
+                    status: 'OK',
+                    response: response
+                });
+            })
+                .catch(err => {
+                res.status(401).send({
+                    http: 401,
+                    status: 'Error',
+                    error: err
+                });
+            });
+        });
+        /**
          * Save a new enviromental device
          * POST /
          *
@@ -173,6 +223,8 @@ class NetworkServerRestRouter {
             });
         });
         this.getNetworkServerById();
+        this.getUserNetworkServersById();
+        this.getUserNetworkServersCountById();
         this.createNetworkServer();
         this.editNetworkServer();
         this.removeNetworkServer();

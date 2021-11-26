@@ -38,6 +38,44 @@ export default class NetworkServerLogic {
     }
 
     /**
+     * Get user network servers
+     * userId: N -> getUserNetworkServersById() -> networkServers: NetworkServer
+     *
+     * @param userId - ID of the user you want to get the network servers from
+     * @returns
+     */
+    public async getUserNetworkServersById( userId: number ) : Promise<NetworkServer[]> {
+        return new Promise<NetworkServer[]>((resolve, reject) => {
+            this.networkServerDB.getUserNetworkServersByIdFromDB( userId )
+                .then( (res: any) => {
+                    resolve(res)
+                })
+                .catch( err => {
+                    reject(err)
+                })
+        })
+    }
+
+    /**
+     * Get user network servers ( * COUNT * )
+     * userId: N -> getUserNetworkServersCountById() -> networkServers: NetworkServer[]
+     *
+     * @param userId - ID of the user you want to get the network servers from
+     * @returns
+     */
+    public async getUserNetworkServersCountById( userId: number ) : Promise<NetworkServer[]> {
+        return new Promise<NetworkServer[]>((resolve, reject) => {
+            this.networkServerDB.getUserNetworkServersByIdCountFromDB( userId )
+                .then( (res: any) => {
+                    resolve(res)
+                })
+                .catch( err => {
+                    reject(err)
+                })
+        })
+    }
+
+    /**
      * Create a network server
      * networkServer: NetworkServer -> createNetworkServer() ->
      *

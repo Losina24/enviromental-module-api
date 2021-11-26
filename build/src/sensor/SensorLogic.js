@@ -68,6 +68,27 @@ class SensorLogic {
         });
     }
     /**
+     * Get all user sensors ( * COUNT * )
+     * userId: N -> getAllUserSensors() -> [Sensor]
+     *
+     * @param userId - ID of the user that you want to get all sensors from
+     * @returns
+     */
+    getAllUserSensorsCount(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.sensorDB.getAllUserSensorsCountFromDB(userId)
+                    .then(res => {
+                    console.log("logicaRes");
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
      * Get sensors from a user in a pagination format
      * userId: N, pageSize: N, pageIndex: N -> getUserSensorPagination() -> [Sensor]
      *

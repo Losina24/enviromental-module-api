@@ -50,6 +50,66 @@ class GatewayRestRouter {
             });
         });
         /**
+         * Get user related gateways
+         * GET /gateway/fromUser/:id
+         *
+         * Response: {
+                "http": 200,
+                "status": "OK",
+                "response": {
+                }
+         * }
+         *
+         */
+        this.getUserGateways = () => this.router.get('/fromUser/:userId', (req, res) => {
+            const id = parseInt(req.params.userId);
+            this.gatewayLogic.getUserGateways(id)
+                .then(response => {
+                res.status(200).send({
+                    http: 200,
+                    status: 'OK',
+                    response: response
+                });
+            })
+                .catch(err => {
+                res.status(401).send({
+                    http: 401,
+                    status: 'Error',
+                    error: err
+                });
+            });
+        });
+        /**
+         * Get user related gateways ( * COUNT * )
+         * GET /gateway/count/fromUser/:id
+         *
+         * Response: {
+                "http": 200,
+                "status": "OK",
+                "response": {
+                }
+         * }
+         *
+         */
+        this.getUserGatewaysCount = () => this.router.get('/count/fromUser/:userId', (req, res) => {
+            const id = parseInt(req.params.userId);
+            this.gatewayLogic.getUserGatewaysCount(id)
+                .then(response => {
+                res.status(200).send({
+                    http: 200,
+                    status: 'OK',
+                    response: response
+                });
+            })
+                .catch(err => {
+                res.status(401).send({
+                    http: 401,
+                    status: 'Error',
+                    error: err
+                });
+            });
+        });
+        /**
          * Get all council related gateways
          * GET /gateway/fromCouncil/list/:id
          *
@@ -312,6 +372,8 @@ class GatewayRestRouter {
             });
         });
         this.getGatewayById();
+        this.getUserGateways();
+        this.getUserGatewaysCount();
         this.getAllCouncilGateways();
         this.getCouncilGatewayPagination();
         this.editGateway();

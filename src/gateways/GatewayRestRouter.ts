@@ -7,7 +7,7 @@
 
 import { Router, Request, Response } from 'express';
 import EnviromentalDevice from '../enviromental-device/EnviromentalDevice';
-import Utils from "../utils";
+import Utils from "../Utils";
 import Gateway from './Gateway';
 import GatewayLogic from './GatewayLogic';
 

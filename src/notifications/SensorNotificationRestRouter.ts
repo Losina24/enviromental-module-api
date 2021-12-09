@@ -7,7 +7,7 @@
 
 import { Router, Request, Response } from 'express';
 
-import Utils from "../utils";
+import Utils from "../Utils";
 import SensorNotification from './SensorNotification';
 import SensorNotificationLogic from './SensorNotificationLogic';
 

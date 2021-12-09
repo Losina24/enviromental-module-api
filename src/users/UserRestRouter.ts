@@ -6,7 +6,7 @@
  */
 
 import { Router, Request, Response } from 'express';
-import Utils from "../utils";
+import Utils from "../Utils";
 import User from './User';
 import UserLogic from './UserLogic';
 

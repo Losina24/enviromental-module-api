@@ -1,7 +1,7 @@
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
 // metodo POST
     async function postData(url = '', data = {}) {
-    console.log("VAMOOOS")
         // Opciones por defecto estan marcadas con un *
         const response = await fetch(url, {
             method: 'POST', // *GET, POST, PUT, DELETE, etc.

@@ -124,7 +124,7 @@ export default class EnviromentaDeviceLogic {
      */
     public async getAllGatewayDevices( gatewayId: number ): Promise<EnviromentalDevice[]> {
         return new Promise<EnviromentalDevice[]>((resolve, reject) => {
-            this.enviromentalDeviceDB.getAllUserDevicesFromDB( gatewayId )
+            this.enviromentalDeviceDB.getGatewayDevicesFromDB( gatewayId )
                 .then( res => {
                     resolve(res)
                 })
@@ -142,8 +142,8 @@ export default class EnviromentaDeviceLogic {
      * @returns 
      */
     public async storeDevice( enviromentalDevice: EnviromentalDevice, userId: any ): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
-            this.enviromentalDeviceDB.storeDeviceInDB(enviromentalDevice, userId)
+        return new Promise<any>(async (resolve, reject) => {
+            await this.enviromentalDeviceDB.storeDeviceInDB(enviromentalDevice, userId)
                 .then( res => {
                     resolve(res)
                 })
@@ -186,6 +186,25 @@ export default class EnviromentaDeviceLogic {
     public async getCouncilDevicePagination( councilId: number, pageSize: number, pageIndex: number) : Promise<EnviromentalDevice[]> {
         return new Promise<EnviromentalDevice[]>((resolve, reject) => {
             this.enviromentalDeviceDB.getAdminDevicePaginationFromDB( councilId, pageSize, pageIndex )
+                .then( res => {
+                    resolve(res)
+                })
+                .catch( err => {
+                    reject(err)
+                })
+        })
+    }
+
+    /**
+     * Remove a device
+     * deviceId: N -> removeDevice()
+     *
+     * @param deviceId - ID of the device we want to delete
+     * @returns
+     */
+    public async removeDevice(deviceId: number): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            this.enviromentalDeviceDB.removeDeviceInDB( deviceId )
                 .then( res => {
                     resolve(res)
                 })

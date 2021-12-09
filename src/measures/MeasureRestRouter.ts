@@ -8,7 +8,7 @@
 import { Router, Request, Response } from "express";
 import Measure from "./Measure";
 import MeasureLogic from "./MeasureLogic";
-import Utils from "../utils";
+import Utils from "../Utils";
 
 class MeasureRestRouter {
 

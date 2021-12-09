@@ -1,12 +1,3 @@
--- phpMyAdmin SQL Dump
--- version 5.1.1
--- https://www.phpmyadmin.net/
---
--- Servidor: 127.0.0.1
--- Tiempo de generación: 26-11-2021 a las 00:02:15
--- Versión del servidor: 10.4.20-MariaDB
--- Versión de PHP: 8.0.8
-
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
@@ -18,7 +9,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `importproyectotest`
+-- Base de datos: `cleanseed`
 --
 
 -- --------------------------------------------------------
@@ -38,15 +29,6 @@ CREATE TABLE `council` (
   `iban` varchar(32) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Volcado de datos para la tabla `council`
---
-
-INSERT INTO `council` (`id`, `name`, `address`, `phone_number`, `email`, `web`, `postal_code`, `iban`) VALUES
-(1, 'nameXPUT', 'addressXPUT', 'phoneXPUT', 'emailXPUT', 'webXPUT', 'postalCodeXPUT', 'ibanXPUT'),
-(2, 'ayuntamiento gandia', 'calle universitat, 8', '634072668', 'gandia@gov.es', 'ayuntamientogandia.es', '03804', 'ES266484316'),
-(3, 'ayuntamiento alcoy', 'calle san eloy, 12', '634372668', 'alcoy@gov.es', 'ayuntamientoalcoy.es', '03805', 'ES666484316');
-
 -- --------------------------------------------------------
 
 --
@@ -62,21 +44,6 @@ CREATE TABLE `device` (
   `longitude` decimal(9,6) NOT NULL,
   `status` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Volcado de datos para la tabla `device`
---
-
-INSERT INTO `device` (`id`, `device_EUI`, `gateway_id`, `name`, `latitude`, `longitude`, `status`) VALUES
-(1, 15634, 5, 'amb_dev1', '6.000000', '77.000000', 1),
-(2, 32532, 5, 'amb_dev2', '3.000000', '88.000000', 1),
-(3, 32521, 6, 'amb_dev3', '3.000000', '88.000000', 1),
-(4, 35321, 6, 'amb_dev4', '3.000000', '88.000000', 1),
-(5, 123153, 3, 'namex', '12.000000', '5.000000', 1),
-(6, 0, 2, 'namePOST', '36.000000', '32.000000', 0),
-(7, 0, 2, 'namePOST', '36.000000', '32.000000', 0),
-(8, 0, 2, 'namePOST', '36.000000', '32.000000', 0),
-(9, 1212312, 2, 'namePOST', '36.000000', '32.000000', 0);
 
 -- --------------------------------------------------------
 
@@ -94,18 +61,6 @@ CREATE TABLE `gateway` (
   `status` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Volcado de datos para la tabla `gateway`
---
-
-INSERT INTO `gateway` (`id`, `mac`, `council_id`, `name`, `latitude`, `longitude`, `status`) VALUES
-(1, 'SXV16431C', 1, 'root_gateway_1', '12.000000', '15.000000', 1),
-(2, 'LXV16431C', 1, 'root_gateway_2', '12.000000', '15.000000', 1),
-(3, 'PXV16431C', 2, 'gandia_gateway_1', '12.000000', '15.000000', 1),
-(4, 'VXV16431C', 2, 'gandia_gateway_2', '12.000000', '15.000000', 1),
-(5, 'NXV16431C', 3, 'alcoy_gateway_1', '12.000000', '15.000000', 1),
-(6, 'RXV16431C', 3, 'alcoy_gateway_2', '12.000000', '15.000000', 1);
-
 -- --------------------------------------------------------
 
 --
@@ -117,14 +72,6 @@ CREATE TABLE `gateway_network_server` (
   `gateway_id` int(11) NOT NULL,
   `network_server_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Volcado de datos para la tabla `gateway_network_server`
---
-
-INSERT INTO `gateway_network_server` (`id`, `gateway_id`, `network_server_id`) VALUES
-(3, 2, 5),
-(4, 2, 5);
 
 -- --------------------------------------------------------
 
@@ -144,19 +91,6 @@ CREATE TABLE `network_server` (
   `provider` varchar(64) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Volcado de datos para la tabla `network_server`
---
-
-INSERT INTO `network_server` (`id`, `identifier`, `name`, `centralized`, `status`, `url`, `type`, `token`, `provider`) VALUES
-(1, 123, 'test', 1, 1, 'das', 'mqtt', 'das', 'ads'),
-(2, 15634, 'test2', 1, 1, 'das', 'rest', 'sda', 'a'),
-(3, 0, 'namePost', 0, 1, 'ads', 'mqtt', 'adsas', 'undefined'),
-(4, 153252, 'namePost', 0, 1, 'ads', 'mqtt', 'adsas', 'undefined'),
-(5, 153252, 'namePost', 0, 1, 'ads', 'mqtt', 'adsas', 'undefined'),
-(6, 153252, 'namePost', 0, 1, 'ads', 'mqtt', 'adsas', 'undefined'),
-(8, 567676, 'namePut', 0, 1, 'ads', 'mqtt', 'adsas', 'providerPut');
-
 -- --------------------------------------------------------
 
 --
@@ -171,15 +105,6 @@ CREATE TABLE `notification` (
   `magnitude` enum('red','yellow','green') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Volcado de datos para la tabla `notification`
---
-
-INSERT INTO `notification` (`id`, `sensor_id`, `body`, `subject`, `magnitude`) VALUES
-(1, 2, 'a', 'd', 'green'),
-(2, 15, 'a', 'b', 'red'),
-(4, 6, 'bodyPUT', 'subjectPUT', 'green');
-
 -- --------------------------------------------------------
 
 --
@@ -190,15 +115,6 @@ CREATE TABLE `role` (
   `id` int(11) NOT NULL,
   `name` varchar(32) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Volcado de datos para la tabla `role`
---
-
-INSERT INTO `role` (`id`, `name`) VALUES
-(2, 'admin'),
-(1, 'root'),
-(3, 'user');
 
 -- --------------------------------------------------------
 
@@ -215,31 +131,6 @@ CREATE TABLE `sensor` (
   `status` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Volcado de datos para la tabla `sensor`
---
-
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_EUI`, `name`, `status`) VALUES
-(2, 2, 2, 'BD84526', 'ambientalDevice2', 0),
-(3, 3, 3, 'CS63126', 'ambientalDevice2', 1),
-(4, 4, 4, 'DS63126', 'ambientalDevice3', 0),
-(5, 5, 4, 'ES63126', 'ambientalDevice4', 1),
-(6, 6, 3, 'FS63126', 'ambientalDevice5', 0),
-(7, 6, 2, 'GS63126', 'ambientalDevice6', 1),
-(8, 5, 1, 'HS63126', 'ambientalDevice7', 0),
-(9, 4, 1, 'IS63126', 'ambientalDevice8', 1),
-(11, 2, 3, 'KS63126', 'ambientalDevice10', 1),
-(12, 1, 4, 'LS63126', 'ambientalDevice11', 0),
-(13, 1, 4, 'MS63126', 'ambientalDevice12', 1),
-(14, 2, 3, 'NS63126', 'ambientalDevice13', 0),
-(15, 3, 2, 'OS63126', 'ambientalDevice14', 1),
-(16, 4, 1, 'PS63126', 'ambientalDevice15', 0),
-(17, 5, 1, 'QS63126', 'ambientalDevice16', 1),
-(18, 6, 2, 'RS63126', 'ambientalDevice17', 0),
-(19, 6, 3, 'SS63126', 'ambientalDevice18', 1),
-(20, 5, 4, 'TS63126', 'ambientalDevice19', 0),
-(21, 4, 4, 'US63126', 'ambientalDevice20', 1);
-
 -- --------------------------------------------------------
 
 --
@@ -250,18 +141,6 @@ CREATE TABLE `sensor_type` (
   `id` int(11) NOT NULL,
   `name` varchar(32) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Volcado de datos para la tabla `sensor_type`
---
-
-INSERT INTO `sensor_type` (`id`, `name`) VALUES
-(1, 'ambiental_type'),
-(5, 'co2_type'),
-(4, 'humidity_type'),
-(3, 'light_type'),
-(6, 'parking_type'),
-(2, 'water_type');
 
 -- --------------------------------------------------------
 
@@ -282,16 +161,6 @@ CREATE TABLE `user` (
   `postal_code` varchar(32) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Volcado de datos para la tabla `user`
---
-
-INSERT INTO `user` (`id`, `role_id`, `council_id`, `name`, `surnames`, `password`, `address`, `phone_number`, `email`, `postal_code`) VALUES
-(1, 1, 1, 'root', '', '1234', NULL, '617499124', 'email1@hotmail.com', NULL),
-(2, 2, 3, 'admin', '', '1234', NULL, '684957124', 'email2@hotmail.com', NULL),
-(3, 3, 3, 'user', '', '1234', NULL, '698721532', 'email3@hotmail.com', NULL),
-(14, 1, 1, 'nameXPUT', 'surnamesXPUT', 'passwordXPUT', 'addressXPUT', 'phoneNumberXPUT', 'emailXPUT', 'postalcodeXPUT');
-
 -- --------------------------------------------------------
 
 --
@@ -303,16 +172,6 @@ CREATE TABLE `user_device` (
   `user_id` int(11) NOT NULL,
   `device_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Volcado de datos para la tabla `user_device`
---
-
-INSERT INTO `user_device` (`id`, `user_id`, `device_id`) VALUES
-(1, 2, 1),
-(2, 2, 2),
-(3, 3, 3),
-(4, 3, 4);
 
 --
 -- Índices para tablas volcadas
@@ -522,7 +381,7 @@ ALTER TABLE `user`
 -- Filtros para la tabla `user_device`
 --
 ALTER TABLE `user_device`
-  ADD CONSTRAINT `Foreign_key_device_id2` FOREIGN KEY (`device_id`) REFERENCES `device` (`id`),
+  ADD CONSTRAINT `Foreign_key_device_id2` FOREIGN KEY (`device_id`) REFERENCES `device` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `Foreign_key_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 COMMIT;
 

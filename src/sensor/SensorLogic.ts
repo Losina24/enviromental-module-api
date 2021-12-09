@@ -49,7 +49,6 @@ export default class SensorLogic {
         return new Promise<Sensor[]>((resolve, reject) => {
             this.sensorDB.getAllUserSensorsFromDB( userId )
                 .then( res => {
-                    console.log("logicaRes")
                     resolve(res)
                 })
                 .catch( err => {
@@ -69,7 +68,7 @@ export default class SensorLogic {
         return new Promise<Sensor[]>((resolve, reject) => {
             this.sensorDB.getAllUserSensorsCountFromDB( userId )
                 .then( res => {
-                    console.log("logicaRes")
+                    //console.log("logicaRes")
                     resolve(res)
                 })
                 .catch( err => {
@@ -91,7 +90,7 @@ export default class SensorLogic {
         return new Promise<Sensor[]>((resolve, reject) => {
             this.sensorDB.getUserSensorPaginationFromDB( userId, pageSize, pageIndex )
                 .then( res => {
-                    console.log("logicaRes")
+                    //console.log("logicaRes")
                     resolve(res)
                 })
                 .catch( err => {
@@ -111,7 +110,7 @@ export default class SensorLogic {
         return new Promise<Sensor[]>((resolve, reject) => {
             this.sensorDB.getAllCouncilSensorsFromDB( councilId )
                 .then( res => {
-                    console.log("logicaRes")
+                    //console.log("logicaRes")
                     resolve(res)
                 })
                 .catch( err => {
@@ -131,6 +130,7 @@ export default class SensorLogic {
         return new Promise<number>((resolve, reject) => {
             this.sensorDB.storeSensorInDB( sensor )
                 .then( res => {
+                    //console.log(res);
                     resolve(res)
                 })
                 .catch( err => {
@@ -152,7 +152,7 @@ export default class SensorLogic {
         return new Promise<Sensor[]>((resolve, reject) => {
             this.sensorDB.getAdminSensorPaginationFromDB( adminId, pageSize, pageIndex )
                 .then( res => {
-                    console.log("logicaRes")
+                    //console.log("logicaRes")
                     resolve(res)
                 })
                 .catch( err => {
@@ -172,7 +172,7 @@ export default class SensorLogic {
         return new Promise<Sensor[]>((resolve, reject) => {
             this.sensorDB.getAdminAllSensorsFromDB( adminId )
                 .then( res => {
-                    console.log("logicaRes")
+                    //console.log("logicaRes")
                     resolve(res)
                 })
                 .catch( err => {
@@ -194,7 +194,7 @@ export default class SensorLogic {
         return new Promise<Sensor[]>((resolve, reject) => {
             this.sensorDB.getCouncilSensorPaginationFromDB( councilId, pageSize, pageIndex )
                 .then( res => {
-                    console.log("logicaRes")
+                    //console.log("logicaRes")
                     resolve(res)
                 })
                 .catch( err => {
@@ -233,6 +233,7 @@ export default class SensorLogic {
         return new Promise<void>((resolve, reject) => {
             this.sensorDB.removeSensorInDB( sensorId )
                 .then( res => {
+                    //console.log(res);
                     resolve(res)
                 })
                 .catch( err => {

@@ -7,6 +7,7 @@
 
 import db from "../database";
 import EnviromentalDevice from "./EnviromentalDevice";
+import Utils from "../Utils";
 
 export default class EnviromentalDeviceDatabaseHandler {
 
@@ -39,36 +40,37 @@ export default class EnviromentalDeviceDatabaseHandler {
      * @returns
      */
     public async getDeviceByIdFromDB(deviceId: number): Promise<EnviromentalDevice> {
-        var query = "SELECT * FROM device WHERE id = " + deviceId;
-
+        const query = "SELECT * FROM device WHERE id = " + deviceId;
+        console.log(query)
         return new Promise<EnviromentalDevice>((resolve: any, reject: any) => {
             db.getConnection((error: any, conn: any) => {
-
                 // If connection fails
                 if (error) {
-                    reject()
+                    reject(Utils.generateLogicError("error getting device", error))
                 }
-
                 conn.query(query, (err: any, results: any) => {
                     conn.release();
-
                     // If connection fails
                     if (err) {
-                        reject()
+                        reject(Utils.generateLogicError("error getting device", err))
                     }
+                    try {
+                        if (results.length != 0) {
+                            let device = new EnviromentalDevice();
 
-                    let device = new EnviromentalDevice();
-
-                    device.setId(results[0].id)
-                    device.setName(results[0].name);
-                    device.setDeviceEUI(results[0].identifier);
-                    device.setGatewayId(results[0].gateway_id);
-                    device.setCoords([results[0].latitude, results[0].longitude]);
-                    device.setStatus(results[0].status);
-
-                    resolve(device)
+                            device.setId(results[0].id)
+                            device.setName(results[0].name);
+                            device.setDeviceEUI(results[0].identifier);
+                            device.setGatewayId(results[0].gateway_id);
+                            device.setCoords([results[0].latitude, results[0].longitude]);
+                            device.setStatus(results[0].status);
+                            resolve(Utils.generateLogicSuccess("device found with the given id", device))
+                        }
+                    } catch (error) {
+                        reject(error)
+                    }
+                    resolve(Utils.generateLogicSuccessEmpty("no device found with the given id"))
                 })
-
             })
         })
     }
@@ -88,7 +90,7 @@ export default class EnviromentalDeviceDatabaseHandler {
 
                 // If connection fails
                 if (error) {
-                    reject()
+                    reject(Utils.generateLogicError("error getting all user devices", error))
                 }
 
                 conn.query(query, (err: any, results: any) => {
@@ -96,11 +98,19 @@ export default class EnviromentalDeviceDatabaseHandler {
 
                     // If connection fails
                     if (err) {
-                        reject()
+                        reject(Utils.generateLogicError("error getting all user devices", err))
                     }
-
-                    let enviromentalDevices: EnviromentalDevice[] = this.queryResultsToEnviromentalDevices(results)
-                    resolve(enviromentalDevices);
+                    try {
+                        console.log(results)
+                        if (results.length != 0) {
+                            let enviromentalDevices: EnviromentalDevice[] = this.queryResultsToEnviromentalDevices(results)
+                            resolve(Utils.generateLogicSuccess("user devices retrieved succesfully", enviromentalDevices));
+                        } else {
+                            resolve(Utils.generateLogicSuccessEmpty("user has no related devices"));
+                        }
+                    } catch (error) {
+                        reject(error)
+                    }
                 })
 
             })
@@ -122,7 +132,7 @@ export default class EnviromentalDeviceDatabaseHandler {
 
                 // If connection fails
                 if (error) {
-                    reject(error)
+                    reject(Utils.generateLogicError("error getting user devices count", error))
                 }
 
                 conn.query(query, (err: any, results: any) => {
@@ -130,12 +140,22 @@ export default class EnviromentalDeviceDatabaseHandler {
 
                     // If connection fails
                     if (err) {
-                        reject(err)
+                        reject(Utils.generateLogicError("error getting user devices count", err))
                     }
+                    try {
+                        console.log("results.count")
 
-                    resolve(results);
+                        console.log(results[0].count)
+
+                        if (results[0].count != 0) {
+                            resolve(Utils.generateLogicSuccess("user devices count retrieved succesfully", results[0].count));
+                        } else {
+                            resolve(Utils.generateLogicSuccessEmpty("user has no related devices"));
+                        }
+                    } catch (error) {
+                        reject(error)
+                    }
                 })
-
             })
         })
     }
@@ -160,19 +180,27 @@ export default class EnviromentalDeviceDatabaseHandler {
 
                 // If connection fails
                 if (error) {
-                    reject()
+                    reject(Utils.generateLogicError("error getting user devices", error))
                 }
 
                 conn.query(query, (err: any, results: any) => {
                     conn.release();
 
                     // If connection fails
-                    if (err || results == undefined || results.length == 0) {
-                        reject()
+                    if (err) {
+                        reject(Utils.generateLogicError("error getting user devices", err))
                     }
 
-                    let enviromentalDevices: EnviromentalDevice[] = this.queryResultsToEnviromentalDevices(results)
-                    resolve(enviromentalDevices);
+                    try {
+                        if (results.length != 0) {
+                            let enviromentalDevices: EnviromentalDevice[] = this.queryResultsToEnviromentalDevices(results)
+                            resolve(Utils.generateLogicSuccess("user devices retrieved succesfully", enviromentalDevices));
+                        } else {
+                            resolve(Utils.generateLogicSuccessEmpty("user has no related devices"));
+                        }
+                    } catch (error) {
+                        reject(error)
+                    }
                 })
 
             })
@@ -194,7 +222,7 @@ export default class EnviromentalDeviceDatabaseHandler {
 
                 // If connection fails
                 if (error) {
-                    reject()
+                    reject(Utils.generateLogicError("error getting council devices", error))
                 }
 
                 conn.query(query, (err: any, results: any) => {
@@ -202,11 +230,18 @@ export default class EnviromentalDeviceDatabaseHandler {
 
                     // If connection fails
                     if (err) {
-                        reject()
+                        reject(Utils.generateLogicError("error getting council devices", err))
                     }
-
-                    let enviromentalDevices: EnviromentalDevice[] = this.queryResultsToEnviromentalDevices(results)
-                    resolve(enviromentalDevices);
+                    try {
+                        if (results.length != 0) {
+                            let enviromentalDevices: EnviromentalDevice[] = this.queryResultsToEnviromentalDevices(results)
+                            resolve(Utils.generateLogicSuccess("council devices retrieved succesfully", enviromentalDevices));
+                        } else {
+                            resolve(Utils.generateLogicSuccessEmpty("council has no related devices"));
+                        }
+                    } catch (error) {
+                        reject(error)
+                    }
                 })
 
             })
@@ -228,7 +263,7 @@ export default class EnviromentalDeviceDatabaseHandler {
 
                 // If connection fails
                 if (error) {
-                    reject()
+                    reject(Utils.generateLogicError("error getting gateway devices", error))
                 }
 
                 conn.query(query, (err: any, results: any) => {
@@ -236,11 +271,18 @@ export default class EnviromentalDeviceDatabaseHandler {
 
                     // If connection fails
                     if (err) {
-                        reject()
+                        reject(Utils.generateLogicError("error getting gateway devices", err))
                     }
-
-                    let enviromentalDevices: EnviromentalDevice[] = this.queryResultsToEnviromentalDevices(results)
-                    resolve(enviromentalDevices);
+                    try {
+                        if (results.length != 0) {
+                            let enviromentalDevices: EnviromentalDevice[] = this.queryResultsToEnviromentalDevices(results)
+                            resolve(Utils.generateLogicSuccess("gateway devices retrieved succesfully", enviromentalDevices));
+                        } else {
+                            resolve(Utils.generateLogicSuccessEmpty("gateway has no related devices"));
+                        }
+                    } catch (error) {
+                        reject(error)
+                    }
                 })
 
             })
@@ -258,30 +300,37 @@ export default class EnviromentalDeviceDatabaseHandler {
 
         // Hay que cambiar la columna 'mac' de la base de datos para que sea un varchar()
         var query = "INSERT INTO device (device_EUI, gateway_id, name, latitude, longitude, status) VALUES ('" + enviromentalDevice.getDeviceEUI() + "'," + enviromentalDevice.getGatewayId() + ", '" + enviromentalDevice.getName() + "', " + enviromentalDevice.getCoords().latitude + ", " + enviromentalDevice.getCoords().longitude + ", 0)";
-        console.log(query)
         return new Promise<any>((resolve: any, reject: any) => {
             db.getConnection((error: any, conn: any) => {
 
                 // If connection fails
                 if (error) {
-                    reject(error)
+                    reject(Utils.generateLogicError("error storing device", error))
                 }
 
                 conn.query(query, async (err: any, results: any) => {
-                    conn.release();
 
                     // Si la consulta falla
                     if (err) {
-                        reject(err)
+                        reject(Utils.generateLogicError("error storing device", err))
                     }
-                    let lastInsertDeviceId = results.insertId
-                    console.log("lastInsertDeviceId -> " + lastInsertDeviceId)
-                    await this.linkDeviceToUser(lastInsertDeviceId, userId).then(resLink => {
-                        resolve(resLink)
-                    })
-                        .catch(errLink => {
-                            reject(errLink)
-                        })
+                    try {
+                        if (results.insertId) {
+                            let lastInsertDeviceId = results.insertId
+                            await this.linkDeviceToUser(lastInsertDeviceId, userId).then(res => {
+                                if (res.http == 200) {
+                                    console.log("Creation succeded");
+                                    resolve(Utils.generateLogicSuccess("device created and linked to user succesfully", lastInsertDeviceId));
+                                } else {
+                                    this.removeDeviceInDB(lastInsertDeviceId)
+                                    resolve(Utils.generateLogicSuccessEmpty("device removed: couldnt be linked to user "));
+                                }
+                            })
+                        }
+                    } catch (error) {
+                        reject(error)
+                    }
+
                 })
 
             })
@@ -299,26 +348,73 @@ export default class EnviromentalDeviceDatabaseHandler {
 
         // Hay que cambiar la columna 'mac' de la base de datos para que sea un varchar()
         var query = "INSERT INTO `user_device` (`user_id`, `device_id`) VALUES (" + userId + ", " + deviceId + ")";
-        console.log(query)
         return new Promise<any>((resolve: any, reject: any) => {
             db.getConnection((error: any, conn: any) => {
 
                 // If connection fails
                 if (error) {
-                    reject(error)
+                    reject(Utils.generateLogicError("error linking device to user", error))
                 }
 
                 conn.query(query, (err: any, results: any) => {
                     conn.release();
-
+                    console.log("**** results ****")
+                    console.log(results);
                     // Si la consulta falla
                     if (err) {
-                        reject(err)
+                        reject(Utils.generateLogicError("error linking device to user", err))
                     }
-
-                    resolve(results)
+                    try {
+                        if (results) {
+                            resolve(Utils.generateLogicSuccess("device linked successfully", results))
+                        } else {
+                            resolve(Utils.generateLogicSuccessEmpty("device couldnt be linked"))
+                        }
+                    } catch (error) {
+                        reject(error)
+                    }
                 })
 
+            })
+        })
+    }
+
+    /**
+     * Remove a device
+     * deviceId: N -> removeDevice()
+     *
+     * @param deviceId - ID of the sensor we want to delete
+     * @returns
+     */
+    public removeDeviceInDB(deviceId: number): Promise<void> {
+        var query = "DELETE FROM `device` WHERE `id`=" + deviceId + ";"
+        console.log(query);
+
+        return new Promise<void>((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+                // If connection fails
+                if (error) {
+                    reject(Utils.generateLogicError("error removing device", error))
+                }
+                if (conn) {
+                    conn.query(query, (err: any, results: any) => {
+
+                        // If connection fails
+                        if (err) {
+                            reject(Utils.generateLogicError("error linking device to user", err))
+                        }
+                        try {
+                            if (results.affectedRows == 0) {
+                                resolve(Utils.generateLogicSuccessEmpty("no device was found with given id"))
+                            }
+                            resolve(Utils.generateLogicSuccess("device deleted succesfully", undefined))
+                        } catch (error) {
+                            reject(error)
+                        }
+                    })
+                } else {
+                    reject(Utils.generateLogicError("error getting council devices", undefined))
+                }
             })
         })
     }
@@ -343,23 +439,30 @@ export default class EnviromentalDeviceDatabaseHandler {
 
                 // If connection fails
                 if (error) {
-                    reject(error)
+                    reject(Utils.generateLogicError("error removing device", error))
                 }
+                if (conn) {
+                    conn.query(query, (err: any, results: any) => {
+                        conn.release();
 
-                conn.query(query, (err: any, results: any) => {
-                    conn.release();
-
-                    // If connection fails
-                    if (err || results == undefined || results.length == 0) {
-                        reject(err)
-                    }
-                    let enviromentalDevices: EnviromentalDevice[]
-                    if (results) {
-                        enviromentalDevices = this.queryResultsToEnviromentalDevices(results)
-                    }
-                    resolve(enviromentalDevices);
-                })
-
+                        // If connection fails
+                        if (err) {
+                            reject(Utils.generateLogicError("error removing device", err))
+                        }
+                        try {
+                            if (results.length != 0) {
+                                let enviromentalDevices: EnviromentalDevice[] = this.queryResultsToEnviromentalDevices(results)
+                                resolve(Utils.generateLogicSuccess("admin devices retrieved succesfully", enviromentalDevices));
+                            } else {
+                                resolve(Utils.generateLogicSuccessEmpty("admin has no related devices"));
+                            }
+                        } catch (error) {
+                            reject(error)
+                        }
+                    })
+                } else {
+                    reject(Utils.generateLogicError("error getting council devices", undefined))
+                }
             })
         })
     }
@@ -384,21 +487,30 @@ export default class EnviromentalDeviceDatabaseHandler {
 
                 // If connection fails
                 if (error) {
-                    reject()
+                    reject(Utils.generateLogicError("error getting council devices", error))
                 }
+                if (conn) {
+                    conn.query(query, (err: any, results: any) => {
+                        conn.release();
 
-                conn.query(query, (err: any, results: any) => {
-                    conn.release();
-
-                    // If connection fails
-                    if (err || results == undefined || results.length == 0) {
-                        reject()
-                    }
-
-                    let enviromentalDevices: EnviromentalDevice[] = this.queryResultsToEnviromentalDevices(results)
-                    resolve(enviromentalDevices);
-                })
-
+                        // If connection fails
+                        if (err) {
+                            reject(Utils.generateLogicError("error getting council devices", err))
+                        }
+                        try {
+                            if (results.length != 0) {
+                                let enviromentalDevices: EnviromentalDevice[] = this.queryResultsToEnviromentalDevices(results)
+                                resolve(Utils.generateLogicSuccess("council devices retrieved succesfully", enviromentalDevices));
+                            } else {
+                                resolve(Utils.generateLogicSuccessEmpty("council has no related devices"));
+                            }
+                        } catch (error) {
+                            reject(error)
+                        }
+                    })
+                } else {
+                    reject(Utils.generateLogicError("error getting council devices", undefined))
+                }
             })
         })
     }

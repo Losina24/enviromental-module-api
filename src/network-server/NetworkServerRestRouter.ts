@@ -7,7 +7,7 @@
 
 import { Router, Request, Response } from 'express';
 
-import Utils from "../utils";
+import Utils from "../Utils";
 import NetworkServer from './NetworkServer';
 import NetworkServerLogic from './NetworkServerLogic';
 

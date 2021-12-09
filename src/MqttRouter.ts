@@ -8,13 +8,13 @@
 const mqtt = require("mqtt");
 
 export default class MqttRouter {
-	
+
     // Atributes
-    protected client: any = null;
-	protected host: string = "mqtt://broker.hivemq.com";
-    protected port: number = 8000;
-	protected username: string = "GTI3A-M2";
-	protected password: string = "gti3am2";
+	protected client: any = null;
+	protected port: number = 8882;
+	protected host: string = "mqtts://gesinen.es:"+this.port;
+	protected username: string = "gesinen";
+	protected password: string = "gesinen2110";
 
     // Constructor
 	constructor() {

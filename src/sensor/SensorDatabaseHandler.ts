@@ -6,6 +6,7 @@
  */
 
 import db from "../database";
+import Utils from "../Utils";
 import Sensor from "./Sensor";
 
 export default class SensorDatabaseHandler {
@@ -39,34 +40,41 @@ export default class SensorDatabaseHandler {
      * @returns object
      */
     public getSensorByIdFromDB(sensorId: number): Promise<Sensor> {
-        console.log("getSensorDB")
+        //console.log("getSensorDB")
         var query = "SELECT * FROM sensor WHERE id = " + sensorId;
-        console.log(query)
+        //console.log(query)
         return new Promise<Sensor>((resolve: any, reject: any) => {
             db.getConnection((error: any, conn: any) => {
 
                 // If connection fails
                 if (error) {
-                    reject()
+                    reject(Utils.generateLogicError("error getting sensor", error))
                 }
 
                 conn.query(query, (err: any, results: any) => {
                     conn.release();
                     // If connection fails
                     if (err) {
-                        reject()
+                        reject(Utils.generateLogicError("error getting sensor", err))
                     }
+                    //console.log("*** results getsensorbyid ***")
+                    //console.log(results)
                     let sensor = new Sensor()
-                    if (results.length != 0) {
-                        sensor.setId(results[0].id)
-                        sensor.setDeviceEUI(results[0].device_eui);
-                        sensor.setDeviceId(results[0].device_id);
-                        sensor.setName(results[0].name);
-                        // posible Enum
-                        sensor.setType(([results[0].sensor_type_id]).toString());
-                        sensor.setStatus(results[0].status);
+                    try {
+                        if (results.length == 1) {
+                            sensor.setId(results[0].id)
+                            sensor.setDeviceEUI(results[0].device_EUI);
+                            sensor.setDeviceId(results[0].device_id);
+                            sensor.setName(results[0].name);
+                            // posible Enum
+                            sensor.setType(([results[0].sensor_type_id]).toString());
+                            sensor.setStatus(results[0].status);
+                            resolve(Utils.generateLogicSuccess("sensor info retrieved succesfully", sensor))
+                        }
+                    } catch (error) {
+                        reject(error)
                     }
-                    resolve(sensor)
+                    resolve(Utils.generateLogicSuccessEmpty("no sensor was found with given id"))
                 })
 
             })
@@ -90,21 +98,24 @@ export default class SensorDatabaseHandler {
 
                 // If connection fails
                 if (error) {
-                    reject(error)
+                    reject(Utils.generateLogicError("error getting user sensors", error))
                 }
 
                 conn.query(query, (err: any, results: any) => {
                     conn.release();
                     // If connection fails
                     if (err) {
-                        reject(err)
+                        reject(Utils.generateLogicError("error getting user sensors", error))
                     }
-
-                    let sensors: Sensor[] = []
-                    if (results.length != 0) {
-                        sensors = this.queryResultsToSensors(results)
+                    try {
+                        if (results.length != 0) {
+                            let sensors: Sensor[] = this.queryResultsToSensors(results)
+                            resolve(Utils.generateLogicSuccess("user sensors retrieved succesfully", sensors))
+                        }
+                    } catch (error) {
+                        reject(error)
                     }
-                    resolve(sensors)
+                    resolve(Utils.generateLogicSuccessEmpty("user has no related sensors"))
                 })
 
             })
@@ -127,17 +138,24 @@ export default class SensorDatabaseHandler {
 
                 // If connection fails
                 if (error) {
-                    reject(error)
+                    reject(Utils.generateLogicError("error getting user sensors count", error))
                 }
 
                 conn.query(query, (err: any, results: any) => {
                     conn.release();
                     // If connection fails
                     if (err) {
-                        reject(err)
+                        reject(Utils.generateLogicError("error getting user sensors count", error))
                     }
-
-                    resolve(results)
+                    try {
+                        if (results.length != 0) {
+                            let sensors: Sensor[] = this.queryResultsToSensors(results)
+                            resolve(Utils.generateLogicSuccess("user sensors retrieved succesfully", sensors))
+                        }
+                    } catch (error) {
+                        reject(error)
+                    }
+                    resolve(Utils.generateLogicSuccessEmpty("user has no related sensors"))
                 })
 
             })
@@ -166,21 +184,24 @@ export default class SensorDatabaseHandler {
 
                 // If connection fails
                 if (error) {
-                    reject()
+                    reject(Utils.generateLogicError("error getting user sensors", error))
                 }
 
                 conn.query(query, (err: any, results: any) => {
                     conn.release();
                     // If connection fails
                     if (err) {
-                        reject()
+                        reject(Utils.generateLogicError("error getting user sensors", err))
                     }
-
-                    let sensors: Sensor[] = []
-                    if (results.length != 0) {
-                        sensors = this.queryResultsToSensors(results)
+                    try {
+                        if (results.length != 0) {
+                            let sensors: Sensor[] = this.queryResultsToSensors(results)
+                            resolve(Utils.generateLogicSuccess("user sensors retrieved succesfully", sensors))
+                        }
+                    } catch (error) {
+                        reject(error)
                     }
-                    resolve(sensors)
+                    resolve(Utils.generateLogicSuccessEmpty("user has no related sensors"))
                 })
 
             })
@@ -205,21 +226,24 @@ export default class SensorDatabaseHandler {
 
                 // If connection fails
                 if (error) {
-                    reject()
+                    reject(Utils.generateLogicError("error getting council sensors", error))
                 }
 
                 conn.query(query, (err: any, results: any) => {
                     conn.release();
                     // If connection fails
                     if (err) {
-                        reject()
+                        reject(Utils.generateLogicError("error getting council sensors", err))
                     }
-
-                    let sensors: Sensor[] = []
-                    if (results.length != 0) {
-                        sensors = this.queryResultsToSensors(results)
+                    try {
+                        if (results.length != 0) {
+                            let sensors: Sensor[] = this.queryResultsToSensors(results)
+                            resolve(Utils.generateLogicSuccess("council sensors retrieved succesfully", sensors))
+                        }
+                    } catch (error) {
+                        reject(error)
                     }
-                    resolve(sensors)
+                    resolve(Utils.generateLogicSuccessEmpty("council has no related sensors"))
                 })
 
             })
@@ -249,21 +273,24 @@ export default class SensorDatabaseHandler {
 
                 // If connection fails
                 if (error) {
-                    reject()
+                    reject(Utils.generateLogicError("error getting council sensors", error))
                 }
 
                 conn.query(query, (err: any, results: any) => {
                     conn.release();
                     // If connection fails
                     if (err) {
-                        reject()
+                        reject(Utils.generateLogicError("error getting council sensors", err))
                     }
-
-                    let sensors: Sensor[] = []
-                    if (results.length != 0) {
-                        sensors = this.queryResultsToSensors(results)
+                    try {
+                        if (results.length != 0) {
+                            let sensors: Sensor[] = this.queryResultsToSensors(results)
+                            resolve(Utils.generateLogicSuccess("council sensors retrieved succesfully", sensors))
+                        }
+                    } catch (error) {
+                        reject(error)
                     }
-                    resolve(sensors)
+                    resolve(Utils.generateLogicSuccessEmpty("council has no related sensors"))
                 })
 
             })
@@ -279,28 +306,31 @@ export default class SensorDatabaseHandler {
      */
     public storeSensorInDB(sensor: Sensor): Promise<number> {
         var query = "INSERT INTO `sensor` (`sensor_type_id`, `device_id`, `device_EUI`, `name`, `status`)" +
-            " VALUES ('"+sensor.getType()+"', '"+sensor.getDeviceId()+"', '"+sensor.getDeviceEUI()+"', '"+
-            sensor.getName()+"', '"+sensor.getStatus()+"');"
+            " VALUES ('" + sensor.getType() + "', '" + sensor.getDeviceId() + "', '" + sensor.getDeviceEUI() + "', '" +
+            sensor.getName() + "', '" + sensor.getStatus() + "');"
         return new Promise<number>((resolve: any, reject: any) => {
             db.getConnection((error: any, conn: any) => {
 
                 // If connection fails
                 if (error) {
-                    reject()
+                    reject(Utils.generateLogicError("error storing sensor", error))
                 }
 
                 conn.query(query, (err: any, results: any) => {
                     conn.release();
                     // If connection fails
                     if (err) {
-                        reject()
+                        reject(Utils.generateLogicError("error storing sensor", err))
                     }
-                    console.log(results)
-
-                    if (results != undefined){
-                        resolve(results.insertId)
+                    try {
+                        if (results) {
+                            resolve(Utils.generateLogicSuccess("sensor created successfully", results.insertId))
+                        } else {
+                            resolve(Utils.generateLogicSuccessEmpty("sensor couldnt be created"))
+                        }
+                    } catch (error) {
+                        reject(error)
                     }
-                    resolve()
                 })
 
             })
@@ -329,21 +359,24 @@ export default class SensorDatabaseHandler {
 
                 // If connection fails
                 if (error) {
-                    reject()
+                    reject(Utils.generateLogicError("error getting admin sensors", error))
                 }
 
                 conn.query(query, (err: any, results: any) => {
                     conn.release();
                     // If connection fails
                     if (err) {
-                        reject()
+                        reject(Utils.generateLogicError("error getting admin sensors", err))
                     }
-
-                    let sensors: Sensor[] = []
-                    if (results.length != 0) {
-                        sensors = this.queryResultsToSensors(results)
+                    try {
+                        if (results.length != 0) {
+                            let sensors: Sensor[] = this.queryResultsToSensors(results)
+                            resolve(Utils.generateLogicSuccess("admin sensors retrieved succesfully", sensors))
+                        }
+                    } catch (error) {
+                        reject(error)
                     }
-                    resolve(sensors)
+                    resolve(Utils.generateLogicSuccessEmpty("admin has no related sensors"))
                 })
 
             })
@@ -363,27 +396,30 @@ export default class SensorDatabaseHandler {
             "INNER JOIN `device` ON `gateway`.`id`= `device`.`gateway_id` INNER JOIN `user_device` ON " +
             "`user_device`.`device_id` = `device`.`id` INNER JOIN `sensor` ON `device`.`id` = `sensor`.`device_id` " +
             "WHERE `user`.id=" + adminId + ";"
-        console.log(query)
+        //console.log(query)
         return new Promise<Sensor[]>((resolve: any, reject: any) => {
             db.getConnection((error: any, conn: any) => {
 
                 // If connection fails
                 if (error) {
-                    reject()
+                    reject(Utils.generateLogicError("error getting admin sensors", error))
                 }
 
                 conn.query(query, (err: any, results: any) => {
                     conn.release();
                     // If connection fails
                     if (err) {
-                        reject()
+                        reject(Utils.generateLogicError("error getting admin sensors", err))
                     }
-
-                    let sensors: Sensor[] = []
-                    if (results.length != 0) {
-                        sensors = this.queryResultsToSensors(results)
+                    try {
+                        if (results.length != 0) {
+                            let sensors: Sensor[] = this.queryResultsToSensors(results)
+                            resolve(Utils.generateLogicSuccess("admin sensors retrieved succesfully", sensors))
+                        }
+                    } catch (error) {
+                        reject(error)
                     }
-                    resolve(sensors)
+                    resolve(Utils.generateLogicSuccessEmpty("admin has no related sensors"))
                 })
 
             })
@@ -405,21 +441,24 @@ export default class SensorDatabaseHandler {
 
                 // If connection fails
                 if (error) {
-                    reject()
+                    reject(Utils.generateLogicError("error getting device sensors", error))
                 }
 
                 conn.query(query, (err: any, results: any) => {
                     conn.release();
                     // If connection fails
                     if (err) {
-                        reject()
+                        reject(Utils.generateLogicError("error getting device sensors", err))
                     }
-
-                    let sensors: Sensor[] = []
-                    if (results.length != 0) {
-                        sensors = this.queryResultsToSensors(results)
+                    try {
+                        if (results.length != 0) {
+                            let sensors: Sensor[] = this.queryResultsToSensors(results)
+                            resolve(Utils.generateLogicSuccess("device sensors retrieved succesfully", sensors))
+                        }
+                    } catch (error) {
+                        reject(error)
                     }
-                    resolve(sensors)
+                    resolve(Utils.generateLogicSuccessEmpty("device has no related sensors"))
                 })
 
             })
@@ -440,17 +479,23 @@ export default class SensorDatabaseHandler {
 
                 // If connection fails
                 if (error) {
-                    reject()
+                    reject(Utils.generateLogicError("error deleting sensor", error))
                 }
 
                 conn.query(query, (err: any, results: any) => {
                     conn.release();
                     // If connection fails
                     if (err) {
-                        reject()
+                        reject(Utils.generateLogicError("error deleting sensor", err))
                     }
-
-                    resolve()
+                    try {
+                        if (results.affectedRows == 0) {
+                            resolve(Utils.generateLogicSuccessEmpty("no sensor was found with given id"))
+                        }
+                        resolve(Utils.generateLogicSuccess("sensor deleted succesfully", undefined))
+                    } catch (error) {
+                        reject(error)
+                    }
                 })
 
             })

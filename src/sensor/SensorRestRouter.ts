@@ -6,7 +6,7 @@
  */
 
 import { Router, Request, Response } from 'express';
-import Utils from "../utils";
+import Utils from "../Utils";
 import SensorLogic from "./SensorLogic";
 import Sensor from "./Sensor";
 
@@ -53,20 +53,14 @@ class SensorRestRouter {
     public getSensorById = () => this.router.get('/:id', (req: Request, res: Response) => {
         const id = parseInt(req.params.id);
         this.sensorLogic.getSensorById(id)
-            .then( response => {
-                res.status(200).send({
-                    http: 200,
-                    status: 'OK',
-                    response: response
-                })
-            })
-            .catch( err => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                })
-            })
+        .then(response => {
+            // Sending the response
+            Utils.sendRestResponse(response, res)
+        })
+        .catch(err => {
+            // Sending the response
+            Utils.sendRestResponse(err, res)
+        })
     })
 
     /**
@@ -92,21 +86,14 @@ class SensorRestRouter {
         const userId = parseInt(req.params.userId);
 
         this.sensorLogic.getAllUserSensors(userId)
-            .then( response => {
-                // Sending the response
-                res.status(200).send({
-                    http: 200,
-                    status: 'OK',
-                    response: response
-                })
-            })
-            .catch( err => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                })
-            })
+        .then(response => {
+            // Sending the response
+            Utils.sendRestResponse(response, res)
+        })
+        .catch(err => {
+            // Sending the response
+            Utils.sendRestResponse(err, res)
+        })
     })
 
     /**
@@ -132,26 +119,19 @@ class SensorRestRouter {
         const userId = parseInt(req.params.userId);
 
         this.sensorLogic.getAllUserSensorsCount(userId)
-            .then( response => {
-                // Sending the response
-                res.status(200).send({
-                    http: 200,
-                    status: 'OK',
-                    response: response
-                })
-            })
-            .catch( err => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                })
-            })
+        .then(response => {
+            // Sending the response
+            Utils.sendRestResponse(response, res)
+        })
+        .catch(err => {
+            // Sending the response
+            Utils.sendRestResponse(err, res)
+        })
     })
 
     /**
      * Get all sensors from a user with pagination
-     * GET /sensors/user/:userId/:pageSize/:pageIndex
+     * GET /sensors/list/user/:userId/:pageSize/:pageIndex
      *
      * Response: {
      *  "http": 200,
@@ -168,27 +148,20 @@ class SensorRestRouter {
      * }
      *
      */
-    public getUserSensorPagination = () => this.router.get('/user/:userId/:pageSize/:pageIndex', (req: Request, res: Response) => {
+    public getUserSensorPagination = () => this.router.get('/list/user/:userId/:pageSize/:pageIndex', (req: Request, res: Response) => {
         const userId = parseInt(req.params.userId);
         const pageSize = parseInt(req.params.pageSize);
         const pageIndex = parseInt(req.params.pageIndex);
 
         this.sensorLogic.getUserSensorPagination(userId,pageSize,pageIndex)
-            .then( response => {
-                // Sending the response
-                res.status(200).send({
-                    http: 200,
-                    status: 'OK',
-                    response: response
-                })
-            })
-            .catch( err => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                })
-            })
+        .then(response => {
+            // Sending the response
+            Utils.sendRestResponse(response, res)
+        })
+        .catch(err => {
+            // Sending the response
+            Utils.sendRestResponse(err, res)
+        })
     })
 
     /**
@@ -214,21 +187,14 @@ class SensorRestRouter {
         const councilId = parseInt(req.params.councilId);
 
         this.sensorLogic.getAllCouncilSensors(councilId)
-            .then( response => {
-                // Sending the response
-                res.status(200).send({
-                    http: 200,
-                    status: 'OK',
-                    response: response
-                })
-            })
-            .catch( err => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                })
-            })
+        .then(response => {
+            // Sending the response
+            Utils.sendRestResponse(response, res)
+        })
+        .catch(err => {
+            // Sending the response
+            Utils.sendRestResponse(err, res)
+        })
     })
 
     /**
@@ -255,26 +221,19 @@ class SensorRestRouter {
         const pageIndex = parseInt(req.params.pageIndex);
 
         this.sensorLogic.getCouncilSensorPagination(councilId, pageSize, pageIndex)
-            .then( response => {
-                // Sending the response
-                res.status(200).send({
-                    http: 200,
-                    status: 'OK',
-                    response: response
-                })
-            })
-            .catch( err => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                })
-            })
+        .then(response => {
+            // Sending the response
+            Utils.sendRestResponse(response, res)
+        })
+        .catch(err => {
+            // Sending the response
+            Utils.sendRestResponse(err, res)
+        })
     })
 
     /**
      * Store a sensor in db
-     * POST /sensors/add
+     * POST /sensors/
      *
      * Response: {
      *  "http": 200,
@@ -285,33 +244,31 @@ class SensorRestRouter {
      *  }
      *
      */
-    public storeSensor = () => this.router.post('/add', (req: Request, res: Response) => {
-        console.log(req.body)
+    public storeSensor = () => this.router.post('/', (req: Request, res: Response) => {
         let sensor = new Sensor()
-
         sensor.setDeviceId(req.body.deviceId)
-        sensor.setName(req.body.name)
-        sensor.setDeviceEUI(req.body.deviceEUI)
-        sensor.setType(req.body.type)
-        sensor.setStatus(req.body.status)
-
+            sensor.setName(req.body.name)
+            sensor.setDeviceEUI(req.body.deviceEUI)
+            sensor.setType(req.body.type)
+            sensor.setStatus(req.body.status)
+        /*if(req.body.deviceId && req.body.name && req.body.deviceEUI && req.body.type && req.body.status){
+            sensor.setDeviceId(req.body.deviceId)
+            sensor.setName(req.body.name)
+            sensor.setDeviceEUI(req.body.deviceEUI)
+            sensor.setType(req.body.type)
+            sensor.setStatus(req.body.status)
+        } else {
+            Utils.sendRestResponse(Utils.generateLogicSuccessEmpty("No body params found"), res)
+        }*/
         this.sensorLogic.storeSensor(sensor)
-            .then( response => {
-                // Sending the response
-                res.status(200).send({
-                    http: 200,
-                    status: 'OK',
-                    response: "Sensor created succesfully",
-                    lastInsertId: response
-                })
-            })
-            .catch( err => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                })
-            })
+        .then(response => {
+            // Sending the response
+            Utils.sendRestResponse(response, res)
+        })
+        .catch(err => {
+            // Sending the response
+            Utils.sendRestResponse(err, res)
+        })
     })
 
     /**
@@ -338,21 +295,14 @@ class SensorRestRouter {
         const pageIndex = parseInt(req.params.pageIndex);
 
         this.sensorLogic.getAdminSensorPagination(adminId, pageSize, pageIndex)
-            .then( response => {
-                // Sending the response
-                res.status(200).send({
-                    http: 200,
-                    status: 'OK',
-                    response: response
-                })
-            })
-            .catch( err => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                })
-            })
+        .then(response => {
+            // Sending the response
+            Utils.sendRestResponse(response, res)
+        })
+        .catch(err => {
+            // Sending the response
+            Utils.sendRestResponse(err, res)
+        })
     })
 
     /**
@@ -377,21 +327,14 @@ class SensorRestRouter {
         const adminId = parseInt(req.params.adminId);
 
         this.sensorLogic.getAdminAllSensors(adminId)
-            .then( response => {
-                // Sending the response
-                res.status(200).send({
-                    http: 200,
-                    status: 'OK',
-                    response: response
-                })
-            })
-            .catch( err => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                })
-            })
+        .then(response => {
+            // Sending the response
+            Utils.sendRestResponse(response, res)
+        })
+        .catch(err => {
+            // Sending the response
+            Utils.sendRestResponse(err, res)
+        })
     })
 
     /**
@@ -416,50 +359,36 @@ class SensorRestRouter {
         const deviceId = parseInt(req.params.deviceId);
 
         this.sensorLogic.getDeviceSensors(deviceId)
-            .then( response => {
-                // Sending the response
-                res.status(200).send({
-                    http: 200,
-                    status: 'OK',
-                    response: response
-                })
-            })
-            .catch( err => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                })
-            })
+        .then(response => {
+            // Sending the response
+            Utils.sendRestResponse(response, res)
+        })
+        .catch(err => {
+            // Sending the response
+            Utils.sendRestResponse(err, res)
+        })
     })
 
     /**
      * Remove sensor with the given id
-     * Delete /sensors/delete/:sensorId
+     * Delete /sensors/:sensorId
      * Response: {
          "http": 200,
          "status": "OK",
          "response": true
      }
      */
-    public removeSensor = () => this.router.delete('/delete/:sensorId', (req: Request, res: Response) => {
+    public removeSensor = () => this.router.delete('/:sensorId', (req: Request, res: Response) => {
         const sensorId = parseInt(req.params.sensorId);
 
         this.sensorLogic.removeSensor(sensorId)
-            .then( response => {
+            .then(response => {
                 // Sending the response
-                res.status(200).send({
-                    http: 200,
-                    status: 'OK',
-                    response: "Sensor was deleted succesfully"
-                })
+                Utils.sendRestResponse(response, res)
             })
-            .catch( err => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
             })
     })
 }

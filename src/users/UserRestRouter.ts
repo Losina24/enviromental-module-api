@@ -21,11 +21,62 @@ class UserRestRouter {
     constructor() {
         this.getUserById();
         this.getCouncilUsers();
+        this.getCouncilUsersCount();
+        this.getAllUsersCount();
         this.createUser();
         this.editUser();
         this.removeUser();
         this.login();
     }
+
+    /**
+     * Get user information by given id
+     * GET /users/:id
+     *
+     * Response: {
+            "http": 200,
+            "status": "OK",
+            "response": {
+            }
+     * }
+     *
+     */
+    public getCouncilUsersCount = () => this.router.get('/count/council/:councilId', (req: Request, res: Response) => {
+        const councilId = parseInt(req.params.councilId);
+        this.userLogic.getCouncilUsersCount(councilId)
+        .then(response => {
+            // Sending the response
+            Utils.sendRestResponse(response, res)
+        })
+        .catch(err => {
+            // Sending the response
+            Utils.sendRestResponse(err, res)
+        })
+    })
+
+    /**
+* Get user information by given id
+* GET /users/:id
+*
+* Response: {
+    "http": 200,
+    "status": "OK",
+    "response": {
+    }
+* }
+*
+*/
+    public getAllUsersCount = () => this.router.get('/count/root/:id', (req: Request, res: Response) => {
+        this.userLogic.getAllUsersCount()
+        .then(response => {
+            // Sending the response
+            Utils.sendRestResponse(response, res)
+        })
+        .catch(err => {
+            // Sending the response
+            Utils.sendRestResponse(err, res)
+        })
+    })
 
     /**
      * Login check
@@ -46,9 +97,9 @@ class UserRestRouter {
     public login = () => this.router.post('/login', (req: Request, res: Response) => {
         var bodyParams = req.body
         this.userLogic.login(bodyParams.email, bodyParams.password)
-            .then( response => {
+            .then(response => {
                 console.log(response)
-                if (response){
+                if (response) {
                     res.status(200).send({
                         http: 200,
                         status: 'OK',
@@ -62,7 +113,7 @@ class UserRestRouter {
                     })
                 }
             })
-            .catch( err => {
+            .catch(err => {
                 res.status(401).send({
                     http: 401,
                     status: 'Error',
@@ -96,14 +147,14 @@ class UserRestRouter {
     public getUserById = () => this.router.get('/:id', (req: Request, res: Response) => {
         const id = parseInt(req.params.id);
         this.userLogic.getUserById(id)
-            .then( response => {
+            .then(response => {
                 res.status(200).send({
                     http: 200,
                     status: 'OK',
                     response: response
                 })
             })
-            .catch( err => {
+            .catch(err => {
                 res.status(401).send({
                     http: 401,
                     status: 'Error',
@@ -138,7 +189,7 @@ class UserRestRouter {
         const councilId = parseInt(req.params.councilId);
 
         this.userLogic.getCouncilUsers(councilId)
-            .then( response => {
+            .then(response => {
                 // Sending the response
                 res.status(200).send({
                     http: 200,
@@ -146,7 +197,7 @@ class UserRestRouter {
                     response: response
                 })
             })
-            .catch( err => {
+            .catch(err => {
                 res.status(401).send({
                     http: 401,
                     status: 'Error',
@@ -181,7 +232,7 @@ class UserRestRouter {
         user.setPostalCode(req.body.postalCode);
 
         this.userLogic.createUser(user)
-            .then( (response: any) => {
+            .then((response: any) => {
                 // Sending the response
                 res.status(200).send({
                     http: 200,
@@ -189,7 +240,7 @@ class UserRestRouter {
                     response: response
                 })
             })
-            .catch( (err: any) => {
+            .catch((err: any) => {
                 res.status(401).send({
                     http: 401,
                     status: 'Error',
@@ -233,7 +284,7 @@ class UserRestRouter {
         user.setPostalCode(req.body.postalCode);
 
         this.userLogic.editUser(user)
-            .then( (response: any) => {
+            .then((response: any) => {
                 // Sending the response
                 res.status(200).send({
                     http: 200,
@@ -241,7 +292,7 @@ class UserRestRouter {
                     response: response
                 })
             })
-            .catch( (err: any) => {
+            .catch((err: any) => {
                 res.status(401).send({
                     http: 401,
                     status: 'Error',
@@ -272,7 +323,7 @@ class UserRestRouter {
         const userId = parseInt(req.params.id);
 
         this.userLogic.removeUser(userId)
-            .then( (response: any) => {
+            .then((response: any) => {
                 // Sending the response
                 res.status(200).send({
                     http: 200,
@@ -280,7 +331,7 @@ class UserRestRouter {
                     response: response
                 })
             })
-            .catch( (err: any) => {
+            .catch((err: any) => {
                 res.status(401).send({
                     http: 401,
                     status: 'Error',

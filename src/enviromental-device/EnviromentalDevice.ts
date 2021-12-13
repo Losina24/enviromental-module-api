@@ -7,10 +7,10 @@
 import Sensor from "../sensor/Sensor";
 
 export default class EnviromentalDevice {
-    
+
     // Atributes
     private id: number;
-    private mac: string;
+    private device_EUI: string;
     private name: string;
     private gatewayId: number;
     private coords: [number, number];
@@ -46,12 +46,12 @@ export default class EnviromentalDevice {
 
     /**
      * Gets the the enviromental device EUI
-     * -> getMac() -> mac: Text
+     * -> getDeviceEUI() -> device_EUI: Text
      * 
-     * @returns mac: Enviromental device's EUI
+     * @returns device_EUI: Enviromental device's EUI
      */
     public getDeviceEUI(): string {
-        return this.mac;
+        return this.device_EUI;
     }
 
     /**
@@ -63,18 +63,39 @@ export default class EnviromentalDevice {
     public getGatewayId(): number {
         return this.gatewayId;
     }
-    
+
     /**
      * Gets latitude and longitude of the enviromental device 
      * -> getCoords() -> coords: [x:R, y:R]
      * 
      * @returns coords: Enviromental device's coordinates
      */
-    public getCoords(): {latitude: number, longitude: number} {
+    public getCoords(): { latitude: number, longitude: number } {
         return {
             latitude: this.coords[0],
             longitude: this.coords[1]
         };
+    }
+
+    /**
+     * Get latitude of the enviromental device 
+     * -> getCoords() -> coords: [x:R, y:R]
+     * 
+     * @returns
+     */
+    public getLatitude(): number {
+        return this.coords[1]
+
+    }
+
+    /**
+     * Get longitude of the enviromental device 
+     * -> getCoords() -> coords: [x:R, y:R]
+     * 
+     * @returns
+     */
+    public getLongitude(): number {
+        return this.coords[0]
     }
 
     /**
@@ -85,7 +106,7 @@ export default class EnviromentalDevice {
      */
     public getSensors(): [Sensor] {
         return this.sensors;
-    } 
+    }
 
     /**
      * Gets the status of the enviromental device 
@@ -103,7 +124,7 @@ export default class EnviromentalDevice {
      * Sets the id of the enviromental device
      * id: N -> setId() ->
      */
-    public setId( id: number ): void {
+    public setId(id: number): void {
         this.id = id;
     }
 
@@ -111,23 +132,23 @@ export default class EnviromentalDevice {
      * Sets the enviromental device's name
      * name: N -> setName() ->
      */
-    public setName( name: string ): void {
+    public setName(name: string): void {
         this.name = name;
     }
 
     /**
      * Sets the enviromental device's EUI
-     * mac: Text -> setDeviceEUI() ->
+     * device_EUI: Text -> setDeviceEUI() ->
      */
-    public setDeviceEUI(mac: string ): void {
-        this.mac = mac;
+    public setDeviceEUI(device_EUI: string): void {
+        this.device_EUI = device_EUI;
     }
 
     /**
      * Sets the enviromental device's gateway ID
      * gatewayId: N -> setGatewayId() ->
      */
-    public setGatewayId( gatewayId: number ): void {
+    public setGatewayId(gatewayId: number): void {
         this.gatewayId = gatewayId;
     }
 
@@ -135,7 +156,7 @@ export default class EnviromentalDevice {
      * Sets the enviromental device's coords
      * coords: [x:N, y:N] -> setCoords() ->
      */
-    public setCoords( coords: [number, number] ): void {
+    public setCoords(coords: [number, number]): void {
         this.coords = coords;
     }
 
@@ -143,7 +164,7 @@ export default class EnviromentalDevice {
      * Sets the enviromental device's status
      * status: boolean -> setStatus() ->
      */
-    public setStatus( status: boolean ): void {
+    public setStatus(status: boolean): void {
         this.status = status;
     }
 
@@ -151,7 +172,7 @@ export default class EnviromentalDevice {
      * Add a sensor to the enviromental device
      * sensor:Sensor -> addSensor() ->
      */
-    public addSensor( sensor: Sensor | Sensor[] ): void {
+    public addSensor(sensor: Sensor | Sensor[]): void {
         //@ts-ignore
         this.sensors.push(sensor);
     }
@@ -159,15 +180,15 @@ export default class EnviromentalDevice {
     public toObject(): object {
         return {
             id: this.id,
-			name: this.name,
-			mac: this.mac,
-			gatewayId: this.gatewayId,
-			//sensors: this.sensors,
-			coords: {
+            name: this.name,
+            device_EUI: this.device_EUI,
+            gatewayId: this.gatewayId,
+            //sensors: this.sensors,
+            coords: {
                 latitude: this.coords[0],
                 longitude: this.coords[1]
             },
-			status: this.status,
+            status: this.status,
         }
     }
 }

@@ -16,7 +16,7 @@ export default class GatewayLogic {
 
     // Constructor
     constructor() {
-        
+
     }
 
     // Logic Methods 
@@ -27,13 +27,13 @@ export default class GatewayLogic {
      * @param gatewayId - ID of the gateway you want to get data from
      * @returns
      */
-    public async getGatewayById( councilId: number ) : Promise<Gateway> {
+    public async getGatewayById(councilId: number): Promise<Gateway> {
         return new Promise<Gateway>((resolve, reject) => {
-            this.gatewayDB.getGatewayByIdFromDB( councilId )
-                .then( res => {
+            this.gatewayDB.getGatewayByIdFromDB(councilId)
+                .then(res => {
                     resolve(res)
                 })
-                .catch( err => {
+                .catch(err => {
                     reject(err)
                 })
         })
@@ -46,13 +46,13 @@ export default class GatewayLogic {
      * @param userId - ID of the user we want to get the gateways from
      * @returns
      */
-    public async getUserGateways( userId: number ) : Promise<Gateway> {
+    public async getUserGateways(userId: number): Promise<Gateway> {
         return new Promise<Gateway>((resolve, reject) => {
-            this.gatewayDB.getUserGatewaysFromDB( userId )
-                .then( res => {
+            this.gatewayDB.getUserGatewaysFromDB(userId)
+                .then(res => {
                     resolve(res)
                 })
-                .catch( err => {
+                .catch(err => {
                     reject(err)
                 })
         })
@@ -65,13 +65,50 @@ export default class GatewayLogic {
      * @param userId - ID of the user we want to get the gateways from
      * @returns
      */
-    public async getUserGatewaysCount( userId: number ) : Promise<Gateway> {
+    public async getUserGatewaysCount(userId: number): Promise<Gateway> {
         return new Promise<Gateway>((resolve, reject) => {
-            this.gatewayDB.getUserGatewaysCountFromDB( userId )
-                .then( res => {
+            this.gatewayDB.getUserGatewaysCountFromDB(userId)
+                .then(res => {
                     resolve(res)
                 })
-                .catch( err => {
+                .catch(err => {
+                    reject(err)
+                })
+        })
+    }
+
+    /**
+     * Get user related gateways
+     * gatewayId: N -> getUserGatewaysCount() -> count: N
+     *
+     * @param councilId - ID of the council we want to get the gateways from
+     * @returns
+     */
+    public async getAdminGatewaysCount(councilId: number): Promise<Gateway> {
+        return new Promise<Gateway>((resolve, reject) => {
+            this.gatewayDB.getGatewaysCountAdmin(councilId)
+                .then(res => {
+                    resolve(res) 
+                })
+                .catch(err => {
+                    reject(err)
+                })
+        })
+    }
+
+    /**
+     * Get user related gateways
+     * gatewayId: N -> getUserGatewaysCount() -> count: N
+     *
+     * @returns
+     */
+    public async getRootGatewaysCount(): Promise<Gateway> {
+        return new Promise<Gateway>((resolve, reject) => {
+            this.gatewayDB.getGatewaysCountRoot()
+                .then(res => {
+                    resolve(res)
+                })
+                .catch(err => {
                     reject(err)
                 })
         })
@@ -85,13 +122,13 @@ export default class GatewayLogic {
      * @param councilId - ID of the council you want to get the gateways from
      * @returns
      */
-    public async getAllCouncilGateways( councilId: number ) : Promise<Gateway> {
+    public async getAllCouncilGateways(councilId: number): Promise<Gateway> {
         return new Promise<Gateway>((resolve, reject) => {
-            this.gatewayDB.getAllCouncilGatewaysFromDB( councilId )
-                .then( res => {
+            this.gatewayDB.getAllCouncilGatewaysFromDB(councilId)
+                .then(res => {
                     resolve(res)
                 })
-                .catch( err => {
+                .catch(err => {
                     reject(err)
                 })
         })
@@ -105,13 +142,13 @@ export default class GatewayLogic {
      * @param pageIndex - Index of the page that you want to receive from the request
      * @returns
      */
-    public async getCouncilGatewayPagination( councilId: number, pageSize: number, pageIndex: number ) : Promise<Gateway> {
+    public async getCouncilGatewayPagination(councilId: number, pageSize: number, pageIndex: number): Promise<Gateway> {
         return new Promise<Gateway>((resolve, reject) => {
-            this.gatewayDB.getCouncilGatewayPaginationFromDB( councilId, pageSize, pageIndex )
-                .then( res => {
+            this.gatewayDB.getCouncilGatewayPaginationFromDB(councilId, pageSize, pageIndex)
+                .then(res => {
                     resolve(res)
                 })
-                .catch( err => {
+                .catch(err => {
                     reject(err)
                 })
         })
@@ -124,13 +161,13 @@ export default class GatewayLogic {
      * @param networkServerId - ID of the network server we want to get the gateways from
      * @returns
      */
-    public async getGatewaysFromNetworkServer( networkServerId: number ) : Promise<Gateway[]> {
+    public async getGatewaysFromNetworkServer(networkServerId: number): Promise<Gateway[]> {
         return new Promise<Gateway[]>((resolve, reject) => {
-            this.gatewayDB.getGatewaysFromNetworkServerInDB( networkServerId )
-                .then( (res: any) => {
+            this.gatewayDB.getGatewaysFromNetworkServerInDB(networkServerId)
+                .then((res: any) => {
                     resolve(res)
                 })
-                .catch( err => {
+                .catch(err => {
                     reject(err)
                 })
         })
@@ -143,14 +180,14 @@ export default class GatewayLogic {
      * @param gateway - gateway we want to create
      * @returns
      */
-    public async storeGateway( gateway: Gateway ): Promise<void> {
+    public async storeGateway(gateway: Gateway): Promise<void> {
         return new Promise((resolve, reject) => {
-            this.gatewayDB.storeGatewayInDB( gateway )
-                .then( res => {
+            this.gatewayDB.storeGatewayInDB(gateway)
+                .then(res => {
                     console.log("logicaRes")
                     resolve()
                 })
-                .catch( err => {
+                .catch(err => {
                     reject()
                 })
         })
@@ -164,14 +201,14 @@ export default class GatewayLogic {
      * @param networkServerId - network server id
      * @returns
      */
-    public async addNetworkServersToGateway( gatewayId: number, networkServerId: number ): Promise<void> {
+    public async addNetworkServersToGateway(gatewayId: number, networkServerId: number): Promise<void> {
         return new Promise((resolve, reject) => {
-            this.gatewayDB.addNetworkServersToGatewayInDB( gatewayId, networkServerId )
-                .then( res => {
+            this.gatewayDB.addNetworkServersToGatewayInDB(gatewayId, networkServerId)
+                .then(res => {
                     console.log("logicaRes")
                     resolve(res)
                 })
-                .catch( err => {
+                .catch(err => {
                     reject(err)
                 })
         })
@@ -183,14 +220,14 @@ export default class GatewayLogic {
      * @param gateway - gateway with new data
      * @returns
      */
-    public async editGateway( gateway: Gateway ): Promise<void> {
+    public async editGateway(gateway: Gateway): Promise<void> {
         return new Promise((resolve, reject) => {
-            this.gatewayDB.editGatewayInDB( gateway )
-                .then( res => {
+            this.gatewayDB.editGatewayInDB(gateway)
+                .then(res => {
                     console.log("logicaRes")
                     resolve(res)
                 })
-                .catch( err => {
+                .catch(err => {
                     reject(err)
                 })
         })
@@ -205,13 +242,13 @@ export default class GatewayLogic {
      * @param networkServerId - ID of the network server
      * @returns
      */
-    public async removeNetworkServerFromGateway( gatewayId: number, networkServerId: number ): Promise<void> {
+    public async removeNetworkServerFromGateway(gatewayId: number, networkServerId: number): Promise<void> {
         return new Promise((resolve, reject) => {
-            this.gatewayDB.removeNetworkServerFromGatewayFromDB( gatewayId, networkServerId )
-                .then( res => {
+            this.gatewayDB.removeNetworkServerFromGatewayFromDB(gatewayId, networkServerId)
+                .then(res => {
                     resolve(res)
                 })
-                .catch( err => {
+                .catch(err => {
                     reject(err)
                 })
         })
@@ -224,13 +261,13 @@ export default class GatewayLogic {
      * @param gatewayId - ID of the gateway we want to delete
      * @returns
      */
-    public async removeGateway( gatewayId: number ): Promise<void> {
+    public async removeGateway(gatewayId: number): Promise<void> {
         return new Promise((resolve, reject) => {
-            this.gatewayDB.removeGatewayFromDB( gatewayId )
-                .then( res => {
+            this.gatewayDB.removeGatewayFromDB(gatewayId)
+                .then(res => {
                     resolve(res)
                 })
-                .catch( err => {
+                .catch(err => {
                     reject(err)
                 })
         })

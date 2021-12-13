@@ -23,13 +23,16 @@ class EnviromentalDeviceRestRouter {
         this.getDeviceById();
         this.getAllUserDevices();
         this.getAllUserDevicesCount();
+        this.getAllAdminDevicesCount();
+        this.getAllRootDevicesCount();
         this.getUserDevicePagination();
         this.getAllCouncilDevices();
         this.getAllGatewayDevices();
         this.storeDevice();
+        this.updateDevice();
         this.getAdminDevicePagination();
         this.getCouncilDevicePagination();
-        this.removeDevice()
+        this.removeDevice();
     }
 
     /**
@@ -100,8 +103,73 @@ class EnviromentalDeviceRestRouter {
     })
 
     /**
+     * Get all enviromental devices from root ( * COUNT * )
+     * GET enviromental/devices/count
+     *
+     * Response: {
+     *  "http": 200,
+     *  "status": "OK",
+     *  "response": [{
+     *      "id": 32,
+     *      "name": "Device 32",
+     *      "mac": "2c549188c9e3",
+     *      "gatewayId": 6,
+     *      "sensors": [100, 101, 102, 103, 104],
+     *      "coords": [21.2222, -34.3333],
+     *      "status": true
+     *  }]
+     * }
+     *
+     */
+     public getAllRootDevicesCount = () => this.router.get('/count/root/:id', (req: Request, res: Response) => {
+
+        this.enviromentalDeviceLogic.getAllRootDevicesCount()
+            .then(response => {
+                // Sending the response            
+                Utils.sendRestResponse(response, res)
+            })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
+            })
+    })
+
+    /**
+     * Get all enviromental devices from admin ( * COUNT * )
+     * GET enviromental/devices/count/council/:councilId
+     *
+     * Response: {
+     *  "http": 200,
+     *  "status": "OK",
+     *  "response": [{
+     *      "id": 32,
+     *      "name": "Device 32",
+     *      "mac": "2c549188c9e3",
+     *      "gatewayId": 6,
+     *      "sensors": [100, 101, 102, 103, 104],
+     *      "coords": [21.2222, -34.3333],
+     *      "status": true
+     *  }]
+     * }
+     *
+     */
+     public getAllAdminDevicesCount = () => this.router.get('/count/council/:councilId', (req: Request, res: Response) => {
+        const councilId = parseInt(req.params.councilId);
+
+        this.enviromentalDeviceLogic.getAllAdminDevicesCount(councilId)
+            .then(response => {
+                // Sending the response            
+                Utils.sendRestResponse(response, res)
+            })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
+            })
+    })
+
+    /**
      * Get all enviromental devices from a user ( * COUNT * )
-     * GET enviromental/devices/user/:userId
+     * GET enviromental/devices/count/user/:userId
      *
      * Response: {
      *  "http": 200,
@@ -261,6 +329,47 @@ class EnviromentalDeviceRestRouter {
         enviromentalDevice.setCoords([parseFloat(req.body.latitude), parseFloat(req.body.longitude)]);
 
         this.enviromentalDeviceLogic.storeDevice(enviromentalDevice, req.params.userId)
+            .then(response => {
+                // Sending the response
+                Utils.sendRestResponse(response, res)
+            })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
+            })
+
+    })
+
+    /**
+     * Update a enviromental device
+     * PUT enviromental/devices/:deviceId
+     *
+     * Body: {
+     *  "name": "Device 235",
+     *  "mac": "2c549188c9e3",
+     *  "gatewayId": 21,
+     *  "latitude": 20.123,
+     *  "longitude": 43.321,
+     * }
+     *
+     * Response: {
+     *  "http": 200,
+     *  "status": "OK",
+     *  "response": "Enviromental device updated succesfully."
+     * }
+     *
+     */
+     public updateDevice = () => this.router.put('/:deviceId', (req: Request, res: Response) => {
+        console.log("router reached updateDevice()")
+        let enviromentalDevice = new EnviromentalDevice();
+        enviromentalDevice.setId(parseInt(req.params.deviceId));
+        enviromentalDevice.setName(req.body.name);
+        enviromentalDevice.setDeviceEUI(req.body.deviceEUI);
+        enviromentalDevice.setGatewayId(req.body.gatewayId);
+        enviromentalDevice.setCoords([parseFloat(req.body.latitude), parseFloat(req.body.longitude)]);
+        enviromentalDevice.setStatus(req.body.status);
+
+        this.enviromentalDeviceLogic.updateDevice(enviromentalDevice)
             .then(response => {
                 // Sending the response
                 Utils.sendRestResponse(response, res)

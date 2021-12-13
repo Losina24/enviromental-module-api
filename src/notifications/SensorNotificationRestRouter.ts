@@ -1,8 +1,8 @@
 /**
- * Name: EnviromentaDeviceRestRouter.ts
+ * Name: SensorNotification.ts
  * Date: 02 - 11 - 2021
- * Author: Alejandro Losa García
- * Description: Manages the rest rules of the environmental devices feature
+ * Author: Daniel Poquet Ramirez
+ * Description: Mannages sensor notifications routes
  */
 
 import { Router, Request, Response } from 'express';
@@ -26,7 +26,106 @@ class SensorNotificationRestRouter {
         this.createSensorNotification();
         this.editSensorNotification();
         this.removeNotification();
+        this.getUserSensorNotificationsCount();
+        this.getAdminSensorNotificationsCount();
+        this.getRootSensorNotificationsCount();
     }
+
+    /**
+     * Get the information about a enviromental device
+     * GET /device/:id
+     * 
+     * Response: {
+     *  "http": 200,
+     *  "status": "OK",
+     *  "response": {
+     *      "id": 32,
+     *      "name": "Device 32",
+     *      "mac": "2c549188c9e3",
+     *      "gatewayId": 6,
+     *      "sensors": [100, 101, 102, 103, 104],
+     *      "coords": [21.2222, -34.3333],
+     *      "status": true
+     *  }
+     * }
+     * 
+     */
+    public getUserSensorNotificationsCount = () => this.router.get('/count/user/:id', (req: Request, res: Response) => {
+        const userId = parseInt(req.params.id);
+        this.notificationLogic.getUserNotificationsCount(userId)
+            .then(response => {
+                // Sending the response            
+                Utils.sendRestResponse(response, res)
+            })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
+            })
+    })
+
+    /**
+     * Get the information about a enviromental device
+     * GET /device/:id
+     * 
+     * Response: {
+     *  "http": 200,
+     *  "status": "OK",
+     *  "response": {
+     *      "id": 32,
+     *      "name": "Device 32",
+     *      "mac": "2c549188c9e3",
+     *      "gatewayId": 6,
+     *      "sensors": [100, 101, 102, 103, 104],
+     *      "coords": [21.2222, -34.3333],
+     *      "status": true
+     *  }
+     * }
+     * 
+     */
+    public getAdminSensorNotificationsCount = () => this.router.get('/count/admin/:councilId', (req: Request, res: Response) => {
+        const councilId = parseInt(req.params.councilId);
+        console.log(councilId)
+        this.notificationLogic.getAdminNotificationsCount(councilId)
+            .then(response => {
+                // Sending the response            
+                Utils.sendRestResponse(response, res)
+            })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
+            })
+    })
+
+    /**
+    * Get the information about a enviromental device
+    * GET /device/:id
+    * 
+    * Response: {
+    *  "http": 200,
+    *  "status": "OK",
+    *  "response": {
+    *      "id": 32,
+    *      "name": "Device 32",
+    *      "mac": "2c549188c9e3",
+    *      "gatewayId": 6,
+    *      "sensors": [100, 101, 102, 103, 104],
+    *      "coords": [21.2222, -34.3333],
+    *      "status": true
+    *  }
+    * }
+    * 
+    */
+    public getRootSensorNotificationsCount = () => this.router.get('/count/root/:id', (req: Request, res: Response) => {
+        this.notificationLogic.getRootNotificationsCount()
+            .then(response => {
+                // Sending the response            
+                Utils.sendRestResponse(response, res)
+            })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
+            })
+    })
 
     /**
      * Get the information about a enviromental device
@@ -51,19 +150,13 @@ class SensorNotificationRestRouter {
         const userId = parseInt(req.params.id);
 
         this.notificationLogic.getNotificationsByUserId(userId)
-            .then( response => {
-                res.status(200).send({
-                    http: 200,
-                    status: 'OK',
-                    response: response
-                })
+            .then(response => {
+                // Sending the response            
+                Utils.sendRestResponse(response, res)
             })
-            .catch( err => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
             })
     })
 
@@ -90,19 +183,13 @@ class SensorNotificationRestRouter {
         const notificationId = parseInt(req.params.id);
 
         this.notificationLogic.getSensorNotificationById(notificationId)
-            .then( response => {
-                res.status(200).send({
-                    http: 200,
-                    status: 'OK',
-                    response: response
-                })
+            .then(response => {
+                // Sending the response            
+                Utils.sendRestResponse(response, res)
             })
-            .catch( err => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
             })
     })
 
@@ -129,19 +216,13 @@ class SensorNotificationRestRouter {
         const sensorId = parseInt(req.params.id);
 
         this.notificationLogic.getSensorNotificationsBySensorId(sensorId)
-            .then( response => {
-                res.status(200).send({
-                    http: 200,
-                    status: 'OK',
-                    response: response
-                })
+            .then(response => {
+                // Sending the response            
+                Utils.sendRestResponse(response, res)
             })
-            .catch( err => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
             })
     })
 
@@ -164,7 +245,7 @@ class SensorNotificationRestRouter {
      * }
      * 
      */
-     public createSensorNotification = () => this.router.post('/', (req: Request, res: Response) => {
+    public createSensorNotification = () => this.router.post('/', (req: Request, res: Response) => {
         let notification = new SensorNotification();
 
         notification.setId(req.body.id)
@@ -174,8 +255,8 @@ class SensorNotificationRestRouter {
         notification.setMagnitude(req.body.magnitude);
 
         this.notificationLogic.createSensorNotification(notification)
-            .then( response => {
-                if(res.status(200)) {
+            .then(response => {
+                if (res.status(200)) {
                     // Sending the response
                     res.status(200).send({
                         http: 200,
@@ -192,7 +273,7 @@ class SensorNotificationRestRouter {
                     })
                 }
             })
-            .catch( err => {
+            .catch(err => {
                 res.status(401).send({
                     http: 401,
                     status: 'Error',
@@ -230,20 +311,13 @@ class SensorNotificationRestRouter {
         notification.setMagnitude(req.body.magnitude);
 
         this.notificationLogic.editSensorNotification(notification)
-            .then( (response: any) => {
-                // Sending the response
-                res.status(200).send({
-                    http: 200,
-                    status: 'OK',
-                    response: "network server updated"
-                })
+            .then(response => {
+                // Sending the response            
+                Utils.sendRestResponse(response, res)
             })
-            .catch( (err: any) => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
             })
     })
 
@@ -269,20 +343,13 @@ class SensorNotificationRestRouter {
         const notificationId = parseInt(req.params.id);
 
         this.notificationLogic.removeNotification(notificationId)
-            .then( (response: any) => {
-                // Sending the response
-                res.status(200).send({
-                    http: 200,
-                    status: 'OK',
-                    response: response
-                })
+            .then(response => {
+                // Sending the response            
+                Utils.sendRestResponse(response, res)
             })
-            .catch( (err: any) => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
             })
     })
 }

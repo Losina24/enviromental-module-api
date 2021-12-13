@@ -1,8 +1,8 @@
 /**
- * Name: EnviromentaDevice.ts
+ * Name: SensorNotification.ts
  * Date: 02 - 11 - 2021
- * Author: Alejandro Losa García
- * Description: Model for enviromental device feature
+ * Author: Daniel Poquet Ramirez
+ * Description: Model for sensor notifications
  */
 import Gateway from "../gateways/Gateway";
 import Sensor from "../sensor/Sensor";

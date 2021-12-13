@@ -72,7 +72,7 @@ export default class SensorDatabaseHandler {
                             resolve(Utils.generateLogicSuccess("sensor info retrieved succesfully", sensor))
                         }
                     } catch (error) {
-                        reject(error)
+                        reject(Utils.generateLogicError("error deleting sensor", error))
                     }
                     resolve(Utils.generateLogicSuccessEmpty("no sensor was found with given id"))
                 })
@@ -113,9 +113,85 @@ export default class SensorDatabaseHandler {
                             resolve(Utils.generateLogicSuccess("user sensors retrieved succesfully", sensors))
                         }
                     } catch (error) {
-                        reject(error)
+                        reject(Utils.generateLogicError("error deleting sensor", error))
                     }
                     resolve(Utils.generateLogicSuccessEmpty("user has no related sensors"))
+                })
+
+            })
+        })
+    }
+
+    /**
+     * Get all sensors from the database ( * COUNT * )
+     * getAllRootSensorsCountFromDB() -> [JSON]
+     *
+     * @returns
+     */
+    public getAllRootSensorsCountFromDB(): Promise<Sensor[]> {
+        var query = "SELECT COUNT(*) as count FROM sensor;";
+        return new Promise<Sensor[]>((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+
+                // If connection fails
+                if (error) {
+                    reject(Utils.generateLogicError("error getting root sensors count", error))
+                }
+
+                conn.query(query, (err: any, results: any) => {
+                    conn.release();
+                    // If connection fails
+                    if (err) {
+                        reject(Utils.generateLogicError("error getting root sensors count", error))
+                    }
+                    try {
+                        if (results[0].count != 0) {
+                            resolve(Utils.generateLogicSuccess("user devices count retrieved succesfully", results[0].count));
+                        } else {
+                            resolve(Utils.generateLogicSuccessEmpty("user has no related devices"));
+                        }
+                    } catch (error) {
+                        reject(Utils.generateLogicError("error getting root sensors", error))
+                    }
+                })
+
+            })
+        })
+    }
+
+    /**
+     * Get all sensors of a user from the database ( * COUNT * )
+     * councilId: N -> getAllAdminSensorsCountFromDB() -> [JSON]
+     *
+     * @param councilId - ID of the user that you want to get all enviromental devices
+     * @returns
+     */
+    public getAllAdminSensorsCountFromDB(councilId: number): Promise<Sensor[]> {
+        var query = "SELECT COUNT(*) as count FROM `gateway` INNER JOIN device ON device.gateway_id = gateway.id INNER JOIN " +
+            "sensor ON sensor.device_id=device.id WHERE gateway.council_id=" + councilId + ";";
+        return new Promise<Sensor[]>((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+
+                // If connection fails
+                if (error) {
+                    reject(Utils.generateLogicError("error getting admin sensors count", error))
+                }
+
+                conn.query(query, (err: any, results: any) => {
+                    conn.release();
+                    // If connection fails
+                    if (err) {
+                        reject(Utils.generateLogicError("error getting admin sensors count", error))
+                    }
+                    try {
+                        if (results[0].count != 0) {
+                            resolve(Utils.generateLogicSuccess("admin devices count retrieved succesfully", results[0].count));
+                        } else {
+                            resolve(Utils.generateLogicSuccessEmpty("admin has no related devices"));
+                        }
+                    } catch (error) {
+                        reject(Utils.generateLogicError("error getting admin sensors count", error))
+                    }
                 })
 
             })
@@ -148,14 +224,14 @@ export default class SensorDatabaseHandler {
                         reject(Utils.generateLogicError("error getting user sensors count", error))
                     }
                     try {
-                        if (results.length != 0) {
-                            let sensors: Sensor[] = this.queryResultsToSensors(results)
-                            resolve(Utils.generateLogicSuccess("user sensors retrieved succesfully", sensors))
+                        if (results[0].count != 0) {
+                            resolve(Utils.generateLogicSuccess("user devices count retrieved succesfully", results[0].count));
+                        } else {
+                            resolve(Utils.generateLogicSuccessEmpty("user has no related devices"));
                         }
                     } catch (error) {
-                        reject(error)
+                        reject(Utils.generateLogicError("error deleting sensor", error))
                     }
-                    resolve(Utils.generateLogicSuccessEmpty("user has no related sensors"))
                 })
 
             })
@@ -199,7 +275,7 @@ export default class SensorDatabaseHandler {
                             resolve(Utils.generateLogicSuccess("user sensors retrieved succesfully", sensors))
                         }
                     } catch (error) {
-                        reject(error)
+                        reject(Utils.generateLogicError("error deleting sensor", error))
                     }
                     resolve(Utils.generateLogicSuccessEmpty("user has no related sensors"))
                 })
@@ -241,7 +317,7 @@ export default class SensorDatabaseHandler {
                             resolve(Utils.generateLogicSuccess("council sensors retrieved succesfully", sensors))
                         }
                     } catch (error) {
-                        reject(error)
+                        reject(Utils.generateLogicError("error deleting sensor", error))
                     }
                     resolve(Utils.generateLogicSuccessEmpty("council has no related sensors"))
                 })
@@ -288,7 +364,7 @@ export default class SensorDatabaseHandler {
                             resolve(Utils.generateLogicSuccess("council sensors retrieved succesfully", sensors))
                         }
                     } catch (error) {
-                        reject(error)
+                        reject(Utils.generateLogicError("error deleting sensor", error))
                     }
                     resolve(Utils.generateLogicSuccessEmpty("council has no related sensors"))
                 })
@@ -308,6 +384,8 @@ export default class SensorDatabaseHandler {
         var query = "INSERT INTO `sensor` (`sensor_type_id`, `device_id`, `device_EUI`, `name`, `status`)" +
             " VALUES ('" + sensor.getType() + "', '" + sensor.getDeviceId() + "', '" + sensor.getDeviceEUI() + "', '" +
             sensor.getName() + "', '" + sensor.getStatus() + "');"
+        console.log(query);
+
         return new Promise<number>((resolve: any, reject: any) => {
             db.getConnection((error: any, conn: any) => {
 
@@ -318,6 +396,8 @@ export default class SensorDatabaseHandler {
 
                 conn.query(query, (err: any, results: any) => {
                     conn.release();
+                    console.log(results);
+
                     // If connection fails
                     if (err) {
                         reject(Utils.generateLogicError("error storing sensor", err))
@@ -329,7 +409,7 @@ export default class SensorDatabaseHandler {
                             resolve(Utils.generateLogicSuccessEmpty("sensor couldnt be created"))
                         }
                     } catch (error) {
-                        reject(error)
+                        reject(Utils.generateLogicError("error deleting sensor", error))
                     }
                 })
 
@@ -374,7 +454,7 @@ export default class SensorDatabaseHandler {
                             resolve(Utils.generateLogicSuccess("admin sensors retrieved succesfully", sensors))
                         }
                     } catch (error) {
-                        reject(error)
+                        reject(Utils.generateLogicError("error deleting sensor", error))
                     }
                     resolve(Utils.generateLogicSuccessEmpty("admin has no related sensors"))
                 })
@@ -417,7 +497,7 @@ export default class SensorDatabaseHandler {
                             resolve(Utils.generateLogicSuccess("admin sensors retrieved succesfully", sensors))
                         }
                     } catch (error) {
-                        reject(error)
+                        reject(Utils.generateLogicError("error deleting sensor", error))
                     }
                     resolve(Utils.generateLogicSuccessEmpty("admin has no related sensors"))
                 })
@@ -456,7 +536,7 @@ export default class SensorDatabaseHandler {
                             resolve(Utils.generateLogicSuccess("device sensors retrieved succesfully", sensors))
                         }
                     } catch (error) {
-                        reject(error)
+                        reject(Utils.generateLogicError("error deleting sensor", error))
                     }
                     resolve(Utils.generateLogicSuccessEmpty("device has no related sensors"))
                 })
@@ -494,7 +574,7 @@ export default class SensorDatabaseHandler {
                         }
                         resolve(Utils.generateLogicSuccess("sensor deleted succesfully", undefined))
                     } catch (error) {
-                        reject(error)
+                        reject(Utils.generateLogicError("error deleting sensor", error))
                     }
                 })
 

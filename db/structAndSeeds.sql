@@ -503,3 +503,31 @@ INSERT INTO `user_device` (`id`, `user_id`, `device_id`) VALUES (9, '2', '9');
 INSERT INTO `user_device` (`id`, `user_id`, `device_id`) VALUES (10, '2', '10');
 INSERT INTO `user_device` (`id`, `user_id`, `device_id`) VALUES (11, '3', '11');
 INSERT INTO `user_device` (`id`, `user_id`, `device_id`) VALUES (12, '3', '11');
+--
+-- network_server seeds
+--
+INSERT INTO `network_server` (`id`, `identifier`, `name`, `centralized`, `status`, `url`, `type`, `token`, `provider`) VALUES
+(9, 123, 'ns1', 1, 1, 'nsurl1', 'mqtt', 'nstok1', 'nsprov1'),
+(10, 1234, 'ns2', 1, 1, 'nsurl2', 'mqtt', 'nstok2', 'nsprov2'),
+(11, 12345, 'ns3', 1, 1, 'nsurl3', 'mqtt', 'nstok3', 'nsprov3'),
+(12, 123456, 'ns4', 1, 1, 'nsurl4', 'rest', 'nstok4', 'nsprov4');
+--
+-- gateway_network_server seeds
+--
+INSERT INTO `gateway_network_server` (`id`, `gateway_id`, `network_server_id`) VALUES
+(5, 2, 9),
+(6, 2, 10),
+(7, 3, 11),
+(8, 6, 12),
+(9, 4, 12),
+(10, 1, 11),
+(11, 6, 10),
+(12, 3, 9);
+--
+-- notification seeds
+--
+INSERT INTO `notification` (`id`, `sensor_id`, `body`, `subject`, `magnitude`) VALUES
+(5, 1, 'body1', 'subj1', 'yellow'),
+(6, 22, 'body2', 'subj2', 'red'),
+(7, 2, 'body3', 'subj3', 'green'),
+(8, 23, 'body4', 'subj4', 'yellow');

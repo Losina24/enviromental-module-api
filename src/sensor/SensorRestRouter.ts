@@ -22,6 +22,8 @@ class SensorRestRouter {
         this.getSensorById();
         this.getAllUserSensors();
         this.getAllUserSensorsCount();
+        this.getAllAdminSensorsCount();
+        this.getAllRootSensorsCount();
         this.getUserSensorPagination();
         this.getAllCouncilSensors();
         this.storeSensor();
@@ -53,14 +55,14 @@ class SensorRestRouter {
     public getSensorById = () => this.router.get('/:id', (req: Request, res: Response) => {
         const id = parseInt(req.params.id);
         this.sensorLogic.getSensorById(id)
-        .then(response => {
-            // Sending the response
-            Utils.sendRestResponse(response, res)
-        })
-        .catch(err => {
-            // Sending the response
-            Utils.sendRestResponse(err, res)
-        })
+            .then(response => {
+                // Sending the response
+                Utils.sendRestResponse(response, res)
+            })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
+            })
     })
 
     /**
@@ -86,14 +88,78 @@ class SensorRestRouter {
         const userId = parseInt(req.params.userId);
 
         this.sensorLogic.getAllUserSensors(userId)
-        .then(response => {
-            // Sending the response
-            Utils.sendRestResponse(response, res)
-        })
-        .catch(err => {
-            // Sending the response
-            Utils.sendRestResponse(err, res)
-        })
+            .then(response => {
+                // Sending the response
+                Utils.sendRestResponse(response, res)
+            })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
+            })
+    })
+
+    /**
+     * Get all sensors from root ( * COUNT * )
+     * GET /sensors/list/:userId
+     *
+     * Response: {
+     *  "http": 200,
+     *  "status": "OK",
+     *  "response": [
+        {
+            "_id": 1,
+            "_deviceEUI": "AS63126",
+            "_deviceId": 1,
+            "_name": "ambientalSensor1",
+            "_type": 1,
+            "_status": 1
+        }]
+     * }
+     *
+     */
+    public getAllRootSensorsCount = () => this.router.get('/count/root/:id', (req: Request, res: Response) => {
+        this.sensorLogic.getAllRootSensorsCount()
+            .then(response => {
+                // Sending the response
+                Utils.sendRestResponse(response, res)
+            })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
+            })
+    })
+
+    /**
+     * Get all sensors from admin ( * COUNT * )
+     * GET /sensors/list/:userId
+     *
+     * Response: {
+     *  "http": 200,
+     *  "status": "OK",
+     *  "response": [
+        {
+            "_id": 1,
+            "_deviceEUI": "AS63126",
+            "_deviceId": 1,
+            "_name": "ambientalSensor1",
+            "_type": 1,
+            "_status": 1
+        }]
+     * }
+     *
+     */
+    public getAllAdminSensorsCount = () => this.router.get('/count/admin/:councilId', (req: Request, res: Response) => {
+        const councilId = parseInt(req.params.councilId);
+
+        this.sensorLogic.getAllAdminSensorsCount(councilId)
+            .then(response => {
+                // Sending the response
+                Utils.sendRestResponse(response, res)
+            })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
+            })
     })
 
     /**
@@ -112,21 +178,21 @@ class SensorRestRouter {
             "_type": 1,
             "_status": 1
         }]
-     * }
-     *
-     */
-    public getAllUserSensorsCount = () => this.router.get('/count/list/:userId', (req: Request, res: Response) => {
+    * }
+    *
+    */
+    public getAllUserSensorsCount = () => this.router.get('/count/user/:userId', (req: Request, res: Response) => {
         const userId = parseInt(req.params.userId);
 
         this.sensorLogic.getAllUserSensorsCount(userId)
-        .then(response => {
-            // Sending the response
-            Utils.sendRestResponse(response, res)
-        })
-        .catch(err => {
-            // Sending the response
-            Utils.sendRestResponse(err, res)
-        })
+            .then(response => {
+                // Sending the response
+                Utils.sendRestResponse(response, res)
+            })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
+            })
     })
 
     /**
@@ -153,15 +219,15 @@ class SensorRestRouter {
         const pageSize = parseInt(req.params.pageSize);
         const pageIndex = parseInt(req.params.pageIndex);
 
-        this.sensorLogic.getUserSensorPagination(userId,pageSize,pageIndex)
-        .then(response => {
-            // Sending the response
-            Utils.sendRestResponse(response, res)
-        })
-        .catch(err => {
-            // Sending the response
-            Utils.sendRestResponse(err, res)
-        })
+        this.sensorLogic.getUserSensorPagination(userId, pageSize, pageIndex)
+            .then(response => {
+                // Sending the response
+                Utils.sendRestResponse(response, res)
+            })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
+            })
     })
 
     /**
@@ -187,14 +253,14 @@ class SensorRestRouter {
         const councilId = parseInt(req.params.councilId);
 
         this.sensorLogic.getAllCouncilSensors(councilId)
-        .then(response => {
-            // Sending the response
-            Utils.sendRestResponse(response, res)
-        })
-        .catch(err => {
-            // Sending the response
-            Utils.sendRestResponse(err, res)
-        })
+            .then(response => {
+                // Sending the response
+                Utils.sendRestResponse(response, res)
+            })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
+            })
     })
 
     /**
@@ -221,14 +287,14 @@ class SensorRestRouter {
         const pageIndex = parseInt(req.params.pageIndex);
 
         this.sensorLogic.getCouncilSensorPagination(councilId, pageSize, pageIndex)
-        .then(response => {
-            // Sending the response
-            Utils.sendRestResponse(response, res)
-        })
-        .catch(err => {
-            // Sending the response
-            Utils.sendRestResponse(err, res)
-        })
+            .then(response => {
+                // Sending the response
+                Utils.sendRestResponse(response, res)
+            })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
+            })
     })
 
     /**
@@ -247,10 +313,10 @@ class SensorRestRouter {
     public storeSensor = () => this.router.post('/', (req: Request, res: Response) => {
         let sensor = new Sensor()
         sensor.setDeviceId(req.body.deviceId)
-            sensor.setName(req.body.name)
-            sensor.setDeviceEUI(req.body.deviceEUI)
-            sensor.setType(req.body.type)
-            sensor.setStatus(req.body.status)
+        sensor.setName(req.body.name)
+        sensor.setDeviceEUI(req.body.deviceEUI)
+        sensor.setType(req.body.type)
+        sensor.setStatus(req.body.status)
         /*if(req.body.deviceId && req.body.name && req.body.deviceEUI && req.body.type && req.body.status){
             sensor.setDeviceId(req.body.deviceId)
             sensor.setName(req.body.name)
@@ -261,14 +327,16 @@ class SensorRestRouter {
             Utils.sendRestResponse(Utils.generateLogicSuccessEmpty("No body params found"), res)
         }*/
         this.sensorLogic.storeSensor(sensor)
-        .then(response => {
-            // Sending the response
-            Utils.sendRestResponse(response, res)
-        })
-        .catch(err => {
-            // Sending the response
-            Utils.sendRestResponse(err, res)
-        })
+            .then(response => {
+                // Sending the response
+                console.log(response);
+
+                console.log(Utils.sendRestResponse(response, res))
+            })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
+            })
     })
 
     /**
@@ -295,14 +363,14 @@ class SensorRestRouter {
         const pageIndex = parseInt(req.params.pageIndex);
 
         this.sensorLogic.getAdminSensorPagination(adminId, pageSize, pageIndex)
-        .then(response => {
-            // Sending the response
-            Utils.sendRestResponse(response, res)
-        })
-        .catch(err => {
-            // Sending the response
-            Utils.sendRestResponse(err, res)
-        })
+            .then(response => {
+                // Sending the response
+                Utils.sendRestResponse(response, res)
+            })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
+            })
     })
 
     /**
@@ -327,14 +395,14 @@ class SensorRestRouter {
         const adminId = parseInt(req.params.adminId);
 
         this.sensorLogic.getAdminAllSensors(adminId)
-        .then(response => {
-            // Sending the response
-            Utils.sendRestResponse(response, res)
-        })
-        .catch(err => {
-            // Sending the response
-            Utils.sendRestResponse(err, res)
-        })
+            .then(response => {
+                // Sending the response
+                Utils.sendRestResponse(response, res)
+            })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
+            })
     })
 
     /**
@@ -359,14 +427,14 @@ class SensorRestRouter {
         const deviceId = parseInt(req.params.deviceId);
 
         this.sensorLogic.getDeviceSensors(deviceId)
-        .then(response => {
-            // Sending the response
-            Utils.sendRestResponse(response, res)
-        })
-        .catch(err => {
-            // Sending the response
-            Utils.sendRestResponse(err, res)
-        })
+            .then(response => {
+                // Sending the response
+                Utils.sendRestResponse(response, res)
+            })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
+            })
     })
 
     /**

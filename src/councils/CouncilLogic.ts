@@ -39,6 +39,24 @@ export default class CouncilLogic {
     }
 
     /**
+     * Get root councils count
+     * getCouncilCount() -> council: Council
+     * 
+     * @returns 
+     */
+     public async getCouncilCount() : Promise<Council> {
+        return new Promise<Council>((resolve, reject) => {
+            this.councilDB.getCouncilCountFromDB()
+                .then( res => {
+                    resolve(res)
+                })
+                .catch( err => {
+                    reject(err)
+                })
+        })
+    }
+
+    /**
      * Create a new council
      * council: Council -> createCouncil()
      * 
@@ -49,11 +67,10 @@ export default class CouncilLogic {
         return new Promise((resolve, reject) => {
             this.councilDB.createCouncilInDB( council )
                 .then( res => {
-                    console.log("logicaRes")
-                    resolve()
+                    resolve(res)
                 })
                 .catch( err => {
-                    reject()
+                    reject(err)
                 })
         })
     }

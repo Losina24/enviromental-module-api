@@ -112,6 +112,45 @@ class UserLogic {
         });
     }
     /**
+     * Get all users from a council (* COUNT *)
+     * councilId: N -> getCouncilUsersCount() -> count: N
+     *
+     * @param councilId - ID of the council that you want to get all users from
+     * @returns
+     */
+    getCouncilUsersCount(councilId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.userDB.getCouncilUsersCountFromDB(councilId)
+                    .then(res => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
+     * Get all users (* COUNT *)
+     * getAllUsersCount() -> count: N
+     *
+     * @returns
+     */
+    getAllUsersCount() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.userDB.getAllUsersCountFromDB()
+                    .then(res => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
      * Create a new user
      * user: User -> createUser()
      *

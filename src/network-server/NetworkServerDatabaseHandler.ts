@@ -6,6 +6,7 @@
  */
 
 import db from "../database";
+import Utils from "../Utils";
 import NetworkServer from "./NetworkServer";
 
 export default class NetworkServerDatabaseHandler {
@@ -88,7 +89,7 @@ export default class NetworkServerDatabaseHandler {
     public async getUserNetworkServersByIdFromDB(userId: number): Promise<NetworkServer> {
         var query = "SELECT gateway.* FROM `user` INNER JOIN council ON user.council_id=council.id INNER JOIN " +
             "gateway ON gateway.council_id=council.id INNER JOIN gateway_network_server ON gateway_network_server.gateway_id=gateway.id" +
-            " WHERE user.id="+userId;
+            " WHERE user.id=" + userId;
 
         return new Promise<NetworkServer>((resolve: any, reject: any) => {
             db.getConnection((error: any, conn: any) => {
@@ -124,7 +125,87 @@ export default class NetworkServerDatabaseHandler {
     public async getUserNetworkServersByIdCountFromDB(userId: number): Promise<NetworkServer> {
         var query = "SELECT COUNT(*) as count FROM `user` INNER JOIN council ON user.council_id=council.id INNER JOIN " +
             "gateway ON gateway.council_id=council.id INNER JOIN gateway_network_server ON gateway_network_server.gateway_id=gateway.id" +
-            " WHERE user.id="+userId;
+            " WHERE user.id=" + userId;
+
+        return new Promise<NetworkServer>((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+
+                // If connection fails
+                if (error) {
+                    reject(Utils.generateLogicError("error getting admin network servers count", error))
+                }
+
+                conn.query(query, (err: any, results: any) => {
+                    conn.release();
+
+                    // If connection fails
+                    if (err) {
+                        reject(Utils.generateLogicError("error getting admin network servers count", err))
+                    }
+                    try {
+                        if (results[0].count != 0) {
+                            resolve(Utils.generateLogicSuccess("admin network servers count retrieved succesfully", results[0].count));
+                        } else {
+                            resolve(Utils.generateLogicSuccessEmpty("admin has no related network servers"));
+                        }
+                    } catch (error) {
+                        reject(Utils.generateLogicError("error getting admin network servers count", error))
+                    }
+                })
+
+            })
+        })
+    }
+
+    /**
+         * Get admin network servers ( * COUNT * )
+         * councilId: N -> getAdminNetworkServersFromDB() -> networkServers: NetworkServer[]
+         *
+         * @param councilId - ID of the council you want to get the network servers from
+         * @returns
+         */
+    public async getAdminNetworkServersFromDB(councilId: number): Promise<NetworkServer> {
+        var query = "SELECT COUNT(*) as count FROM `gateway` INNER JOIN gateway_network_server ON gateway_network_server.gateway_id=gateway.id INNER" +
+            " JOIN network_server ON network_server.id=gateway_network_server.network_server_id WHERE gateway.council_id=" + councilId;
+
+        return new Promise<NetworkServer>((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+
+                // If connection fails
+                if (error) {
+                    reject(Utils.generateLogicError("error getting admin network servers count", error))
+                }
+
+                conn.query(query, (err: any, results: any) => {
+                    conn.release();
+
+                    // If connection fails
+                    if (err) {
+                        reject(Utils.generateLogicError("error getting admin network servers count", err))
+                    }
+                    try {
+                        if (results[0].count != 0) {
+                            resolve(Utils.generateLogicSuccess("admin network servers count retrieved succesfully", results[0].count));
+                        } else {
+                            resolve(Utils.generateLogicSuccessEmpty("admin has no related network servers"));
+                        }
+                    } catch (error) {
+                        reject(Utils.generateLogicError("error getting admin network servers count", error))
+                    }
+                })
+
+            })
+        })
+    }
+
+    /**
+     * Get root network servers ( * COUNT * )
+     * getNetworkServersCountFromDB() -> networkServers: NetworkServer[]
+     *
+     * @returns
+     */
+    public async getNetworkServersCountFromDB(): Promise<NetworkServer> {
+        var query = "SELECT COUNT(*) as count FROM network_server";
 
         return new Promise<NetworkServer>((resolve: any, reject: any) => {
             db.getConnection((error: any, conn: any) => {
@@ -141,8 +222,15 @@ export default class NetworkServerDatabaseHandler {
                     if (err) {
                         reject(err)
                     }
-
-                    resolve(results)
+                    try {
+                        if (results[0].count != 0) {
+                            resolve(Utils.generateLogicSuccess("network servers count retrieved succesfully", results[0].count));
+                        } else {
+                            resolve(Utils.generateLogicSuccessEmpty("network servers has no related gateways"));
+                        }
+                    } catch (error) {
+                        reject(Utils.generateLogicError("error getting network servers count", error))
+                    }
                 })
 
             })
@@ -159,9 +247,9 @@ export default class NetworkServerDatabaseHandler {
     public createNetworkServerInDB(networkServer: NetworkServer): Promise<any> {
         // Hay que cambiar la columna 'mac' de la base de datos para que sea un varchar()
         var query = "INSERT INTO `network_server` (`identifier`, `name`, `centralized`, `status`, `url`, `type`, `token`, `provider`) VALUES ('"
-        +networkServer.getMac() + "', '" + networkServer.getName() +
-        "', " + networkServer.getCentralized() + ", " + networkServer.getStatus() + ", '" + networkServer.getUrl() + "', '" + networkServer.getType() +
-        "', '" + networkServer.getToken() + "', '" + networkServer.getProvider() + "');";
+            + networkServer.getMac() + "', '" + networkServer.getName() +
+            "', " + networkServer.getCentralized() + ", " + networkServer.getStatus() + ", '" + networkServer.getUrl() + "', '" + networkServer.getType() +
+            "', '" + networkServer.getToken() + "', '" + networkServer.getProvider() + "');";
 
         return new Promise<any>((resolve: any, reject: any) => {
             db.getConnection((error: any, conn: any) => {

@@ -76,6 +76,42 @@ export default class NetworkServerLogic {
     }
 
     /**
+     * Get admin network servers ( * COUNT * )
+     * councilId: N -> getAdminNetworkServerCount() -> networkServers: NetworkServer[]
+     *
+     * @returns
+     */
+     public async getAdminNetworkServerCount(councilId: number) : Promise<NetworkServer[]> {
+        return new Promise<NetworkServer[]>((resolve, reject) => {
+            this.networkServerDB.getAdminNetworkServersFromDB(councilId)
+                .then( (res: any) => {
+                    resolve(res)
+                })
+                .catch( err => {
+                    reject(err)
+                })
+        })
+    }
+
+    /**
+     * Get root network servers ( * COUNT * )
+     * getRootNetworkServerCount() -> networkServers: NetworkServer[]
+     *
+     * @returns
+     */
+     public async getRootNetworkServerCount() : Promise<NetworkServer[]> {
+        return new Promise<NetworkServer[]>((resolve, reject) => {
+            this.networkServerDB.getNetworkServersCountFromDB()
+                .then( (res: any) => {
+                    resolve(res)
+                })
+                .catch( err => {
+                    reject(err)
+                })
+        })
+    }
+
+    /**
      * Create a network server
      * networkServer: NetworkServer -> createNetworkServer() ->
      *

@@ -21,6 +21,7 @@ export default class Utils {
 	}
 
 	public static sendRestResponse(output:any, res: Response){
+		console.log(output)
 		res.status(output.http).send({
 			http: output.http,
 			message: output.message,

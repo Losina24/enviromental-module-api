@@ -6,6 +6,7 @@
  */
 
 import db from "../database";
+import Utils from "../Utils";
 import Council from "./Council";
 
 export default class CouncilDatabaseHandler {
@@ -25,32 +26,78 @@ export default class CouncilDatabaseHandler {
 
                 // If connection fails
                 if (error) {
-                    reject()
+                    reject(Utils.generateLogicError("error getting council", error))
                 }
 
                 conn.query(query, (err: any, results: any) => {
                     conn.release();
                     // If connection fails
                     if (err) {
-                        reject()
+                        reject(Utils.generateLogicError("error getting council", err))
                     }
-                    let council = new Council()
-                    if (results.length != 0) {
-                        council.setId(results[0].id)
-                        council.setName(results[0].name)
-                        council.setAddress(results[0].address)
-                        council.setPhone(results[0].phone_number);
-                        council.setEmail(results[0].email);
-                        council.setWeb(results[0].web);
-                        council.setPostalCode(results[0].postal_code);
-                        council.setIban(results[0].iban);
+
+                    try {
+                        let council = new Council()
+                        if (results.length != 0) {
+                            council.setId(results[0].id)
+                            council.setName(results[0].name)
+                            council.setAddress(results[0].address)
+                            council.setPhone(results[0].phone_number);
+                            council.setEmail(results[0].email);
+                            council.setWeb(results[0].web);
+                            council.setPostalCode(results[0].postal_code);
+                            council.setIban(results[0].iban);
+                            resolve(Utils.generateLogicSuccess("council retrieved succesfully", council));
+                        } else {
+                            resolve(Utils.generateLogicSuccessEmpty("no council found with given id"));
+                        }
+                    } catch (error) {
+                        reject(Utils.generateLogicError("error getting council", error))
                     }
-                    resolve(council)
                 })
 
             })
         })
     }
+
+    /**
+     * Get council information by given id
+     * councilId: N -> getCouncilCountFromDB() -> council: Council
+     *
+     * @param councilId - ID of the council you want to get data from
+     * @returns
+     */
+    public getCouncilCountFromDB(): Promise<Council> {
+        var query = "SELECT COUNT(*) as count FROM `council`;";
+        return new Promise<Council>((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+
+                // If connection fails
+                if (error) {
+                    reject(Utils.generateLogicError("error getting councils count", error))
+                }
+
+                conn.query(query, (err: any, results: any) => {
+                    conn.release();
+                    // If connection fails
+                    if (err) {
+                        reject(Utils.generateLogicError("error getting councils count", err))
+                    }
+                    try {
+                        if (results[0].count != 0) {
+                            resolve(Utils.generateLogicSuccess("councils count retrieved succesfully", results[0].count));
+                        } else {
+                            resolve(Utils.generateLogicSuccessEmpty("user has no related gateways"));
+                        }
+                    } catch (error) {
+                        reject(Utils.generateLogicError("error getting councils count", error))
+                    }
+                })
+
+            })
+        })
+    }
+
 
     /**
      * Create a new council
@@ -61,30 +108,33 @@ export default class CouncilDatabaseHandler {
      */
     public createCouncilInDB(council: Council): Promise<void> {
         var query = "INSERT INTO `council` (`name`, `address`, `phone_number`, `email`, `web`, `postal_code`, `iban`) " +
-            "VALUES ('"+council.getName()+"', '"+council.getAddress()+"', '"+council.getPhone()+"', '"+council.getEmail()+"', '"+
-            council.getWeb()+"', '"+council.getPostalCode()+"', '"+council.getIban()+"');"
+            "VALUES ('" + council.getName() + "', '" + council.getAddress() + "', '" + council.getPhone() + "', '" + council.getEmail() + "', '" +
+            council.getWeb() + "', '" + council.getPostalCode() + "', '" + council.getIban() + "');"
         console.log(query)
         return new Promise((resolve: any, reject: any) => {
             db.getConnection((error: any, conn: any) => {
 
                 // If connection fails
                 if (error) {
-                    reject()
+                    reject(Utils.generateLogicError("error getting council", error))
                 }
 
                 conn.query(query, (err: any, results: any) => {
                     conn.release();
                     // If connection fails
                     if (err) {
-                        console.log(err)
-                        reject()
+                        reject(Utils.generateLogicError("error getting council", err))
                     }
-                    console.log(results)
 
-                    if (results != undefined){
-                        resolve(results.insertId)
+                    try {
+                        if (results != undefined) {
+                            resolve(Utils.generateLogicSuccess("council created succesfully", results.insertId));
+                        } else {
+                            resolve(Utils.generateLogicSuccessEmpty("council couldn't be created"));
+                        }
+                    } catch (error) {
+                        reject(Utils.generateLogicError("error getting council", error))
                     }
-                    resolve()
                 })
 
             })
@@ -98,27 +148,32 @@ export default class CouncilDatabaseHandler {
      * @returns
      */
     public editCouncilInDB(council: Council): Promise<void> {
-        console.log("edit council db handler")
-        var query = "UPDATE council SET name = '"+council.getName()+"', address = '"+council.getAddress()+"', phone_number = '"+council.getPhone()+"'," +
-            "email = '"+council.getEmail()+"', web = '"+council.getWeb()+"', postal_code = '"+council.getPostalCode()+"', iban = '"+council.getIban()+"'" +
-            " WHERE id ="+council.getId()+";"
+        var query = "UPDATE council SET name = '" + council.getName() + "', address = '" + council.getAddress() + "', phone_number = '" + council.getPhone() + "'," +
+            "email = '" + council.getEmail() + "', web = '" + council.getWeb() + "', postal_code = '" + council.getPostalCode() + "', iban = '" + council.getIban() + "'" +
+            " WHERE id =" + council.getId() + ";"
         return new Promise<void>((resolve: any, reject: any) => {
             db.getConnection((error: any, conn: any) => {
 
                 // If connection fails
                 if (error) {
-                    reject()
+                    reject(Utils.generateLogicError("error updating council", error))
                 }
 
                 conn.query(query, (err: any, results: any) => {
                     conn.release();
                     // If connection fails
                     if (err) {
-                        console.log(err)
-                        reject()
+                        reject(Utils.generateLogicError("error updating council", err))
                     }
-
-                    resolve()
+                    try {
+                        if (results.affectedRows == 1) {
+                            resolve(Utils.generateLogicSuccess("council info update succesfully", council));
+                        } else {
+                            resolve(Utils.generateLogicSuccessEmpty("council couldn't be updated"));
+                        }
+                    } catch (error) {
+                        reject(Utils.generateLogicError("error updating council", error))
+                    }
                 })
 
             })
@@ -138,17 +193,24 @@ export default class CouncilDatabaseHandler {
 
                 // If connection fails
                 if (error) {
-                    reject()
+                    reject(Utils.generateLogicError("error deleting council", error))
                 }
 
                 conn.query(query, (err: any, results: any) => {
                     conn.release();
                     // If connection fails
                     if (err) {
-                        reject()
+                        reject(Utils.generateLogicError("error deleting council", err))
                     }
-
-                    resolve()
+                    try {
+                        if (results.affectedRows == 1) {
+                            resolve(Utils.generateLogicSuccess("council deleted succesfully", true));
+                        } else {
+                            resolve(Utils.generateLogicSuccessEmpty("council couldn't be deleted"));
+                        }
+                    } catch (error) {
+                        reject(Utils.generateLogicError("error deleting council", error))
+                    }
                 })
 
             })

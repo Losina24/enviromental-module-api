@@ -58,6 +58,45 @@ export default class SensorLogic {
     }
 
     /**
+     * Get all root sensors ( * COUNT * )
+     * userId: N -> getAllRootSensorsCount() -> [Sensor]
+     *
+     * @returns
+     */
+     public async getAllRootSensorsCount(): Promise<Sensor[]> {
+        return new Promise<Sensor[]>((resolve, reject) => {
+            this.sensorDB.getAllRootSensorsCountFromDB()
+                .then( res => {
+                    //console.log("logicaRes")
+                    resolve(res)
+                })
+                .catch( err => {
+                    reject(err)
+                })
+        })
+    }
+
+    /**
+     * Get all admin sensors ( * COUNT * )
+     * councilId: N -> getAllAdminSensorsCount() -> [Sensor]
+     *
+     * @param councilId - ID of the council that you want to get all sensors from
+     * @returns
+     */
+     public async getAllAdminSensorsCount( councilId: number ): Promise<Sensor[]> {
+        return new Promise<Sensor[]>((resolve, reject) => {
+            this.sensorDB.getAllAdminSensorsCountFromDB( councilId )
+                .then( res => {
+                    //console.log("logicaRes")
+                    resolve(res)
+                })
+                .catch( err => {
+                    reject(err)
+                })
+        })
+    }
+
+    /**
      * Get all user sensors ( * COUNT * )
      * userId: N -> getAllUserSensors() -> [Sensor]
      *

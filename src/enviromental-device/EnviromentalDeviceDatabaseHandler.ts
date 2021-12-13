@@ -20,7 +20,7 @@ export default class EnviromentalDeviceDatabaseHandler {
 
             device.setId(element.id)
             device.setName(element.name);
-            device.setDeviceEUI(element.identifier);
+            device.setDeviceEUI(element.device_EUI);
             device.setGatewayId(element.gateway_id);
             device.setCoords([element.latitude, element.longitude]);
             device.setStatus(element.status);
@@ -60,14 +60,14 @@ export default class EnviromentalDeviceDatabaseHandler {
 
                             device.setId(results[0].id)
                             device.setName(results[0].name);
-                            device.setDeviceEUI(results[0].identifier);
+                            device.setDeviceEUI(results[0].device_EUI);
                             device.setGatewayId(results[0].gateway_id);
                             device.setCoords([results[0].latitude, results[0].longitude]);
                             device.setStatus(results[0].status);
                             resolve(Utils.generateLogicSuccess("device found with the given id", device))
                         }
                     } catch (error) {
-                        reject(error)
+                        reject(Utils.generateLogicError("error getting device", error))
                     }
                     resolve(Utils.generateLogicSuccessEmpty("no device found with the given id"))
                 })
@@ -109,7 +109,7 @@ export default class EnviromentalDeviceDatabaseHandler {
                             resolve(Utils.generateLogicSuccessEmpty("user has no related devices"));
                         }
                     } catch (error) {
-                        reject(error)
+                        reject(Utils.generateLogicError("error getting all user devices", error))
                     }
                 })
 
@@ -118,7 +118,91 @@ export default class EnviromentalDeviceDatabaseHandler {
     }
 
     /**
-     * Get all enviroment devices of a user from the database ( * COUNT * )
+     * Get all root enviromental devices from the database ( * COUNT * )
+     * userId: N -> getAllUserDevicesFromDB() -> [JSON]
+     *
+     * @returns
+     */
+    public getAllRootDevicesCountFromDB(): Promise<EnviromentalDevice[]> {
+        var query = "SELECT count(*) as count FROM device;"
+
+        return new Promise<EnviromentalDevice[]>((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+
+                // If connection fails
+                if (error) {
+                    reject(Utils.generateLogicError("error getting root user devices count", error))
+                }
+
+                conn.query(query, (err: any, results: any) => {
+                    conn.release();
+
+                    // If connection fails
+                    if (err) {
+                        reject(Utils.generateLogicError("error getting root user devices count", err))
+                    }
+                    try {
+                        console.log("results.count")
+
+                        console.log(results[0].count)
+
+                        if (results[0].count != 0) {
+                            resolve(Utils.generateLogicSuccess("root user devices count retrieved succesfully", results[0].count));
+                        } else {
+                            resolve(Utils.generateLogicSuccessEmpty("root user has no related devices"));
+                        }
+                    } catch (error) {
+                        reject(Utils.generateLogicError("error getting root user devices count", error))
+                    }
+                })
+            })
+        })
+    }
+
+    /**
+ * Get all admin enviromental devices from the database ( * COUNT * )
+ * userId: N -> getAllUserDevicesFromDB() -> [JSON]
+ *
+ * @param userId - ID of the user that you want to get all enviromental devices
+ * @returns
+ */
+    public getAllAdminDevicesCountFromDB(councilId: number): Promise<EnviromentalDevice[]> {
+        var query = "SELECT COUNT(*) as count FROM `gateway` INNER JOIN device ON device.gateway_id = gateway.id  WHERE gateway.council_id=" + councilId + ";"
+        return new Promise<EnviromentalDevice[]>((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+
+                // If connection fails
+                if (error) {
+                    reject(Utils.generateLogicError("error getting admin user devices count", error))
+                }
+
+                conn.query(query, (err: any, results: any) => {
+                    conn.release();
+
+                    // If connection fails
+                    if (err) {
+                        reject(Utils.generateLogicError("error getting admin user devices count", err))
+                    }
+                    try {
+                        console.log("results.count")
+
+                        console.log(results[0].count)
+
+                        if (results[0].count != 0) {
+                            resolve(Utils.generateLogicSuccess("admin user devices count retrieved succesfully", results[0].count));
+                        } else {
+                            resolve(Utils.generateLogicSuccessEmpty("admin user has no related devices"));
+                        }
+                    } catch (error) {
+                        reject(Utils.generateLogicError("error getting admin user devices count", err))
+                    }
+                })
+            })
+        })
+    }
+
+    /**
+     * Get all enviromental devices of a user from the database ( * COUNT * )
      * userId: N -> getAllUserDevicesFromDB() -> [JSON]
      *
      * @param userId - ID of the user that you want to get all enviromental devices
@@ -159,6 +243,7 @@ export default class EnviromentalDeviceDatabaseHandler {
             })
         })
     }
+
 
     /**
      * Get enviromental devices from a user in a pagination format
@@ -462,6 +547,53 @@ export default class EnviromentalDeviceDatabaseHandler {
                     })
                 } else {
                     reject(Utils.generateLogicError("error getting council devices", undefined))
+                }
+            })
+        })
+    }
+
+    /**
+     * Get enviromental devices from an admin
+     * adminId: N, pageSize: N, pageIndex: N -> getAdminDevicePaginationFromDB() -> [JSON]
+     *
+     * @param adminId - ID of the admin that you want to get all enviromental devices
+     * @param pageSize - Number of devices returned by the request
+     * @param pageIndex - Index of the page that you want to receive from the request
+     * @returns
+     */
+    public updateEnviromentalDevice(enviromentalDevice: EnviromentalDevice): Promise<EnviromentalDevice[]> {
+
+        var query = "UPDATE device SET device_EUI = '" + enviromentalDevice.getDeviceEUI() + "', gateway_id= '" + enviromentalDevice.getGatewayId() +
+            "', name = '" + enviromentalDevice.getName() + "', latitude='" + enviromentalDevice.getLatitude() + "', longitude='" +
+            enviromentalDevice.getLongitude() + "', status='" + enviromentalDevice.getStatus() + "' WHERE id = " + enviromentalDevice.getId() + ";"
+
+        return new Promise<EnviromentalDevice[]>((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+
+                // If connection fails
+                if (error) {
+                    reject(Utils.generateLogicError("error updating device", error))
+                }
+                if (conn) {
+                    conn.query(query, (err: any, results: any) => {
+                        conn.release();
+
+                        // If connection fails
+                        if (err) {
+                            reject(Utils.generateLogicError("error updating device", err))
+                        }
+                        try {
+                            if (results.affectedRows == 1) {
+                                resolve(Utils.generateLogicSuccess("device updated successfully", enviromentalDevice));
+                            } else {
+                                resolve(Utils.generateLogicSuccessEmpty("device has not been updated"));
+                            }
+                        } catch (error) {
+                            reject(Utils.generateLogicError("error updating device", err))
+                        }
+                    })
+                } else {
+                    reject(Utils.generateLogicError("error updating device", undefined))
                 }
             })
         })

@@ -6,6 +6,7 @@
  */
 
 import db from "../database";
+import Utils from "../Utils";
 import User from "./User";
 
 export default class UserDatabaseHandler {
@@ -21,21 +22,21 @@ export default class UserDatabaseHandler {
      */
     public loginCheckDB(email: string, password: string): Promise<User> {
         console.log("getSensorDB")
-        var query = "SELECT * FROM `user` WHERE `email` = '" + email + "' AND `password` = '"+ password + "';";
+        var query = "SELECT * FROM `user` WHERE `email` = '" + email + "' AND `password` = '" + password + "';";
         console.log(query)
         return new Promise<User>((resolve: any, reject: any) => {
             db.getConnection((error: any, conn: any) => {
 
                 // If connection fails
                 if (error) {
-                    reject()
+                    reject(Utils.generateLogicError("error on login", error))
                 }
 
                 conn.query(query, (err: any, results: any) => {
                     conn.release();
                     // If connection fails
                     if (err) {
-                        reject()
+                        reject(Utils.generateLogicError("error on login", err))
                     }
 
                     if (results.length == 1) {
@@ -52,9 +53,84 @@ export default class UserDatabaseHandler {
                         user.setEmail(results[0].email);
                         user.setPostalCode(results[0].postal_code);
 
-                        resolve(user)
-                    } else if (results.length == 0){
-                        resolve()
+                        resolve(Utils.generateLogicSuccess("user logged in successfully", user))
+                    } else if (results.length == 0) {
+                        resolve(Utils.generateLogicSuccessEmpty("user login failed"))
+                    }
+                })
+
+            })
+        })
+    }
+
+    /**
+     * Get council users from db (* COUNT *)
+     * getCouncilUsersCountFromDB() -> count: N
+     *
+     * @returns
+     */
+     public getCouncilUsersCountFromDB(councilId: number): Promise<User> {
+        var query = "SELECT COUNT(*) as count FROM `user` WHERE council_id="+councilId;
+        return new Promise<User>((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+
+                // If connection fails
+                if (error) {
+                    reject(Utils.generateLogicError("error getting council users", error))
+                }
+
+                conn.query(query, (err: any, results: any) => {
+                    conn.release();
+                    // If connection fails
+                    if (err) {
+                        reject(Utils.generateLogicError("error getting council users", err))
+                    }
+                    try {
+                        if (results[0].count != 0) {
+                            resolve(Utils.generateLogicSuccess("council users retrieved succesfully", results[0].count));
+                        } else {
+                            resolve(Utils.generateLogicSuccessEmpty("no users found"));
+                        }
+                    } catch (error) {
+                        reject(Utils.generateLogicError("error getting council users", error))
+                    }
+                })
+
+            })
+        })
+    }
+
+    /**
+     * Get all users from db (* COUNT *)
+     * getAllUsersCountFromDB() -> count: N
+     *
+     * @returns
+     */
+    public getAllUsersCountFromDB(): Promise<User> {
+        var query = "SELECT COUNT(*) as count FROM `user`";
+        console.log(query)
+        return new Promise<User>((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+
+                // If connection fails
+                if (error) {
+                    reject(Utils.generateLogicError("error getting all users", error))
+                }
+
+                conn.query(query, (err: any, results: any) => {
+                    conn.release();
+                    // If connection fails
+                    if (err) {
+                        reject(Utils.generateLogicError("error getting all users", err))
+                    }
+                    try {
+                        if (results[0].count != 0) {
+                            resolve(Utils.generateLogicSuccess("all users retrieved succesfully", results[0].count));
+                        } else {
+                            resolve(Utils.generateLogicSuccessEmpty("no users found"));
+                        }
+                    } catch (error) {
+                        reject(Utils.generateLogicError("error getting all users", error))
                     }
                 })
 
@@ -78,14 +154,14 @@ export default class UserDatabaseHandler {
 
                 // If connection fails
                 if (error) {
-                    reject()
+                    reject(Utils.generateLogicError("error retrieving user", error))
                 }
 
                 conn.query(query, (err: any, results: any) => {
                     conn.release();
                     // If connection fails
                     if (err) {
-                        reject()
+                        reject(Utils.generateLogicError("error retrieving user", err))
                     }
                     let user = new User()
                     if (results.length != 0) {
@@ -99,9 +175,10 @@ export default class UserDatabaseHandler {
                         user.setPhone(results[0].phone_number);
                         user.setEmail(results[0].email);
                         user.setPostalCode(results[0].postal_code);
+                        resolve(Utils.generateLogicSuccess("user retrieved successfully", user))
 
                     }
-                    resolve(user)
+                    resolve(Utils.generateLogicSuccessEmpty("no user found with given id"))
                 })
 
             })
@@ -118,30 +195,30 @@ export default class UserDatabaseHandler {
     public createUserInDB(user: User): Promise<void> {
 
         var query = "INSERT INTO `user` (`role_id`, `council_id`, `name`, `surnames`, `password`, `address`," +
-            " `phone_number`, `email`, `postal_code`) VALUES ('"+user.getRoleId()+"', '"+user.getCouncilId()+"', " +
-            "'"+user.getName()+"','"+user.getSurnames()+"', '"+user.getPassword()+"', '"+user.getAddress()+"'," +
-            " '"+user.getPhone()+"', '"+user.getEmail()+"', '"+user.getPostalCode()+"');"
+            " `phone_number`, `email`, `postal_code`) VALUES ('" + user.getRoleId() + "', '" + user.getCouncilId() + "', " +
+            "'" + user.getName() + "','" + user.getSurnames() + "', '" + user.getPassword() + "', '" + user.getAddress() + "'," +
+            " '" + user.getPhone() + "', '" + user.getEmail() + "', '" + user.getPostalCode() + "');"
         console.log(query)
         return new Promise((resolve: any, reject: any) => {
             db.getConnection((error: any, conn: any) => {
 
                 // If connection fails
                 if (error) {
-                    reject()
+                    reject(Utils.generateLogicError("error creating user", error))
                 }
 
                 conn.query(query, (err: any, results: any) => {
                     conn.release();
                     // If connection fails
                     if (err) {
-                        reject()
+                        reject(Utils.generateLogicError("error creating user", err))
                     }
                     console.log(results)
 
-                    if (results != undefined){
-                        resolve(results.insertId)
+                    if (results != undefined) {
+                        resolve(Utils.generateLogicSuccess("user created successfully", results.insertId))
                     }
-                    resolve()
+                    resolve(Utils.generateLogicSuccessEmpty("user couldnt't be created"))
                 })
 
             })
@@ -155,23 +232,23 @@ export default class UserDatabaseHandler {
      * @returns
      */
     public editUserInDB(user: User): Promise<void> {
-        var query = "UPDATE User SET role_id = '"+user.getRoleId()+"', council_id = '"+user.getCouncilId()+"'," +
-            "name = '"+user.getName()+"', surnames = '"+user.getSurnames()+"', password = '"+user.getPassword()+"'," +
-            "address = '"+user.getAddress()+"', phone_number = '"+user.getPhone()+"', email = '"+user.getEmail()+"'," +
-            "postal_code = '"+user.getPostalCode()+"' WHERE id = '"+user.getId()+"';"
+        var query = "UPDATE User SET role_id = '" + user.getRoleId() + "', council_id = '" + user.getCouncilId() + "'," +
+            "name = '" + user.getName() + "', surnames = '" + user.getSurnames() + "', password = '" + user.getPassword() + "'," +
+            "address = '" + user.getAddress() + "', phone_number = '" + user.getPhone() + "', email = '" + user.getEmail() + "'," +
+            "postal_code = '" + user.getPostalCode() + "' WHERE id = '" + user.getId() + "';"
         return new Promise<void>((resolve: any, reject: any) => {
             db.getConnection((error: any, conn: any) => {
 
                 // If connection fails
                 if (error) {
-                    reject()
+                    reject(Utils.generateLogicError("error updating user data", error))
                 }
 
                 conn.query(query, (err: any, results: any) => {
                     conn.release();
                     // If connection fails
                     if (err) {
-                        reject()
+                        reject(Utils.generateLogicError("error updating user data", err))
                     }
 
                     resolve()
@@ -194,17 +271,23 @@ export default class UserDatabaseHandler {
 
                 // If connection fails
                 if (error) {
-                    reject()
+                    reject(Utils.generateLogicError("error removing user", error))
                 }
 
                 conn.query(query, (err: any, results: any) => {
                     conn.release();
                     // If connection fails
                     if (err) {
-                        reject()
+                        reject(Utils.generateLogicError("error removing user", err))
                     }
-
-                    resolve()
+                    try {
+                        if (results.affectedRows == 0) {
+                            resolve(Utils.generateLogicSuccessEmpty("no user was found with given id"))
+                        }
+                        resolve(Utils.generateLogicSuccess("user removed succesfully", undefined))
+                    } catch (error) {
+                        reject(Utils.generateLogicError("error removing user", error))
+                    }
                 })
 
             })
@@ -217,7 +300,7 @@ export default class UserDatabaseHandler {
      * @param councilId - ID of the council we want to get the users from
      * @returns
      */
-    public getCouncilUsersFromDB(councilId: number): Promise<User[]>{
+    public getCouncilUsersFromDB(councilId: number): Promise<User[]> {
         var query = "SELECT * FROM `user` WHERE council_id = " + councilId;
         console.log(query)
         return new Promise<User[]>((resolve: any, reject: any) => {
@@ -225,14 +308,14 @@ export default class UserDatabaseHandler {
 
                 // If connection fails
                 if (error) {
-                    reject()
+                    reject(Utils.generateLogicError("error retrieving council users", error))
                 }
 
                 conn.query(query, (err: any, results: any) => {
                     conn.release();
                     // If connection fails
                     if (err) {
-                        reject()
+                        reject(Utils.generateLogicError("error retrieving council users", err))
                     }
 
                     var users: User[] = []
@@ -252,8 +335,9 @@ export default class UserDatabaseHandler {
                             user.setPostalCode(res.postal_code);
                             users.push(user)
                         })
+                        resolve(Utils.generateLogicSuccess("council users retrieved successfully", user))
                     }
-                    resolve(users)
+                    resolve(Utils.generateLogicSuccessEmpty("council has no related users"))
                 })
 
             })

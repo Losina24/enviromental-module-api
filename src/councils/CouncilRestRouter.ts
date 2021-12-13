@@ -23,6 +23,7 @@ class CouncilRestRouter {
         this.createCouncil();
         this.editCouncil();
         this.removeCouncil();
+        this.getCouncilCount();
     }
 
     /**
@@ -50,22 +51,39 @@ class CouncilRestRouter {
     public getCouncilById = () => this.router.get('/:id', (req: Request, res: Response) => {
         const id = parseInt(req.params.id);
         this.councilLogic.getCouncilById(id)
-            .then( response => {
-                res.status(200).send({
-                    http: 200,
-                    status: 'OK',
-                    response: response
-                })
+            .then(response => {
+                // Sending the response            
+                Utils.sendRestResponse(response, res)
             })
-            .catch( err => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
             })
     })
 
+    /**
+     * Get user information by given id
+     * GET /count/root/:id
+     *
+     * Response: {
+            "http": 200,
+            "status": "OK",
+            "response": {
+            }
+     * }
+     *
+     */
+    public getCouncilCount = () => this.router.get('/count/root/:id', (req: Request, res: Response) => {
+        this.councilLogic.getCouncilCount()
+            .then(response => {
+                // Sending the response            
+                Utils.sendRestResponse(response, res)
+            })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
+            })
+    })
 
     /**
      * Create a new user
@@ -90,20 +108,13 @@ class CouncilRestRouter {
         council.setIban(req.body.iban);
 
         this.councilLogic.createCouncil(council)
-            .then( (response: any) => {
-                // Sending the response
-                res.status(200).send({
-                    http: 200,
-                    status: 'OK',
-                    response: response
-                })
+            .then(response => {
+                // Sending the response            
+                Utils.sendRestResponse(response, res)
             })
-            .catch( (err: any) => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
             })
     })
 
@@ -126,10 +137,10 @@ class CouncilRestRouter {
      * }
      *
      */
-    public editCouncil = () => this.router.put('/', (req: Request, res: Response) => {
+    public editCouncil = () => this.router.put('/:councilId', (req: Request, res: Response) => {
         let council = new Council()
 
-        council.setId(req.body.id)
+        council.setId(parseInt(req.params.councilId))
         council.setName(req.body.name)
         council.setAddress(req.body.address)
         council.setPhone(req.body.phoneNumber);
@@ -139,20 +150,13 @@ class CouncilRestRouter {
         council.setIban(req.body.iban);
 
         this.councilLogic.editCouncil(council)
-            .then( (response: any) => {
-                // Sending the response
-                res.status(200).send({
-                    http: 200,
-                    status: 'OK',
-                    response: response
-                })
+            .then(response => {
+                // Sending the response            
+                Utils.sendRestResponse(response, res)
             })
-            .catch( (err: any) => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
             })
     })
 
@@ -178,20 +182,13 @@ class CouncilRestRouter {
         const councilId = parseInt(req.params.id);
 
         this.councilLogic.removeCouncil(councilId)
-            .then( (response: any) => {
-                // Sending the response
-                res.status(200).send({
-                    http: 200,
-                    status: 'OK',
-                    response: response
-                })
+            .then(response => {
+                // Sending the response            
+                Utils.sendRestResponse(response, res)
             })
-            .catch( (err: any) => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
             })
     })
 

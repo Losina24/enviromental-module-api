@@ -52,7 +52,7 @@ class Server {
         this.app.use('/'+ this.version +'/gateway', gatewayRestRouter);
 
         // Network server
-        this.app.use('/'+ this.version +'/NS', networkServerRestRouter);
+        this.app.use('/'+ this.version +'/network_servers', networkServerRestRouter);
 
         // Notifications
         this.app.use('/'+ this.version +'/notifications', sensorNotificationRestRouter);

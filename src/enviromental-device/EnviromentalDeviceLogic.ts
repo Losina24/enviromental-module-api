@@ -25,16 +25,16 @@ export default class EnviromentaDeviceLogic {
      * @param deviceId - ID of the enviromental device you want to get data from
      * @returns 
      */
-    public async getDeviceById( deviceId: number ) : Promise<EnviromentalDevice> {        
+    public async getDeviceById(deviceId: number): Promise<EnviromentalDevice> {
         return new Promise<EnviromentalDevice>((resolve, reject) => {
-            this.enviromentalDeviceDB.getDeviceByIdFromDB( deviceId )
-                .then( res => {
+            this.enviromentalDeviceDB.getDeviceByIdFromDB(deviceId)
+                .then(res => {
                     resolve(res)
                 })
-                .catch( err => {
+                .catch(err => {
                     reject(err)
                 })
-        })   
+        })
     }
 
     /**
@@ -44,16 +44,53 @@ export default class EnviromentaDeviceLogic {
      * @param userId - ID of the user that you want to get all enviromental devices
      * @returns 
      */
-    public async getAllUserDevices( userId: number ): Promise<EnviromentalDevice[]> {
+    public async getAllUserDevices(userId: number): Promise<EnviromentalDevice[]> {
         return new Promise<EnviromentalDevice[]>((resolve, reject) => {
-            this.enviromentalDeviceDB.getAllUserDevicesFromDB( userId )
-                .then( res => {
+            this.enviromentalDeviceDB.getAllUserDevicesFromDB(userId)
+                .then(res => {
                     resolve(res)
                 })
-                .catch( err => {
+                .catch(err => {
                     reject(err)
                 })
-        }) 
+        })
+    }
+
+    /**
+    * Get all enviroment devices of root ( * COUNT * )
+    * getAllUserDevices() -> [EnviromentalDevice]
+    *
+    * @returns
+    */
+    public async getAllRootDevicesCount(): Promise<EnviromentalDevice[]> {
+        return new Promise<EnviromentalDevice[]>((resolve, reject) => {
+            this.enviromentalDeviceDB.getAllRootDevicesCountFromDB()
+                .then(res => {
+                    resolve(res)
+                })
+                .catch(err => {
+                    reject(err)
+                })
+        })
+    }
+
+    /**
+    * Get all enviroment devices of admin ( * COUNT * )
+    * councilId: N -> getAllUserDevices() -> [EnviromentalDevice]
+    *
+    * @param councilId - ID of the council you want to get all enviromental devices from
+    * @returns
+    */
+    public async getAllAdminDevicesCount(councilId: number): Promise<EnviromentalDevice[]> {
+        return new Promise<EnviromentalDevice[]>((resolve, reject) => {
+            this.enviromentalDeviceDB.getAllAdminDevicesCountFromDB(councilId)
+                .then(res => {
+                    resolve(res)
+                })
+                .catch(err => {
+                    reject(err)
+                })
+        })
     }
 
     /**
@@ -63,13 +100,13 @@ export default class EnviromentaDeviceLogic {
      * @param userId - ID of the user that you want to get all enviromental devices
      * @returns
      */
-    public async getAllUserDevicesCount( userId: number ): Promise<EnviromentalDevice[]> {
+    public async getAllUserDevicesCount(userId: number): Promise<EnviromentalDevice[]> {
         return new Promise<EnviromentalDevice[]>((resolve, reject) => {
-            this.enviromentalDeviceDB.getAllUserDevicesCountFromDB( userId )
-                .then( res => {
+            this.enviromentalDeviceDB.getAllUserDevicesCountFromDB(userId)
+                .then(res => {
                     resolve(res)
                 })
-                .catch( err => {
+                .catch(err => {
                     reject(err)
                 })
         })
@@ -84,13 +121,13 @@ export default class EnviromentaDeviceLogic {
      * @param pageIndex - Index of the page that you want to receive from the request
      * @returns 
      */
-    public async getUserDevicePagination( userId: number, pageSize: number, pageIndex: number ): Promise<EnviromentalDevice[]> {
+    public async getUserDevicePagination(userId: number, pageSize: number, pageIndex: number): Promise<EnviromentalDevice[]> {
         return new Promise<EnviromentalDevice[]>((resolve, reject) => {
-            this.enviromentalDeviceDB.getUserDevicePaginationFromDB( userId, pageSize, pageIndex )
-                .then( res => {
+            this.enviromentalDeviceDB.getUserDevicePaginationFromDB(userId, pageSize, pageIndex)
+                .then(res => {
                     resolve(res)
                 })
-                .catch( err => {
+                .catch(err => {
                     reject(err)
                 })
         })
@@ -103,16 +140,16 @@ export default class EnviromentaDeviceLogic {
      * @param councilId - ID of the council that you want to get all enviromental devices
      * @returns 
      */
-    public async getAllCouncilDevices( councilId: number ): Promise<EnviromentalDevice[]> {
+    public async getAllCouncilDevices(councilId: number): Promise<EnviromentalDevice[]> {
         return new Promise<EnviromentalDevice[]>((resolve, reject) => {
-            this.enviromentalDeviceDB.getAllCouncilDevicesFromDB( councilId )
-                .then( res => {
+            this.enviromentalDeviceDB.getAllCouncilDevicesFromDB(councilId)
+                .then(res => {
                     resolve(res)
                 })
-                .catch( err => {
+                .catch(err => {
                     reject(err)
                 })
-        }) 
+        })
     }
 
     /**
@@ -122,16 +159,16 @@ export default class EnviromentaDeviceLogic {
      * @param gatewayId - ID of the gateway that you want to get all enviromental devices
      * @returns 
      */
-    public async getAllGatewayDevices( gatewayId: number ): Promise<EnviromentalDevice[]> {
+    public async getAllGatewayDevices(gatewayId: number): Promise<EnviromentalDevice[]> {
         return new Promise<EnviromentalDevice[]>((resolve, reject) => {
-            this.enviromentalDeviceDB.getGatewayDevicesFromDB( gatewayId )
-                .then( res => {
+            this.enviromentalDeviceDB.getGatewayDevicesFromDB(gatewayId)
+                .then(res => {
                     resolve(res)
                 })
-                .catch( err => {
+                .catch(err => {
                     reject(err)
                 })
-        }) 
+        })
     }
 
     /**
@@ -141,17 +178,37 @@ export default class EnviromentaDeviceLogic {
      * @param enviromentalDevice - Enviromental device you want to store in the database
      * @returns 
      */
-    public async storeDevice( enviromentalDevice: EnviromentalDevice, userId: any ): Promise<any> {
+    public async storeDevice(enviromentalDevice: EnviromentalDevice, userId: any): Promise<any> {
         return new Promise<any>(async (resolve, reject) => {
             await this.enviromentalDeviceDB.storeDeviceInDB(enviromentalDevice, userId)
-                .then( res => {
+                .then(res => {
                     resolve(res)
                 })
-                .catch( err => {
+                .catch(err => {
                     reject(err)
                 })
         })
     }
+
+    /**
+     * Save an enviromental device
+     * enviromentalDevice: EnviromentalDevice -> storeDevice() -> boolean
+     * 
+     * @param enviromentalDevice - Enviromental device you want to store in the database
+     * @returns 
+     */
+    public async updateDevice(enviromentalDevice: EnviromentalDevice): Promise<any> {
+        return new Promise<any>(async (resolve, reject) => {
+            await this.enviromentalDeviceDB.updateEnviromentalDevice(enviromentalDevice)
+                .then(res => {
+                    resolve(res)
+                })
+                .catch(err => {
+                    reject(err)
+                })
+        })
+    }
+
 
     /**
      * Get enviromental devices from an admin
@@ -162,16 +219,16 @@ export default class EnviromentaDeviceLogic {
      * @param pageIndex - Index of the page that you want to receive from the request
      * @returns 
      */
-    public async getAdminDevicePagination( adminId: number, pageSize: number, pageIndex: number) : Promise<EnviromentalDevice[]> {
+    public async getAdminDevicePagination(adminId: number, pageSize: number, pageIndex: number): Promise<EnviromentalDevice[]> {
         return new Promise<EnviromentalDevice[]>((resolve, reject) => {
-            this.enviromentalDeviceDB.getAdminDevicePaginationFromDB( adminId, pageSize, pageIndex )
-                .then( res => {
+            this.enviromentalDeviceDB.getAdminDevicePaginationFromDB(adminId, pageSize, pageIndex)
+                .then(res => {
                     resolve(res)
                 })
-                .catch( err => {
+                .catch(err => {
                     reject(err)
                 })
-        }) 
+        })
     }
 
     /**
@@ -183,13 +240,13 @@ export default class EnviromentaDeviceLogic {
      * @param pageIndex - Index of the page that you want to receive from the request
      * @returns 
      */
-    public async getCouncilDevicePagination( councilId: number, pageSize: number, pageIndex: number) : Promise<EnviromentalDevice[]> {
+    public async getCouncilDevicePagination(councilId: number, pageSize: number, pageIndex: number): Promise<EnviromentalDevice[]> {
         return new Promise<EnviromentalDevice[]>((resolve, reject) => {
-            this.enviromentalDeviceDB.getAdminDevicePaginationFromDB( councilId, pageSize, pageIndex )
-                .then( res => {
+            this.enviromentalDeviceDB.getAdminDevicePaginationFromDB(councilId, pageSize, pageIndex)
+                .then(res => {
                     resolve(res)
                 })
-                .catch( err => {
+                .catch(err => {
                     reject(err)
                 })
         })
@@ -204,11 +261,11 @@ export default class EnviromentaDeviceLogic {
      */
     public async removeDevice(deviceId: number): Promise<void> {
         return new Promise<void>((resolve, reject) => {
-            this.enviromentalDeviceDB.removeDeviceInDB( deviceId )
-                .then( res => {
+            this.enviromentalDeviceDB.removeDeviceInDB(deviceId)
+                .then(res => {
                     resolve(res)
                 })
-                .catch( err => {
+                .catch(err => {
                     reject(err)
                 })
         })

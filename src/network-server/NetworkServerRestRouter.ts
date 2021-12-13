@@ -23,6 +23,8 @@ class NetworkServerRestRouter {
         this.getNetworkServerById();
         this.getUserNetworkServersById();
         this.getUserNetworkServersCountById();
+        this.getRootNetworkServersCount();
+        this.getAdminNetworkServersCount();
         this.createNetworkServer();
         this.editNetworkServer();
         this.removeNetworkServer();
@@ -39,18 +41,65 @@ class NetworkServerRestRouter {
      * }
      * 
      */
+    public getRootNetworkServersCount = () => this.router.get('/count/root/:id', (req: Request, res: Response) => {
+        const id = parseInt(req.params.id);
+
+        this.networkServerLogic.getRootNetworkServerCount()
+            .then(response => {
+                // Sending the response            
+                Utils.sendRestResponse(response, res)
+            })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
+            })
+    })
+
+    /**
+     * Get user network servers ( * COUNT * )
+     * councilId: N -> getUserNetworkServersCountById() -> networkServers: NetworkServer[]
+     *
+     * @param councilId - ID of the user you want to get the network servers from
+     * @returns
+     */
+    public getUserNetworkServersCountById = () => this.router.get('/count/user/:councilId', (req: Request, res: Response) => {
+        const id = parseInt(req.params.id);
+
+        this.networkServerLogic.getUserNetworkServersCountById(id)
+            .then(response => {
+                // Sending the response            
+                Utils.sendRestResponse(response, res)
+            })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
+            })
+    })
+
+
+    /**
+     * Get the information about a enviromental device
+     * GET /device/:id
+     * 
+     * Response: {
+     *  "http": 200,
+     *  "status": "OK",
+     *  "response": {}
+     * }
+     * 
+     */
     public getNetworkServerById = () => this.router.get('/:id', (req: Request, res: Response) => {
         const id = parseInt(req.params.id);
 
         this.networkServerLogic.getNetworkServerById(id)
-            .then( response => {
+            .then(response => {
                 res.status(200).send({
                     http: 200,
                     status: 'OK',
                     response: response
                 })
             })
-            .catch( err => {
+            .catch(err => {
                 res.status(401).send({
                     http: 401,
                     status: 'Error',
@@ -70,14 +119,14 @@ class NetworkServerRestRouter {
         const id = parseInt(req.params.id);
 
         this.networkServerLogic.getUserNetworkServersById(id)
-            .then( response => {
+            .then(response => {
                 res.status(200).send({
                     http: 200,
                     status: 'OK',
                     response: response
                 })
             })
-            .catch( err => {
+            .catch(err => {
                 res.status(401).send({
                     http: 401,
                     status: 'Error',
@@ -87,29 +136,25 @@ class NetworkServerRestRouter {
     })
 
     /**
-     * Get user network servers ( * COUNT * )
-     * userId: N -> getUserNetworkServersById() -> networkServers: NetworkServer[]
+     * Get admin network servers ( * COUNT * )
+     * councilId: N -> getAdminNetworkServersCount() -> networkServers: NetworkServer[]
      *
-     * @param userId - ID of the user you want to get the network servers from
+     * @param councilId - ID of the council you want to get the network servers from
      * @returns
      */
-    public getUserNetworkServersCountById = () => this.router.get('/count/user/list/:id', (req: Request, res: Response) => {
-        const id = parseInt(req.params.id);
+    public getAdminNetworkServersCount = () => this.router.get('/count/council/:councilId', (req: Request, res: Response) => {
+        const councilId = parseInt(req.params.councilId);
+        console.log(councilId);
 
-        this.networkServerLogic.getUserNetworkServersCountById(id)
-            .then( response => {
-                res.status(200).send({
-                    http: 200,
-                    status: 'OK',
-                    response: response
-                })
+
+        this.networkServerLogic.getAdminNetworkServerCount(councilId)
+            .then(response => {
+                // Sending the response            
+                Utils.sendRestResponse(response, res)
             })
-            .catch( err => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
             })
     })
 
@@ -132,7 +177,7 @@ class NetworkServerRestRouter {
      * }
      * 
      */
-     public createNetworkServer = () => this.router.post('/', (req: Request, res: Response) => {
+    public createNetworkServer = () => this.router.post('/', (req: Request, res: Response) => {
         let networkServer = new NetworkServer();
 
         networkServer.setMac(req.body.identifier)
@@ -144,8 +189,8 @@ class NetworkServerRestRouter {
         networkServer.setToken(req.body.token);
 
         this.networkServerLogic.createNetworkServer(networkServer)
-            .then( response => {
-                if(res.status(200)) {
+            .then(response => {
+                if (res.status(200)) {
                     // Sending the response
                     res.status(200).send({
                         http: 200,
@@ -162,7 +207,7 @@ class NetworkServerRestRouter {
                     })
                 }
             })
-            .catch( err => {
+            .catch(err => {
                 res.status(401).send({
                     http: 401,
                     status: 'Error',
@@ -196,7 +241,7 @@ class NetworkServerRestRouter {
         networkServer.setProvider(req.body.provider);
 
         this.networkServerLogic.editNetworkServer(networkServer)
-            .then( (response: any) => {
+            .then((response: any) => {
                 // Sending the response
                 res.status(200).send({
                     http: 200,
@@ -204,7 +249,7 @@ class NetworkServerRestRouter {
                     response: "network server updated"
                 })
             })
-            .catch( (err: any) => {
+            .catch((err: any) => {
                 res.status(401).send({
                     http: 401,
                     status: 'Error',
@@ -228,7 +273,7 @@ class NetworkServerRestRouter {
         const gatewayId = parseInt(req.params.id);
 
         this.networkServerLogic.removeNetworkServer(gatewayId)
-            .then( (response: any) => {
+            .then((response: any) => {
                 // Sending the response
                 res.status(200).send({
                     http: 200,
@@ -236,7 +281,7 @@ class NetworkServerRestRouter {
                     response: response
                 })
             })
-            .catch( (err: any) => {
+            .catch((err: any) => {
                 res.status(401).send({
                     http: 401,
                     status: 'Error',

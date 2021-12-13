@@ -1,4 +1,4 @@
-var chai = require('chai');
+/*var chai = require('chai');
 var expect = chai.expect;    // Using Expect style
 // mod.cjs
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
@@ -230,4 +230,4 @@ describe('Test funcionalidad dispositivos', function () {
         var response = await fetch('http://localhost:8080/v2/enviromental/devices/council/X/X/X');
         expect(response.status).to.be.equal(400);
     });
-})
+})*/

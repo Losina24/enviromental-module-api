@@ -23,6 +23,8 @@ class GatewayRestRouter {
         this.getGatewayById();
         this.getUserGateways();
         this.getUserGatewaysCount();
+        this.getAdminGatewaysCount();
+        this.getRootGatewaysCount();
         this.getAllCouncilGateways();
         this.getCouncilGatewayPagination();
         this.editGateway()
@@ -48,14 +50,14 @@ class GatewayRestRouter {
     public getGatewayById = () => this.router.get('/:id', (req: Request, res: Response) => {
         const id = parseInt(req.params.id);
         this.gatewayLogic.getGatewayById(id)
-            .then( response => {
+            .then(response => {
                 res.status(200).send({
                     http: 200,
                     status: 'OK',
                     response: response
                 })
             })
-            .catch( err => {
+            .catch(err => {
                 res.status(401).send({
                     http: 401,
                     status: 'Error',
@@ -66,7 +68,7 @@ class GatewayRestRouter {
 
     /**
      * Get user related gateways
-     * GET /gateway/fromUser/:id
+     * GET /gateway/user/:id
      *
      * Response: {
             "http": 200,
@@ -76,17 +78,17 @@ class GatewayRestRouter {
      * }
      *
      */
-    public getUserGateways = () => this.router.get('/fromUser/:userId', (req: Request, res: Response) => {
+    public getUserGateways = () => this.router.get('/user/:userId', (req: Request, res: Response) => {
         const id = parseInt(req.params.userId);
         this.gatewayLogic.getUserGateways(id)
-            .then( response => {
+            .then(response => {
                 res.status(200).send({
                     http: 200,
                     status: 'OK',
                     response: response
                 })
             })
-            .catch( err => {
+            .catch(err => {
                 res.status(401).send({
                     http: 401,
                     status: 'Error',
@@ -98,7 +100,7 @@ class GatewayRestRouter {
 
     /**
      * Get user related gateways ( * COUNT * )
-     * GET /gateway/count/fromUser/:id
+     * GET /gateway/count/user/:userId
      *
      * Response: {
             "http": 200,
@@ -108,22 +110,66 @@ class GatewayRestRouter {
      * }
      *
      */
-    public getUserGatewaysCount = () => this.router.get('/count/fromUser/:userId', (req: Request, res: Response) => {
+    public getUserGatewaysCount = () => this.router.get('/count/user/:userId', (req: Request, res: Response) => {
         const id = parseInt(req.params.userId);
         this.gatewayLogic.getUserGatewaysCount(id)
-            .then( response => {
-                res.status(200).send({
-                    http: 200,
-                    status: 'OK',
-                    response: response
-                })
+            .then(response => {
+                // Sending the response            
+                Utils.sendRestResponse(response, res)
             })
-            .catch( err => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
+            })
+    })
+
+    /**
+     * Get admin related gateways ( * COUNT * )
+     * GET /gateway/count/admin/:councilId
+     *
+     * Response: {
+            "http": 200,
+            "status": "OK",
+            "response": {
+            }
+     * }
+     *
+     */
+    public getAdminGatewaysCount = () => this.router.get('/count/admin/:councilId', (req: Request, res: Response) => {
+        const councilId = parseInt(req.params.councilId);
+        this.gatewayLogic.getAdminGatewaysCount(councilId)
+            .then(response => {
+                // Sending the response            
+                Utils.sendRestResponse(response, res)
+            })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
+            })
+    })
+
+    /**
+    * Get user related gateways ( * COUNT * )
+    * GET /gateway/count/root/:id
+    *
+    * Response: {
+        "http": 200,
+        "status": "OK",
+        "response": {
+        }
+    * }
+    *
+    */
+    public getRootGatewaysCount = () => this.router.get('/count/root/:id', (req: Request, res: Response) => {
+        const id = parseInt(req.params.userId);
+        this.gatewayLogic.getRootGatewaysCount()
+            .then(response => {
+                // Sending the response            
+                Utils.sendRestResponse(response, res)
+            })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
             })
     })
 
@@ -143,14 +189,14 @@ class GatewayRestRouter {
         console.log("getAllCouncilGateways")
         const id = parseInt(req.params.id);
         this.gatewayLogic.getAllCouncilGateways(id)
-            .then( response => {
+            .then(response => {
                 res.status(200).send({
                     http: 200,
                     status: 'OK',
                     response: response
                 })
             })
-            .catch( err => {
+            .catch(err => {
                 res.status(401).send({
                     http: 401,
                     status: 'Error',
@@ -175,15 +221,15 @@ class GatewayRestRouter {
         const pageSize = parseInt(req.params.pageSize);
         const pageIndex = parseInt(req.params.pageIndex);
 
-        this.gatewayLogic.getCouncilGatewayPagination(councilId,pageSize,pageIndex)
-            .then( response => {
+        this.gatewayLogic.getCouncilGatewayPagination(councilId, pageSize, pageIndex)
+            .then(response => {
                 res.status(200).send({
                     http: 200,
                     status: 'OK',
                     response: response
                 })
             })
-            .catch( err => {
+            .catch(err => {
                 res.status(401).send({
                     http: 401,
                     status: 'Error',
@@ -206,14 +252,14 @@ class GatewayRestRouter {
     public getGatewaysFromNetworkServerInDB = () => this.router.get('/fromNS/list/:id', (req: Request, res: Response) => {
         const networkServerId = parseInt(req.params.id);
         this.gatewayLogic.getGatewaysFromNetworkServer(networkServerId)
-            .then( response => {
+            .then(response => {
                 res.status(200).send({
                     http: 200,
                     status: 'OK',
                     response: response
                 })
             })
-            .catch( err => {
+            .catch(err => {
                 res.status(401).send({
                     http: 401,
                     status: 'Error',
@@ -238,11 +284,11 @@ class GatewayRestRouter {
         gateway.setMac(req.body.mac)
         gateway.setName(req.body.name)
         gateway.setCouncilId(req.body.councilId);
-        gateway.setCoords([req.body.latitude,req.body.longitude]);
+        gateway.setCoords([req.body.latitude, req.body.longitude]);
         gateway.setStatus(req.body.status);
 
         this.gatewayLogic.storeGateway(gateway)
-            .then( (response: any) => {
+            .then((response: any) => {
                 // Sending the response
                 res.status(200).send({
                     http: 200,
@@ -250,7 +296,7 @@ class GatewayRestRouter {
                     response: response
                 })
             })
-            .catch( (err: any) => {
+            .catch((err: any) => {
                 res.status(401).send({
                     http: 401,
                     status: 'Error',
@@ -271,8 +317,8 @@ class GatewayRestRouter {
      */
     public addNetworkServerToGateway = () => this.router.post('/NS/link/:gatewayId/:networkServerId', (req: Request, res: Response) => {
         var params = req.params
-        this.gatewayLogic.addNetworkServersToGateway(parseInt(params.gatewayId),parseInt(params.networkServerId))
-            .then( (response: any) => {
+        this.gatewayLogic.addNetworkServersToGateway(parseInt(params.gatewayId), parseInt(params.networkServerId))
+            .then((response: any) => {
                 // Sending the response
                 res.status(200).send({
                     http: 200,
@@ -280,7 +326,7 @@ class GatewayRestRouter {
                     response: response
                 })
             })
-            .catch( (err: any) => {
+            .catch((err: any) => {
                 res.status(401).send({
                     http: 401,
                     status: 'Error',
@@ -315,11 +361,11 @@ class GatewayRestRouter {
         gateway.setMac(req.body.mac)
         gateway.setName(req.body.name)
         gateway.setCouncilId(req.body.councilId);
-        gateway.setCoords([req.body.latitude,req.body.longitude]);
+        gateway.setCoords([req.body.latitude, req.body.longitude]);
         gateway.setStatus(req.body.status);
 
         this.gatewayLogic.editGateway(gateway)
-            .then( (response: any) => {
+            .then((response: any) => {
                 // Sending the response
                 res.status(200).send({
                     http: 200,
@@ -327,7 +373,7 @@ class GatewayRestRouter {
                     response: response
                 })
             })
-            .catch( (err: any) => {
+            .catch((err: any) => {
                 res.status(401).send({
                     http: 401,
                     status: 'Error',
@@ -351,8 +397,8 @@ class GatewayRestRouter {
         const gatewayId = parseInt(req.params.gatewayId);
         const networkServerId = parseInt(req.params.networkServerId);
 
-        this.gatewayLogic.removeNetworkServerFromGateway(gatewayId,networkServerId)
-            .then( (response: any) => {
+        this.gatewayLogic.removeNetworkServerFromGateway(gatewayId, networkServerId)
+            .then((response: any) => {
                 // Sending the response
                 res.status(200).send({
                     http: 200,
@@ -360,7 +406,7 @@ class GatewayRestRouter {
                     response: response
                 })
             })
-            .catch( (err: any) => {
+            .catch((err: any) => {
                 res.status(401).send({
                     http: 401,
                     status: 'Error',
@@ -383,7 +429,7 @@ class GatewayRestRouter {
         const gatewayId = parseInt(req.params.id);
 
         this.gatewayLogic.removeGateway(gatewayId)
-            .then( (response: any) => {
+            .then((response: any) => {
                 // Sending the response
                 res.status(200).send({
                     http: 200,
@@ -391,7 +437,7 @@ class GatewayRestRouter {
                     response: response
                 })
             })
-            .catch( (err: any) => {
+            .catch((err: any) => {
                 res.status(401).send({
                     http: 401,
                     status: 'Error',

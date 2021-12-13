@@ -1,8 +1,8 @@
 /**
- * Name: EnviromentaDeviceLogic.ts
+ * Name: SensorNotification.ts
  * Date: 02 - 11 - 2021
- * Author: Alejandro Losa García
- * Description: Manages the logic of the enviromental device feature
+ * Author: Daniel Poquet Ramirez
+ * Description: Manages sensor notifications logic
  */
 
 import SensorNotificationDatabaseHandler from "./SensorNotificationDatabaseHandler";
@@ -18,6 +18,7 @@ export default class SensorNotificationLogic {
     }
 
     // Logic Methods 
+
     /**
      * Get the information about a enviromental device given their ID
      * userId: N -> getDeviceById() -> EnviromentalDevice
@@ -25,32 +26,70 @@ export default class SensorNotificationLogic {
      * @param deviceId - ID of the enviromental device you want to get data from
      * @returns 
      */
-    public async getNotificationsByUserId( userId: number ) : Promise<SensorNotification> {
+    public async getUserNotificationsCount(userId: number): Promise<SensorNotification> {
         return new Promise<SensorNotification>((resolve, reject) => {
-            this.notificationDB.getNotificationsByUserIdFromDB( userId )
-                .then( res => {
+            this.notificationDB.getUserNotificationsCountFromDB(userId)
+                .then(res => {
                     resolve(res)
                 })
-                .catch( err => {
+                .catch(err => {
                     reject(err)
                 })
-        })   
+        })
     }
 
     /**
      * Get the information about a enviromental device given their ID
      * userId: N -> getDeviceById() -> EnviromentalDevice
-     *
+     * 
      * @param deviceId - ID of the enviromental device you want to get data from
-     * @returns
+     * @returns 
      */
-    public async getSensorNotificationById( notificationId: number ) : Promise<SensorNotification> {
+    public async getAdminNotificationsCount(councilId: number): Promise<SensorNotification> {
         return new Promise<SensorNotification>((resolve, reject) => {
-            this.notificationDB.getSensorNotificationByIdFromDB( notificationId )
-                .then( res => {
+            this.notificationDB.getAdminNotificationsCountFromDB(councilId)
+                .then(res => {
                     resolve(res)
                 })
-                .catch( err => {
+                .catch(err => {
+                    reject(err)
+                })
+        })
+    }
+
+    /**
+     * Get the information about a enviromental device given their ID
+     * userId: N -> getDeviceById() -> EnviromentalDevice
+     * 
+     * @param deviceId - ID of the enviromental device you want to get data from
+     * @returns 
+     */
+    public async getRootNotificationsCount(): Promise<SensorNotification> {
+        return new Promise<SensorNotification>((resolve, reject) => {
+            this.notificationDB.getRootNotificationsCountFromDB()
+                .then(res => {
+                    resolve(res)
+                })
+                .catch(err => {
+                    reject(err)
+                })
+        })
+    }
+
+    /**
+     * Get the information about a enviromental device given their ID
+     * userId: N -> getDeviceById() -> EnviromentalDevice
+     * 
+     * @param deviceId - ID of the enviromental device you want to get data from
+     * @returns 
+     */
+    public async getNotificationsByUserId(userId: number): Promise<SensorNotification> {
+        return new Promise<SensorNotification>((resolve, reject) => {
+            this.notificationDB.getNotificationsByUserIdFromDB(userId)
+                .then(res => {
+                    resolve(res)
+                })
+                .catch(err => {
                     reject(err)
                 })
         })
@@ -63,13 +102,32 @@ export default class SensorNotificationLogic {
      * @param deviceId - ID of the enviromental device you want to get data from
      * @returns
      */
-    public async getSensorNotificationsBySensorId( sensorId: number ) : Promise<SensorNotification> {
+    public async getSensorNotificationById(notificationId: number): Promise<SensorNotification> {
         return new Promise<SensorNotification>((resolve, reject) => {
-            this.notificationDB.getSensorNotificationsBySensorIdFromDB( sensorId )
-                .then( res => {
+            this.notificationDB.getSensorNotificationByIdFromDB(notificationId)
+                .then(res => {
                     resolve(res)
                 })
-                .catch( err => {
+                .catch(err => {
+                    reject(err)
+                })
+        })
+    }
+
+    /**
+     * Get the information about a enviromental device given their ID
+     * userId: N -> getDeviceById() -> EnviromentalDevice
+     *
+     * @param deviceId - ID of the enviromental device you want to get data from
+     * @returns
+     */
+    public async getSensorNotificationsBySensorId(sensorId: number): Promise<SensorNotification> {
+        return new Promise<SensorNotification>((resolve, reject) => {
+            this.notificationDB.getSensorNotificationsBySensorIdFromDB(sensorId)
+                .then(res => {
+                    resolve(res)
+                })
+                .catch(err => {
                     reject(err)
                 })
         })
@@ -82,13 +140,13 @@ export default class SensorNotificationLogic {
      * @param enviromentalDevice - Enviromental device you want to store in the database
      * @returns 
      */
-    public async createSensorNotification( notification: SensorNotification ): Promise<any> {
+    public async createSensorNotification(notification: SensorNotification): Promise<any> {
         return new Promise<any>((resolve, reject) => {
             this.notificationDB.createSensorNotificationInDB(notification)
-                .then( res => {
+                .then(res => {
                     resolve(res)
                 })
-                .catch( err => {
+                .catch(err => {
                     reject(err)
                 })
         })
@@ -103,16 +161,16 @@ export default class SensorNotificationLogic {
      * @param pageIndex - Index of the page that you want to receive from the request
      * @returns 
      */
-    public async editSensorNotification( notification: SensorNotification) : Promise<any> {
+    public async editSensorNotification(notification: SensorNotification): Promise<any> {
         return new Promise<any>((resolve, reject) => {
-            this.notificationDB.editSensorNotificationInDB( notification )
-                .then( res => {
+            this.notificationDB.editSensorNotificationInDB(notification)
+                .then(res => {
                     resolve(res)
                 })
-                .catch( err => {
+                .catch(err => {
                     reject(err)
                 })
-        }) 
+        })
     }
 
     /**
@@ -124,13 +182,13 @@ export default class SensorNotificationLogic {
      * @param pageIndex - Index of the page that you want to receive from the request
      * @returns 
      */
-    public async removeNotification( notificationId: number ) : Promise<any> {
+    public async removeNotification(notificationId: number): Promise<any> {
         return new Promise<any>((resolve, reject) => {
-            this.notificationDB.removeNotificationInDB( notificationId )
-                .then( res => {
+            this.notificationDB.removeNotificationInDB(notificationId)
+                .then(res => {
                     resolve(res)
                 })
-                .catch( err => {
+                .catch(err => {
                     reject(err)
                 })
         })

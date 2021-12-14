@@ -13,7 +13,7 @@ This repository contains an API for an IoT management platform. It is developed 
   - [**Measures**](#measures)
 - [**Deployment**](#deployment)
 - [**Testing**](#testing)
-- 
+
 # **Pre requirements**
 This API is being developed using `Node.js` and `TypeScript` so you need to be installed `npm`. 
 

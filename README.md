@@ -598,6 +598,7 @@ To upload the code to production, you just have to drag the files into the `/bui
 
 
 # **Testing**
+To run the automatized tests follow the next steps.
 ```
 cd <path-to-directory>/enviromental-module-api
 npm run test

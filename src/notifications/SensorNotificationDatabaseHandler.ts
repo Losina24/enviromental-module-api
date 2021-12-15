@@ -39,9 +39,7 @@ export default class SensorNotificationDatabaseHandler {
      * @param userId - the id of the user you want to get the notifications from
      * @returns
      */
-    public async getRootNotificationsCountFromDB(
-
-    ): Promise<SensorNotification> {
+    public async getRootNotificationsCountFromDB(): Promise<SensorNotification> {
         var query = "SELECT COUNT(*) as count FROM notification;";
 
         return new Promise<SensorNotification>((resolve: any, reject: any) => {
@@ -82,11 +80,10 @@ export default class SensorNotificationDatabaseHandler {
      * @returns
      */
     public async getAdminNotificationsCountFromDB(councilId: number): Promise<SensorNotification> {
-        var query = "SELECT COUNT(*) as count FROM `gateway` INNER JOIN device ON device.gateway_id = gateway.id INNER JOIN "+
-        "sensor ON sensor.device_id=device.id INNER JOIN notification ON sensor.id=notification.sensor_id WHERE gateway.council_id=" 
-        + councilId + ";";
-        console.log(query);
-        
+        var query = "SELECT COUNT(*) as count FROM `gateway` INNER JOIN device ON device.gateway_id = gateway.id INNER JOIN " +
+            "sensor ON sensor.device_id=device.id INNER JOIN notification ON sensor.id=notification.sensor_id WHERE gateway.council_id="
+            + councilId + ";";
+
 
         return new Promise<SensorNotification>((resolve: any, reject: any) => {
             db.getConnection((error: any, conn: any) => {
@@ -125,39 +122,174 @@ export default class SensorNotificationDatabaseHandler {
      * @param userId - the id of the user you want to get the notifications from
      * @returns
      */
+    public async getAdminSensorNotificationsPaginatedFromDB(councilId: number, pageSize: number, pageIndex: number): Promise<SensorNotification> {
+        const firstValue = (pageSize * pageIndex) - pageSize;
+        const secondValue = (pageSize * pageIndex);
+
+        var query = "SELECT * FROM `gateway` INNER JOIN device ON device.gateway_id = gateway.id INNER JOIN " +
+            "sensor ON sensor.device_id=device.id INNER JOIN notification ON sensor.id=notification.sensor_id WHERE gateway.council_id="
+            + councilId + " ORDER BY notification.id DESC LIMIT " + firstValue + ', ' + secondValue;
+
+        return new Promise<SensorNotification>((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+
+                // If connection fails
+                if (error) {
+                    reject(Utils.generateLogicError("error getting admin notifications", error))
+                }
+
+                conn.query(query, (err: any, results: any) => {
+                    conn.release();
+
+                    // If connection fails
+                    if (err) {
+                        reject(Utils.generateLogicError("error getting admin notifications", err))
+                    }
+
+                    try {
+                        if (results) {
+                            resolve(Utils.generateLogicSuccess("admin notifications retrieved succesfully", results));
+                        } else {
+                            resolve(Utils.generateLogicSuccessEmpty("admin notifications couldnt be retrieved"));
+                        }
+                    } catch (error: any) {
+                        reject(Utils.generateLogicError("error getting admin notifications", error))
+                    }
+                })
+            })
+        })
+    }
+
+    /**
+     * Get the user related notifications
+     * userId: N -> getNotificationsByUserIdFromDB() -> notification: SensorNotification[]
+     *
+     * @param userId - the id of the user you want to get the notifications from
+     * @returns
+     */
+    public async getUserSensorNotificationsPaginatedFromDB(userId: number, pageSize: number, pageIndex: number): Promise<SensorNotification> {
+        const firstValue = (pageSize * pageIndex) - pageSize;
+        const secondValue = (pageSize * pageIndex);
+
+        var query = "SELECT * FROM `user_device` INNER JOIN `device` ON" +
+            " `user_device`.`device_id` = `device`.`id` INNER JOIN `sensor` ON `device`.`id` = `sensor`.`device_id`" +
+            " INNER JOIN notification ON sensor.id=notification.sensor_id WHERE `user_device`.`user_id` = " + userId +
+            " ORDER BY notification.id DESC LIMIT " + firstValue + ', ' + secondValue;
+
+        return new Promise<SensorNotification>((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+
+                // If connection fails
+                if (error) {
+                    reject(Utils.generateLogicError("error getting user notifications", error))
+                }
+
+                conn.query(query, (err: any, results: any) => {
+                    conn.release();
+
+                    // If connection fails
+                    if (err) {
+                        reject(Utils.generateLogicError("error getting user notifications", err))
+                    }
+
+                    try {
+                        if (results) {
+                            resolve(Utils.generateLogicSuccess("user notifications retrieved succesfully", results));
+                        } else {
+                            resolve(Utils.generateLogicSuccessEmpty("user notifications couldnt be retrieved"));
+                        }
+                    } catch (error: any) {
+                        reject(Utils.generateLogicError("error getting user notifications", error))
+                    }
+                })
+            })
+        })
+    }
+
+
+    /**
+     * Get the user related notifications
+     * userId: N -> getNotificationsByUserIdFromDB() -> notification: SensorNotification[]
+     *
+     * @param userId - the id of the user you want to get the notifications from
+     * @returns
+     */
     public async getUserNotificationsCountFromDB(userId: number): Promise<SensorNotification> {
         var query = "SELECT COUNT(*) as count FROM `user_device` INNER JOIN `device` ON" +
             " `user_device`.`device_id` = `device`.`id` INNER JOIN `sensor` ON `device`.`id` = `sensor`.`device_id`" +
             " INNER JOIN notification ON sensor.id=notification.sensor_id WHERE `user_device`.`user_id` = " + userId + ";";
 
-            return new Promise<SensorNotification>((resolve: any, reject: any) => {
-                db.getConnection((error: any, conn: any) => {
-    
+        return new Promise<SensorNotification>((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+
+                // If connection fails
+                if (error) {
+                    reject(Utils.generateLogicError("error getting user notifications count", error))
+                }
+
+                conn.query(query, (err: any, results: any) => {
+                    conn.release();
+
                     // If connection fails
-                    if (error) {
+                    if (err) {
+                        reject(Utils.generateLogicError("error getting user notifications count", err))
+                    }
+
+                    try {
+                        if (results[0].count != 0) {
+                            resolve(Utils.generateLogicSuccess("user notifications count retrieved succesfully", results[0].count));
+                        } else {
+                            resolve(Utils.generateLogicSuccessEmpty("user notifications couldnt be retrieved"));
+                        }
+                    } catch (error: any) {
                         reject(Utils.generateLogicError("error getting user notifications count", error))
                     }
-    
-                    conn.query(query, (err: any, results: any) => {
-                        conn.release();
-    
-                        // If connection fails
-                        if (err) {
-                            reject(Utils.generateLogicError("error getting user notifications count", err))
-                        }
-    
-                        try {
-                            if (results[0].count != 0) {
-                                resolve(Utils.generateLogicSuccess("user notifications count retrieved succesfully", results[0].count));
-                            } else {
-                                resolve(Utils.generateLogicSuccessEmpty("user notifications couldnt be retrieved"));
-                            }
-                        } catch (error: any) {
-                            reject(Utils.generateLogicError("error getting user notifications count", error))
-                        }
-                    })
                 })
             })
+        })
+    }
+
+    /**
+     * Get the user related notifications
+     * userId: N -> getNotificationsByUserIdFromDB() -> notification: SensorNotification[]
+     *
+     * @param userId - the id of the user you want to get the notifications from
+     * @returns
+     */
+    public async getRootSensorNotificationsPaginatedFromDB(pageSize: number, pageIndex: number): Promise<SensorNotification> {
+        const firstValue = (pageSize * pageIndex) - pageSize;
+        const secondValue = (pageSize * pageIndex);
+
+        var query = "SELECT * FROM notification ORDER BY id DESC LIMIT " + firstValue + ', ' + secondValue;
+
+        return new Promise<SensorNotification>((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+
+                // If connection fails
+                if (error) {
+                    reject(Utils.generateLogicError("error getting root notifications", error))
+                }
+
+                conn.query(query, (err: any, results: any) => {
+                    conn.release();
+
+                    // If connection fails
+                    if (err) {
+                        reject(Utils.generateLogicError("error getting root notifications", err))
+                    }
+
+                    try {
+                        if (results) {
+                            resolve(Utils.generateLogicSuccess("root notifications retrieved succesfully", results));
+                        } else {
+                            resolve(Utils.generateLogicSuccessEmpty("root notifications couldnt be retrieved"));
+                        }
+                    } catch (error: any) {
+                        reject(Utils.generateLogicError("error getting root notifications", error))
+                    }
+                })
+            })
+        })
     }
 
     /**

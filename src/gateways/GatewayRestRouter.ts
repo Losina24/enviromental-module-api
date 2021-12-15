@@ -136,7 +136,7 @@ class GatewayRestRouter {
      * }
      *
      */
-    public getAdminGatewaysCount = () => this.router.get('/count/admin/:councilId', (req: Request, res: Response) => {
+    public getAdminGatewaysCount = () => this.router.get('/count/council/:councilId', (req: Request, res: Response) => {
         const councilId = parseInt(req.params.councilId);
         this.gatewayLogic.getAdminGatewaysCount(councilId)
             .then(response => {

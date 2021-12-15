@@ -29,7 +29,110 @@ class SensorNotificationRestRouter {
         this.getUserSensorNotificationsCount();
         this.getAdminSensorNotificationsCount();
         this.getRootSensorNotificationsCount();
+        this.getUserSensorNotificationsPaginated();
+        this.getAdminSensorNotificationsPaginated();
+        this.getRootSensorNotificationsPaginated();
     }
+    /**
+ * Get the information about a enviromental device
+ * GET /device/:id
+ * 
+ * Response: {
+ *  "http": 200,
+ *  "status": "OK",
+ *  "response": {
+ *      "id": 32,
+ *      "name": "Device 32",
+ *      "mac": "2c549188c9e3",
+ *      "gatewayId": 6,
+ *      "sensors": [100, 101, 102, 103, 104],
+ *      "coords": [21.2222, -34.3333],
+ *      "status": true
+ *  }
+ * }
+ * 
+ */
+    public getUserSensorNotificationsPaginated = () => this.router.get('/user/:userId/:pageSize/:pageIndex', (req: Request, res: Response) => {
+        const userId = parseInt(req.params.userId);
+        const pageSize = parseInt(req.params.pageSize);
+        const pageIndex = parseInt(req.params.pageIndex);
+        this.notificationLogic.getUserSensorNotificationsPaginated(userId, pageSize, pageIndex)
+            .then(response => {
+                // Sending the response            
+                Utils.sendRestResponse(response, res)
+            })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
+            })
+    })
+
+    /**
+* Get the information about a enviromental device
+* GET /device/:id
+* 
+* Response: {
+*  "http": 200,
+*  "status": "OK",
+*  "response": {
+*      "id": 32,
+*      "name": "Device 32",
+*      "mac": "2c549188c9e3",
+*      "gatewayId": 6,
+*      "sensors": [100, 101, 102, 103, 104],
+*      "coords": [21.2222, -34.3333],
+*      "status": true
+*  }
+* }
+* 
+*/
+    public getAdminSensorNotificationsPaginated = () => this.router.get('/admin/:adminId/:pageSize/:pageIndex', (req: Request, res: Response) => {
+        const adminId = parseInt(req.params.adminId);
+        const pageSize = parseInt(req.params.pageSize);
+        const pageIndex = parseInt(req.params.pageIndex);
+        this.notificationLogic.getAdminSensorNotificationsPaginated(adminId, pageSize, pageIndex)
+            .then(response => {
+                // Sending the response            
+                Utils.sendRestResponse(response, res)
+            })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
+            })
+    })
+
+    /**
+ * Get the information about a enviromental device
+ * GET /device/:id
+ * 
+ * Response: {
+ *  "http": 200,
+ *  "status": "OK",
+ *  "response": {
+ *      "id": 32,
+ *      "name": "Device 32",
+ *      "mac": "2c549188c9e3",
+ *      "gatewayId": 6,
+ *      "sensors": [100, 101, 102, 103, 104],
+ *      "coords": [21.2222, -34.3333],
+ *      "status": true
+ *  }
+ * }
+ * 
+ */
+    public getRootSensorNotificationsPaginated = () => this.router.get('/root/:pageSize/:pageIndex', (req: Request, res: Response) => {
+        const pageSize = parseInt(req.params.pageSize);
+        const pageIndex = parseInt(req.params.pageIndex);
+        this.notificationLogic.getRootSensorNotificationsPaginated(pageSize, pageIndex)
+            .then(response => {
+                // Sending the response            
+                Utils.sendRestResponse(response, res)
+            })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
+            })
+    })
 
     /**
      * Get the information about a enviromental device

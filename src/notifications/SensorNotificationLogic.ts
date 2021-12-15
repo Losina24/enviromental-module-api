@@ -45,6 +45,63 @@ export default class SensorNotificationLogic {
      * @param deviceId - ID of the enviromental device you want to get data from
      * @returns 
      */
+     public async getUserSensorNotificationsPaginated(userId: number, pageSize: number, pageIndex: number): Promise<SensorNotification> {
+        return new Promise<SensorNotification>((resolve, reject) => {
+            this.notificationDB.getUserSensorNotificationsPaginatedFromDB(userId, pageSize, pageIndex)
+                .then(res => {
+                    resolve(res)
+                })
+                .catch(err => {
+                    reject(err)
+                })
+        })
+    }
+
+    /**
+     * Get the information about a enviromental device given their ID
+     * userId: N -> getDeviceById() -> EnviromentalDevice
+     * 
+     * @param deviceId - ID of the enviromental device you want to get data from
+     * @returns 
+     */
+     public async getAdminSensorNotificationsPaginated(adminId: number,pageSize: number, pageIndex: number): Promise<SensorNotification> {
+        return new Promise<SensorNotification>((resolve, reject) => {
+            this.notificationDB.getAdminSensorNotificationsPaginatedFromDB(adminId, pageSize, pageIndex)
+                .then(res => {
+                    resolve(res)
+                })
+                .catch(err => {
+                    reject(err)
+                })
+        })
+    }
+
+    /**
+     * Get the information about a enviromental device given their ID
+     * userId: N -> getDeviceById() -> EnviromentalDevice
+     * 
+     * @param deviceId - ID of the enviromental device you want to get data from
+     * @returns 
+     */
+     public async getRootSensorNotificationsPaginated(pageSize: number, pageIndex: number): Promise<SensorNotification> {
+        return new Promise<SensorNotification>((resolve, reject) => {
+            this.notificationDB.getRootSensorNotificationsPaginatedFromDB(pageSize, pageIndex)
+                .then(res => {
+                    resolve(res)
+                })
+                .catch(err => {
+                    reject(err)
+                })
+        })
+    }
+
+    /**
+     * Get the information about a enviromental device given their ID
+     * userId: N -> getDeviceById() -> EnviromentalDevice
+     * 
+     * @param deviceId - ID of the enviromental device you want to get data from
+     * @returns 
+     */
     public async getAdminNotificationsCount(councilId: number): Promise<SensorNotification> {
         return new Promise<SensorNotification>((resolve, reject) => {
             this.notificationDB.getAdminNotificationsCountFromDB(councilId)

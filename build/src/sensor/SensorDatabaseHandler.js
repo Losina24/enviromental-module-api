@@ -10,6 +10,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = __importDefault(require("../database"));
+const Utils_1 = __importDefault(require("../Utils"));
 const Sensor_1 = __importDefault(require("./Sensor"));
 class SensorDatabaseHandler {
     // Private methods used to reuse code in EnviromentalDeviceDatabaseHandler class
@@ -37,32 +38,40 @@ class SensorDatabaseHandler {
      * @returns object
      */
     getSensorByIdFromDB(sensorId) {
-        console.log("getSensorDB");
+        //console.log("getSensorDB")
         var query = "SELECT * FROM sensor WHERE id = " + sensorId;
-        console.log(query);
+        //console.log(query)
         return new Promise((resolve, reject) => {
             database_1.default.getConnection((error, conn) => {
                 // If connection fails
                 if (error) {
-                    reject();
+                    reject(Utils_1.default.generateLogicError("error getting sensor", error));
                 }
                 conn.query(query, (err, results) => {
                     conn.release();
                     // If connection fails
                     if (err) {
-                        reject();
+                        reject(Utils_1.default.generateLogicError("error getting sensor", err));
                     }
+                    //console.log("*** results getsensorbyid ***")
+                    //console.log(results)
                     let sensor = new Sensor_1.default();
-                    if (results.length != 0) {
-                        sensor.setId(results[0].id);
-                        sensor.setDeviceEUI(results[0].device_eui);
-                        sensor.setDeviceId(results[0].device_id);
-                        sensor.setName(results[0].name);
-                        // posible Enum
-                        sensor.setType(([results[0].sensor_type_id]).toString());
-                        sensor.setStatus(results[0].status);
+                    try {
+                        if (results.length == 1) {
+                            sensor.setId(results[0].id);
+                            sensor.setDeviceEUI(results[0].device_EUI);
+                            sensor.setDeviceId(results[0].device_id);
+                            sensor.setName(results[0].name);
+                            // posible Enum
+                            sensor.setType(([results[0].sensor_type_id]).toString());
+                            sensor.setStatus(results[0].status);
+                            resolve(Utils_1.default.generateLogicSuccess("sensor info retrieved succesfully", sensor));
+                        }
                     }
-                    resolve(sensor);
+                    catch (error) {
+                        reject(Utils_1.default.generateLogicError("error deleting sensor", error));
+                    }
+                    resolve(Utils_1.default.generateLogicSuccessEmpty("no sensor was found with given id"));
                 });
             });
         });
@@ -83,19 +92,96 @@ class SensorDatabaseHandler {
             database_1.default.getConnection((error, conn) => {
                 // If connection fails
                 if (error) {
-                    reject(error);
+                    reject(Utils_1.default.generateLogicError("error getting user sensors", error));
                 }
                 conn.query(query, (err, results) => {
                     conn.release();
                     // If connection fails
                     if (err) {
-                        reject(err);
+                        reject(Utils_1.default.generateLogicError("error getting user sensors", error));
                     }
-                    let sensors = [];
-                    if (results.length != 0) {
-                        sensors = this.queryResultsToSensors(results);
+                    try {
+                        if (results.length != 0) {
+                            let sensors = this.queryResultsToSensors(results);
+                            resolve(Utils_1.default.generateLogicSuccess("user sensors retrieved succesfully", sensors));
+                        }
                     }
-                    resolve(sensors);
+                    catch (error) {
+                        reject(Utils_1.default.generateLogicError("error deleting sensor", error));
+                    }
+                    resolve(Utils_1.default.generateLogicSuccessEmpty("user has no related sensors"));
+                });
+            });
+        });
+    }
+    /**
+     * Get all sensors from the database ( * COUNT * )
+     * getAllRootSensorsCountFromDB() -> [JSON]
+     *
+     * @returns
+     */
+    getAllRootSensorsCountFromDB() {
+        var query = "SELECT COUNT(*) as count FROM sensor;";
+        return new Promise((resolve, reject) => {
+            database_1.default.getConnection((error, conn) => {
+                // If connection fails
+                if (error) {
+                    reject(Utils_1.default.generateLogicError("error getting root sensors count", error));
+                }
+                conn.query(query, (err, results) => {
+                    conn.release();
+                    // If connection fails
+                    if (err) {
+                        reject(Utils_1.default.generateLogicError("error getting root sensors count", error));
+                    }
+                    try {
+                        if (results[0].count != 0) {
+                            resolve(Utils_1.default.generateLogicSuccess("user devices count retrieved succesfully", results[0].count));
+                        }
+                        else {
+                            resolve(Utils_1.default.generateLogicSuccessEmpty("user has no related devices"));
+                        }
+                    }
+                    catch (error) {
+                        reject(Utils_1.default.generateLogicError("error getting root sensors", error));
+                    }
+                });
+            });
+        });
+    }
+    /**
+     * Get all sensors of a user from the database ( * COUNT * )
+     * councilId: N -> getAllAdminSensorsCountFromDB() -> [JSON]
+     *
+     * @param councilId - ID of the user that you want to get all enviromental devices
+     * @returns
+     */
+    getAllAdminSensorsCountFromDB(councilId) {
+        var query = "SELECT COUNT(*) as count FROM `gateway` INNER JOIN device ON device.gateway_id = gateway.id INNER JOIN " +
+            "sensor ON sensor.device_id=device.id WHERE gateway.council_id=" + councilId + ";";
+        return new Promise((resolve, reject) => {
+            database_1.default.getConnection((error, conn) => {
+                // If connection fails
+                if (error) {
+                    reject(Utils_1.default.generateLogicError("error getting admin sensors count", error));
+                }
+                conn.query(query, (err, results) => {
+                    conn.release();
+                    // If connection fails
+                    if (err) {
+                        reject(Utils_1.default.generateLogicError("error getting admin sensors count", error));
+                    }
+                    try {
+                        if (results[0].count != 0) {
+                            resolve(Utils_1.default.generateLogicSuccess("admin devices count retrieved succesfully", results[0].count));
+                        }
+                        else {
+                            resolve(Utils_1.default.generateLogicSuccessEmpty("admin has no related devices"));
+                        }
+                    }
+                    catch (error) {
+                        reject(Utils_1.default.generateLogicError("error getting admin sensors count", error));
+                    }
                 });
             });
         });
@@ -115,15 +201,25 @@ class SensorDatabaseHandler {
             database_1.default.getConnection((error, conn) => {
                 // If connection fails
                 if (error) {
-                    reject(error);
+                    reject(Utils_1.default.generateLogicError("error getting user sensors count", error));
                 }
                 conn.query(query, (err, results) => {
                     conn.release();
                     // If connection fails
                     if (err) {
-                        reject(err);
+                        reject(Utils_1.default.generateLogicError("error getting user sensors count", error));
                     }
-                    resolve(results);
+                    try {
+                        if (results[0].count != 0) {
+                            resolve(Utils_1.default.generateLogicSuccess("user devices count retrieved succesfully", results[0].count));
+                        }
+                        else {
+                            resolve(Utils_1.default.generateLogicSuccessEmpty("user has no related devices"));
+                        }
+                    }
+                    catch (error) {
+                        reject(Utils_1.default.generateLogicError("error deleting sensor", error));
+                    }
                 });
             });
         });
@@ -148,19 +244,24 @@ class SensorDatabaseHandler {
             database_1.default.getConnection((error, conn) => {
                 // If connection fails
                 if (error) {
-                    reject();
+                    reject(Utils_1.default.generateLogicError("error getting user sensors", error));
                 }
                 conn.query(query, (err, results) => {
                     conn.release();
                     // If connection fails
                     if (err) {
-                        reject();
+                        reject(Utils_1.default.generateLogicError("error getting user sensors", err));
                     }
-                    let sensors = [];
-                    if (results.length != 0) {
-                        sensors = this.queryResultsToSensors(results);
+                    try {
+                        if (results.length != 0) {
+                            let sensors = this.queryResultsToSensors(results);
+                            resolve(Utils_1.default.generateLogicSuccess("user sensors retrieved succesfully", sensors));
+                        }
                     }
-                    resolve(sensors);
+                    catch (error) {
+                        reject(Utils_1.default.generateLogicError("error deleting sensor", error));
+                    }
+                    resolve(Utils_1.default.generateLogicSuccessEmpty("user has no related sensors"));
                 });
             });
         });
@@ -182,19 +283,24 @@ class SensorDatabaseHandler {
             database_1.default.getConnection((error, conn) => {
                 // If connection fails
                 if (error) {
-                    reject();
+                    reject(Utils_1.default.generateLogicError("error getting council sensors", error));
                 }
                 conn.query(query, (err, results) => {
                     conn.release();
                     // If connection fails
                     if (err) {
-                        reject();
+                        reject(Utils_1.default.generateLogicError("error getting council sensors", err));
                     }
-                    let sensors = [];
-                    if (results.length != 0) {
-                        sensors = this.queryResultsToSensors(results);
+                    try {
+                        if (results.length != 0) {
+                            let sensors = this.queryResultsToSensors(results);
+                            resolve(Utils_1.default.generateLogicSuccess("council sensors retrieved succesfully", sensors));
+                        }
                     }
-                    resolve(sensors);
+                    catch (error) {
+                        reject(Utils_1.default.generateLogicError("error deleting sensor", error));
+                    }
+                    resolve(Utils_1.default.generateLogicSuccessEmpty("council has no related sensors"));
                 });
             });
         });
@@ -220,19 +326,24 @@ class SensorDatabaseHandler {
             database_1.default.getConnection((error, conn) => {
                 // If connection fails
                 if (error) {
-                    reject();
+                    reject(Utils_1.default.generateLogicError("error getting council sensors", error));
                 }
                 conn.query(query, (err, results) => {
                     conn.release();
                     // If connection fails
                     if (err) {
-                        reject();
+                        reject(Utils_1.default.generateLogicError("error getting council sensors", err));
                     }
-                    let sensors = [];
-                    if (results.length != 0) {
-                        sensors = this.queryResultsToSensors(results);
+                    try {
+                        if (results.length != 0) {
+                            let sensors = this.queryResultsToSensors(results);
+                            resolve(Utils_1.default.generateLogicSuccess("council sensors retrieved succesfully", sensors));
+                        }
                     }
-                    resolve(sensors);
+                    catch (error) {
+                        reject(Utils_1.default.generateLogicError("error deleting sensor", error));
+                    }
+                    resolve(Utils_1.default.generateLogicSuccessEmpty("council has no related sensors"));
                 });
             });
         });
@@ -248,23 +359,31 @@ class SensorDatabaseHandler {
         var query = "INSERT INTO `sensor` (`sensor_type_id`, `device_id`, `device_EUI`, `name`, `status`)" +
             " VALUES ('" + sensor.getType() + "', '" + sensor.getDeviceId() + "', '" + sensor.getDeviceEUI() + "', '" +
             sensor.getName() + "', '" + sensor.getStatus() + "');";
+        console.log(query);
         return new Promise((resolve, reject) => {
             database_1.default.getConnection((error, conn) => {
                 // If connection fails
                 if (error) {
-                    reject();
+                    reject(Utils_1.default.generateLogicError("error storing sensor", error));
                 }
                 conn.query(query, (err, results) => {
                     conn.release();
+                    console.log(results);
                     // If connection fails
                     if (err) {
-                        reject();
+                        reject(Utils_1.default.generateLogicError("error storing sensor", err));
                     }
-                    console.log(results);
-                    if (results != undefined) {
-                        resolve(results.insertId);
+                    try {
+                        if (results) {
+                            resolve(Utils_1.default.generateLogicSuccess("sensor created successfully", results.insertId));
+                        }
+                        else {
+                            resolve(Utils_1.default.generateLogicSuccessEmpty("sensor couldnt be created"));
+                        }
                     }
-                    resolve();
+                    catch (error) {
+                        reject(Utils_1.default.generateLogicError("error deleting sensor", error));
+                    }
                 });
             });
         });
@@ -289,19 +408,24 @@ class SensorDatabaseHandler {
             database_1.default.getConnection((error, conn) => {
                 // If connection fails
                 if (error) {
-                    reject();
+                    reject(Utils_1.default.generateLogicError("error getting admin sensors", error));
                 }
                 conn.query(query, (err, results) => {
                     conn.release();
                     // If connection fails
                     if (err) {
-                        reject();
+                        reject(Utils_1.default.generateLogicError("error getting admin sensors", err));
                     }
-                    let sensors = [];
-                    if (results.length != 0) {
-                        sensors = this.queryResultsToSensors(results);
+                    try {
+                        if (results.length != 0) {
+                            let sensors = this.queryResultsToSensors(results);
+                            resolve(Utils_1.default.generateLogicSuccess("admin sensors retrieved succesfully", sensors));
+                        }
                     }
-                    resolve(sensors);
+                    catch (error) {
+                        reject(Utils_1.default.generateLogicError("error deleting sensor", error));
+                    }
+                    resolve(Utils_1.default.generateLogicSuccessEmpty("admin has no related sensors"));
                 });
             });
         });
@@ -319,24 +443,29 @@ class SensorDatabaseHandler {
             "INNER JOIN `device` ON `gateway`.`id`= `device`.`gateway_id` INNER JOIN `user_device` ON " +
             "`user_device`.`device_id` = `device`.`id` INNER JOIN `sensor` ON `device`.`id` = `sensor`.`device_id` " +
             "WHERE `user`.id=" + adminId + ";";
-        console.log(query);
+        //console.log(query)
         return new Promise((resolve, reject) => {
             database_1.default.getConnection((error, conn) => {
                 // If connection fails
                 if (error) {
-                    reject();
+                    reject(Utils_1.default.generateLogicError("error getting admin sensors", error));
                 }
                 conn.query(query, (err, results) => {
                     conn.release();
                     // If connection fails
                     if (err) {
-                        reject();
+                        reject(Utils_1.default.generateLogicError("error getting admin sensors", err));
                     }
-                    let sensors = [];
-                    if (results.length != 0) {
-                        sensors = this.queryResultsToSensors(results);
+                    try {
+                        if (results.length != 0) {
+                            let sensors = this.queryResultsToSensors(results);
+                            resolve(Utils_1.default.generateLogicSuccess("admin sensors retrieved succesfully", sensors));
+                        }
                     }
-                    resolve(sensors);
+                    catch (error) {
+                        reject(Utils_1.default.generateLogicError("error deleting sensor", error));
+                    }
+                    resolve(Utils_1.default.generateLogicSuccessEmpty("admin has no related sensors"));
                 });
             });
         });
@@ -354,19 +483,24 @@ class SensorDatabaseHandler {
             database_1.default.getConnection((error, conn) => {
                 // If connection fails
                 if (error) {
-                    reject();
+                    reject(Utils_1.default.generateLogicError("error getting device sensors", error));
                 }
                 conn.query(query, (err, results) => {
                     conn.release();
                     // If connection fails
                     if (err) {
-                        reject();
+                        reject(Utils_1.default.generateLogicError("error getting device sensors", err));
                     }
-                    let sensors = [];
-                    if (results.length != 0) {
-                        sensors = this.queryResultsToSensors(results);
+                    try {
+                        if (results.length != 0) {
+                            let sensors = this.queryResultsToSensors(results);
+                            resolve(Utils_1.default.generateLogicSuccess("device sensors retrieved succesfully", sensors));
+                        }
                     }
-                    resolve(sensors);
+                    catch (error) {
+                        reject(Utils_1.default.generateLogicError("error deleting sensor", error));
+                    }
+                    resolve(Utils_1.default.generateLogicSuccessEmpty("device has no related sensors"));
                 });
             });
         });
@@ -384,15 +518,23 @@ class SensorDatabaseHandler {
             database_1.default.getConnection((error, conn) => {
                 // If connection fails
                 if (error) {
-                    reject();
+                    reject(Utils_1.default.generateLogicError("error deleting sensor", error));
                 }
                 conn.query(query, (err, results) => {
                     conn.release();
                     // If connection fails
                     if (err) {
-                        reject();
+                        reject(Utils_1.default.generateLogicError("error deleting sensor", err));
                     }
-                    resolve();
+                    try {
+                        if (results.affectedRows == 0) {
+                            resolve(Utils_1.default.generateLogicSuccessEmpty("no sensor was found with given id"));
+                        }
+                        resolve(Utils_1.default.generateLogicSuccess("sensor deleted succesfully", undefined));
+                    }
+                    catch (error) {
+                        reject(Utils_1.default.generateLogicError("error deleting sensor", error));
+                    }
                 });
             });
         });

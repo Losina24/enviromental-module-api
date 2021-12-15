@@ -10,6 +10,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
+const Utils_1 = __importDefault(require("../Utils"));
 const NetworkServer_1 = __importDefault(require("./NetworkServer"));
 const NetworkServerLogic_1 = __importDefault(require("./NetworkServerLogic"));
 class NetworkServerRestRouter {
@@ -18,6 +19,48 @@ class NetworkServerRestRouter {
         this.networkServerLogic = new NetworkServerLogic_1.default(); // FIX: este atributo está mal en el diseño
         // This is Rest entry point that the express server uses.
         this.router = (0, express_1.Router)();
+        /**
+         * Get the information about a enviromental device
+         * GET /device/:id
+         *
+         * Response: {
+         *  "http": 200,
+         *  "status": "OK",
+         *  "response": {}
+         * }
+         *
+         */
+        this.getRootNetworkServersCount = () => this.router.get('/count/root/:id', (req, res) => {
+            const id = parseInt(req.params.id);
+            this.networkServerLogic.getRootNetworkServerCount()
+                .then(response => {
+                // Sending the response            
+                Utils_1.default.sendRestResponse(response, res);
+            })
+                .catch(err => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
+            });
+        });
+        /**
+         * Get user network servers ( * COUNT * )
+         * councilId: N -> getUserNetworkServersCountById() -> networkServers: NetworkServer[]
+         *
+         * @param councilId - ID of the user you want to get the network servers from
+         * @returns
+         */
+        this.getUserNetworkServersCountById = () => this.router.get('/count/user/:councilId', (req, res) => {
+            const id = parseInt(req.params.id);
+            this.networkServerLogic.getUserNetworkServersCountById(id)
+                .then(response => {
+                // Sending the response            
+                Utils_1.default.sendRestResponse(response, res);
+            })
+                .catch(err => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
+            });
+        });
         /**
          * Get the information about a enviromental device
          * GET /device/:id
@@ -73,28 +116,23 @@ class NetworkServerRestRouter {
             });
         });
         /**
-         * Get user network servers ( * COUNT * )
-         * userId: N -> getUserNetworkServersById() -> networkServers: NetworkServer[]
+         * Get admin network servers ( * COUNT * )
+         * councilId: N -> getAdminNetworkServersCount() -> networkServers: NetworkServer[]
          *
-         * @param userId - ID of the user you want to get the network servers from
+         * @param councilId - ID of the council you want to get the network servers from
          * @returns
          */
-        this.getUserNetworkServersCountById = () => this.router.get('/count/user/list/:id', (req, res) => {
-            const id = parseInt(req.params.id);
-            this.networkServerLogic.getUserNetworkServersCountById(id)
+        this.getAdminNetworkServersCount = () => this.router.get('/count/council/:councilId', (req, res) => {
+            const councilId = parseInt(req.params.councilId);
+            console.log(councilId);
+            this.networkServerLogic.getAdminNetworkServerCount(councilId)
                 .then(response => {
-                res.status(200).send({
-                    http: 200,
-                    status: 'OK',
-                    response: response
-                });
+                // Sending the response            
+                Utils_1.default.sendRestResponse(response, res);
             })
                 .catch(err => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                });
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
             });
         });
         /**
@@ -225,6 +263,8 @@ class NetworkServerRestRouter {
         this.getNetworkServerById();
         this.getUserNetworkServersById();
         this.getUserNetworkServersCountById();
+        this.getRootNetworkServersCount();
+        this.getAdminNetworkServersCount();
         this.createNetworkServer();
         this.editNetworkServer();
         this.removeNetworkServer();

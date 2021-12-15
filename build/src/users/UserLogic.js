@@ -43,25 +43,24 @@ class UserLogic {
                     if (!res) {
                         resolve(false);
                     }
+                    let user = res.result;
                     // Login succeded
-                    console.log("loginCheck");
-                    console.log(res);
                     let role;
-                    if (res.roleId == 1) {
+                    if (user.getRoleId() == 1) {
                         role = "root";
                     }
-                    else if (res.roleId == 2) {
+                    else if (user.getRoleId() == 2) {
                         role = "admin";
                     }
-                    else if (res.roleId == 3) {
+                    else {
                         role = "user";
                     }
                     res.role = role;
                     resolve({
-                        userId: res.id,
-                        name: res.name,
-                        role: res.role,
-                        councilId: res.councilId
+                        userId: user.getId(),
+                        name: user.getName(),
+                        role: role,
+                        councilId: user.getCouncilId()
                     });
                 })
                     .catch(err => {

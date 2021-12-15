@@ -10,6 +10,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = __importDefault(require("../database"));
+const Utils_1 = __importDefault(require("../Utils"));
 const User_1 = __importDefault(require("./User"));
 class UserDatabaseHandler {
     // Logic Methods
@@ -28,13 +29,13 @@ class UserDatabaseHandler {
             database_1.default.getConnection((error, conn) => {
                 // If connection fails
                 if (error) {
-                    reject();
+                    reject(Utils_1.default.generateLogicError("error on login", error));
                 }
                 conn.query(query, (err, results) => {
                     conn.release();
                     // If connection fails
                     if (err) {
-                        reject();
+                        reject(Utils_1.default.generateLogicError("error on login", err));
                     }
                     if (results.length == 1) {
                         let user = new User_1.default();
@@ -48,10 +49,81 @@ class UserDatabaseHandler {
                         user.setPhone(results[0].phone_number);
                         user.setEmail(results[0].email);
                         user.setPostalCode(results[0].postal_code);
-                        resolve(user);
+                        resolve(Utils_1.default.generateLogicSuccess("user logged in successfully", user));
                     }
                     else if (results.length == 0) {
-                        resolve();
+                        resolve(Utils_1.default.generateLogicSuccessEmpty("user login failed"));
+                    }
+                });
+            });
+        });
+    }
+    /**
+     * Get council users from db (* COUNT *)
+     * getCouncilUsersCountFromDB() -> count: N
+     *
+     * @returns
+     */
+    getCouncilUsersCountFromDB(councilId) {
+        var query = "SELECT COUNT(*) as count FROM `user` WHERE council_id=" + councilId;
+        return new Promise((resolve, reject) => {
+            database_1.default.getConnection((error, conn) => {
+                // If connection fails
+                if (error) {
+                    reject(Utils_1.default.generateLogicError("error getting council users", error));
+                }
+                conn.query(query, (err, results) => {
+                    conn.release();
+                    // If connection fails
+                    if (err) {
+                        reject(Utils_1.default.generateLogicError("error getting council users", err));
+                    }
+                    try {
+                        if (results[0].count != 0) {
+                            resolve(Utils_1.default.generateLogicSuccess("council users retrieved succesfully", results[0].count));
+                        }
+                        else {
+                            resolve(Utils_1.default.generateLogicSuccessEmpty("no users found"));
+                        }
+                    }
+                    catch (error) {
+                        reject(Utils_1.default.generateLogicError("error getting council users", error));
+                    }
+                });
+            });
+        });
+    }
+    /**
+     * Get all users from db (* COUNT *)
+     * getAllUsersCountFromDB() -> count: N
+     *
+     * @returns
+     */
+    getAllUsersCountFromDB() {
+        var query = "SELECT COUNT(*) as count FROM `user`";
+        console.log(query);
+        return new Promise((resolve, reject) => {
+            database_1.default.getConnection((error, conn) => {
+                // If connection fails
+                if (error) {
+                    reject(Utils_1.default.generateLogicError("error getting all users", error));
+                }
+                conn.query(query, (err, results) => {
+                    conn.release();
+                    // If connection fails
+                    if (err) {
+                        reject(Utils_1.default.generateLogicError("error getting all users", err));
+                    }
+                    try {
+                        if (results[0].count != 0) {
+                            resolve(Utils_1.default.generateLogicSuccess("all users retrieved succesfully", results[0].count));
+                        }
+                        else {
+                            resolve(Utils_1.default.generateLogicSuccessEmpty("no users found"));
+                        }
+                    }
+                    catch (error) {
+                        reject(Utils_1.default.generateLogicError("error getting all users", error));
                     }
                 });
             });
@@ -72,13 +144,13 @@ class UserDatabaseHandler {
             database_1.default.getConnection((error, conn) => {
                 // If connection fails
                 if (error) {
-                    reject();
+                    reject(Utils_1.default.generateLogicError("error retrieving user", error));
                 }
                 conn.query(query, (err, results) => {
                     conn.release();
                     // If connection fails
                     if (err) {
-                        reject();
+                        reject(Utils_1.default.generateLogicError("error retrieving user", err));
                     }
                     let user = new User_1.default();
                     if (results.length != 0) {
@@ -92,8 +164,9 @@ class UserDatabaseHandler {
                         user.setPhone(results[0].phone_number);
                         user.setEmail(results[0].email);
                         user.setPostalCode(results[0].postal_code);
+                        resolve(Utils_1.default.generateLogicSuccess("user retrieved successfully", user));
                     }
-                    resolve(user);
+                    resolve(Utils_1.default.generateLogicSuccessEmpty("no user found with given id"));
                 });
             });
         });
@@ -115,19 +188,19 @@ class UserDatabaseHandler {
             database_1.default.getConnection((error, conn) => {
                 // If connection fails
                 if (error) {
-                    reject();
+                    reject(Utils_1.default.generateLogicError("error creating user", error));
                 }
                 conn.query(query, (err, results) => {
                     conn.release();
                     // If connection fails
                     if (err) {
-                        reject();
+                        reject(Utils_1.default.generateLogicError("error creating user", err));
                     }
                     console.log(results);
                     if (results != undefined) {
-                        resolve(results.insertId);
+                        resolve(Utils_1.default.generateLogicSuccess("user created successfully", results.insertId));
                     }
-                    resolve();
+                    resolve(Utils_1.default.generateLogicSuccessEmpty("user couldnt't be created"));
                 });
             });
         });
@@ -148,13 +221,13 @@ class UserDatabaseHandler {
             database_1.default.getConnection((error, conn) => {
                 // If connection fails
                 if (error) {
-                    reject();
+                    reject(Utils_1.default.generateLogicError("error updating user data", error));
                 }
                 conn.query(query, (err, results) => {
                     conn.release();
                     // If connection fails
                     if (err) {
-                        reject();
+                        reject(Utils_1.default.generateLogicError("error updating user data", err));
                     }
                     resolve();
                 });
@@ -174,15 +247,23 @@ class UserDatabaseHandler {
             database_1.default.getConnection((error, conn) => {
                 // If connection fails
                 if (error) {
-                    reject();
+                    reject(Utils_1.default.generateLogicError("error removing user", error));
                 }
                 conn.query(query, (err, results) => {
                     conn.release();
                     // If connection fails
                     if (err) {
-                        reject();
+                        reject(Utils_1.default.generateLogicError("error removing user", err));
                     }
-                    resolve();
+                    try {
+                        if (results.affectedRows == 0) {
+                            resolve(Utils_1.default.generateLogicSuccessEmpty("no user was found with given id"));
+                        }
+                        resolve(Utils_1.default.generateLogicSuccess("user removed succesfully", undefined));
+                    }
+                    catch (error) {
+                        reject(Utils_1.default.generateLogicError("error removing user", error));
+                    }
                 });
             });
         });
@@ -201,13 +282,13 @@ class UserDatabaseHandler {
             database_1.default.getConnection((error, conn) => {
                 // If connection fails
                 if (error) {
-                    reject();
+                    reject(Utils_1.default.generateLogicError("error retrieving council users", error));
                 }
                 conn.query(query, (err, results) => {
                     conn.release();
                     // If connection fails
                     if (err) {
-                        reject();
+                        reject(Utils_1.default.generateLogicError("error retrieving council users", err));
                     }
                     var users = [];
                     if (results.length != 0) {
@@ -225,8 +306,9 @@ class UserDatabaseHandler {
                             user.setPostalCode(res.postal_code);
                             users.push(user);
                         });
+                        resolve(Utils_1.default.generateLogicSuccess("council users retrieved successfully", user));
                     }
-                    resolve(users);
+                    resolve(Utils_1.default.generateLogicSuccessEmpty("council has no related users"));
                 });
             });
         });

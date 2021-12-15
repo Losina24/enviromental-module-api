@@ -87,6 +87,44 @@ class NetworkServerLogic {
         });
     }
     /**
+     * Get admin network servers ( * COUNT * )
+     * councilId: N -> getAdminNetworkServerCount() -> networkServers: NetworkServer[]
+     *
+     * @returns
+     */
+    getAdminNetworkServerCount(councilId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.networkServerDB.getAdminNetworkServersFromDB(councilId)
+                    .then((res) => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
+     * Get root network servers ( * COUNT * )
+     * getRootNetworkServerCount() -> networkServers: NetworkServer[]
+     *
+     * @returns
+     */
+    getRootNetworkServerCount() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.networkServerDB.getNetworkServersCountFromDB()
+                    .then((res) => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
      * Create a network server
      * networkServer: NetworkServer -> createNetworkServer() ->
      *

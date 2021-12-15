@@ -87,6 +87,45 @@ class GatewayLogic {
         });
     }
     /**
+     * Get user related gateways
+     * gatewayId: N -> getUserGatewaysCount() -> count: N
+     *
+     * @param councilId - ID of the council we want to get the gateways from
+     * @returns
+     */
+    getAdminGatewaysCount(councilId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.gatewayDB.getGatewaysCountAdmin(councilId)
+                    .then(res => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
+     * Get user related gateways
+     * gatewayId: N -> getUserGatewaysCount() -> count: N
+     *
+     * @returns
+     */
+    getRootGatewaysCount() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.gatewayDB.getGatewaysCountRoot()
+                    .then(res => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
      * Get all council related gateways
      * councilId: N -> getAllCouncilGateways() -> gateways: Gateway[]
      *

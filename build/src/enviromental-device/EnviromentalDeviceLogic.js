@@ -67,6 +67,45 @@ class EnviromentaDeviceLogic {
         });
     }
     /**
+    * Get all enviroment devices of root ( * COUNT * )
+    * getAllUserDevices() -> [EnviromentalDevice]
+    *
+    * @returns
+    */
+    getAllRootDevicesCount() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.enviromentalDeviceDB.getAllRootDevicesCountFromDB()
+                    .then(res => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
+    * Get all enviroment devices of admin ( * COUNT * )
+    * councilId: N -> getAllUserDevices() -> [EnviromentalDevice]
+    *
+    * @param councilId - ID of the council you want to get all enviromental devices from
+    * @returns
+    */
+    getAllAdminDevicesCount(councilId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.enviromentalDeviceDB.getAllAdminDevicesCountFromDB(councilId)
+                    .then(res => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
      * Get all enviroment devices of a user ( * COUNT * )
      * userId: N -> getAllUserDevices() -> [EnviromentalDevice]
      *
@@ -138,7 +177,7 @@ class EnviromentaDeviceLogic {
     getAllGatewayDevices(gatewayId) {
         return __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => {
-                this.enviromentalDeviceDB.getAllUserDevicesFromDB(gatewayId)
+                this.enviromentalDeviceDB.getGatewayDevicesFromDB(gatewayId)
                     .then(res => {
                     resolve(res);
                 })
@@ -157,15 +196,35 @@ class EnviromentaDeviceLogic {
      */
     storeDevice(enviromentalDevice, userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return new Promise((resolve, reject) => {
-                this.enviromentalDeviceDB.storeDeviceInDB(enviromentalDevice, userId)
+            return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
+                yield this.enviromentalDeviceDB.storeDeviceInDB(enviromentalDevice, userId)
                     .then(res => {
                     resolve(res);
                 })
                     .catch(err => {
                     reject(err);
                 });
-            });
+            }));
+        });
+    }
+    /**
+     * Save an enviromental device
+     * enviromentalDevice: EnviromentalDevice -> storeDevice() -> boolean
+     *
+     * @param enviromentalDevice - Enviromental device you want to store in the database
+     * @returns
+     */
+    updateDevice(enviromentalDevice) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
+                yield this.enviromentalDeviceDB.updateEnviromentalDevice(enviromentalDevice)
+                    .then(res => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            }));
         });
     }
     /**
@@ -177,10 +236,10 @@ class EnviromentaDeviceLogic {
      * @param pageIndex - Index of the page that you want to receive from the request
      * @returns
      */
-    getAdminDevicePagination(adminId, pageSize, pageIndex) {
+    getRootDevicePagination(adminId, pageSize, pageIndex) {
         return __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => {
-                this.enviromentalDeviceDB.getAdminDevicePaginationFromDB(adminId, pageSize, pageIndex)
+                this.enviromentalDeviceDB.getRootDevicePaginationFromDB(adminId, pageSize, pageIndex)
                     .then(res => {
                     resolve(res);
                 })
@@ -202,7 +261,27 @@ class EnviromentaDeviceLogic {
     getCouncilDevicePagination(councilId, pageSize, pageIndex) {
         return __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => {
-                this.enviromentalDeviceDB.getAdminDevicePaginationFromDB(councilId, pageSize, pageIndex)
+                this.enviromentalDeviceDB.getCouncilDevicePaginationFromDB(councilId, pageSize, pageIndex)
+                    .then(res => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
+     * Remove a device
+     * deviceId: N -> removeDevice()
+     *
+     * @param deviceId - ID of the device we want to delete
+     * @returns
+     */
+    removeDevice(deviceId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.enviromentalDeviceDB.removeDeviceInDB(deviceId)
                     .then(res => {
                     resolve(res);
                 })

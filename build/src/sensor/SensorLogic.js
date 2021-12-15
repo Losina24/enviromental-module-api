@@ -58,7 +58,47 @@ class SensorLogic {
             return new Promise((resolve, reject) => {
                 this.sensorDB.getAllUserSensorsFromDB(userId)
                     .then(res => {
-                    console.log("logicaRes");
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
+     * Get all root sensors ( * COUNT * )
+     * userId: N -> getAllRootSensorsCount() -> [Sensor]
+     *
+     * @returns
+     */
+    getAllRootSensorsCount() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.sensorDB.getAllRootSensorsCountFromDB()
+                    .then(res => {
+                    //console.log("logicaRes")
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
+     * Get all admin sensors ( * COUNT * )
+     * councilId: N -> getAllAdminSensorsCount() -> [Sensor]
+     *
+     * @param councilId - ID of the council that you want to get all sensors from
+     * @returns
+     */
+    getAllAdminSensorsCount(councilId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.sensorDB.getAllAdminSensorsCountFromDB(councilId)
+                    .then(res => {
+                    //console.log("logicaRes")
                     resolve(res);
                 })
                     .catch(err => {
@@ -79,7 +119,7 @@ class SensorLogic {
             return new Promise((resolve, reject) => {
                 this.sensorDB.getAllUserSensorsCountFromDB(userId)
                     .then(res => {
-                    console.log("logicaRes");
+                    //console.log("logicaRes")
                     resolve(res);
                 })
                     .catch(err => {
@@ -102,7 +142,7 @@ class SensorLogic {
             return new Promise((resolve, reject) => {
                 this.sensorDB.getUserSensorPaginationFromDB(userId, pageSize, pageIndex)
                     .then(res => {
-                    console.log("logicaRes");
+                    //console.log("logicaRes")
                     resolve(res);
                 })
                     .catch(err => {
@@ -123,7 +163,7 @@ class SensorLogic {
             return new Promise((resolve, reject) => {
                 this.sensorDB.getAllCouncilSensorsFromDB(councilId)
                     .then(res => {
-                    console.log("logicaRes");
+                    //console.log("logicaRes")
                     resolve(res);
                 })
                     .catch(err => {
@@ -144,6 +184,7 @@ class SensorLogic {
             return new Promise((resolve, reject) => {
                 this.sensorDB.storeSensorInDB(sensor)
                     .then(res => {
+                    //console.log(res);
                     resolve(res);
                 })
                     .catch(err => {
@@ -166,7 +207,7 @@ class SensorLogic {
             return new Promise((resolve, reject) => {
                 this.sensorDB.getAdminSensorPaginationFromDB(adminId, pageSize, pageIndex)
                     .then(res => {
-                    console.log("logicaRes");
+                    //console.log("logicaRes")
                     resolve(res);
                 })
                     .catch(err => {
@@ -187,7 +228,7 @@ class SensorLogic {
             return new Promise((resolve, reject) => {
                 this.sensorDB.getAdminAllSensorsFromDB(adminId)
                     .then(res => {
-                    console.log("logicaRes");
+                    //console.log("logicaRes")
                     resolve(res);
                 })
                     .catch(err => {
@@ -210,7 +251,7 @@ class SensorLogic {
             return new Promise((resolve, reject) => {
                 this.sensorDB.getCouncilSensorPaginationFromDB(councilId, pageSize, pageIndex)
                     .then(res => {
-                    console.log("logicaRes");
+                    //console.log("logicaRes")
                     resolve(res);
                 })
                     .catch(err => {
@@ -251,6 +292,7 @@ class SensorLogic {
             return new Promise((resolve, reject) => {
                 this.sensorDB.removeSensorInDB(sensorId)
                     .then(res => {
+                    //console.log(res);
                     resolve(res);
                 })
                     .catch(err => {

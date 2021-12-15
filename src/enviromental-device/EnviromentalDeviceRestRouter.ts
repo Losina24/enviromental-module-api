@@ -8,7 +8,6 @@
 import { Router, Request, Response, response } from 'express';
 import EnviromentalDeviceLogic from './EnviromentalDeviceLogic';
 import EnviromentalDevice from './EnviromentalDevice';
-
 import Utils from "../Utils";
 
 class EnviromentalDeviceRestRouter {
@@ -30,7 +29,7 @@ class EnviromentalDeviceRestRouter {
         this.getAllGatewayDevices();
         this.storeDevice();
         this.updateDevice();
-        this.getAdminDevicePagination();
+        this.getRootDevicePagination();
         this.getCouncilDevicePagination();
         this.removeDevice();
     }
@@ -400,12 +399,12 @@ class EnviromentalDeviceRestRouter {
      * }
      *
      */
-    public getAdminDevicePagination = () => this.router.get('/admin/:adminId/:pageSize/:pageIndex', (req: Request, res: Response) => {
-        const adminId = parseInt(req.params.adminId);
+    public getRootDevicePagination = () => this.router.get('/root/:rootId/:pageSize/:pageIndex', (req: Request, res: Response) => {
+        const rootId = parseInt(req.params.rootId);
         const pageSize = parseInt(req.params.pageSize);
         const pageIndex = parseInt(req.params.pageIndex);
 
-        this.enviromentalDeviceLogic.getAdminDevicePagination(adminId, pageSize, pageIndex)
+        this.enviromentalDeviceLogic.getRootDevicePagination(rootId, pageSize, pageIndex)
             .then(response => {
                 // Sending the response
                 Utils.sendRestResponse(response, res)

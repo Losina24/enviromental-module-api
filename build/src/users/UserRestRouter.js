@@ -10,6 +10,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
+const Utils_1 = __importDefault(require("../Utils"));
 const User_1 = __importDefault(require("./User"));
 const UserLogic_1 = __importDefault(require("./UserLogic"));
 class UserRestRouter {
@@ -18,6 +19,53 @@ class UserRestRouter {
         this.userLogic = new UserLogic_1.default();
         // This is Rest entry point that the express server uses.
         this.router = (0, express_1.Router)();
+        /**
+         * Get user information by given id
+         * GET /users/:id
+         *
+         * Response: {
+                "http": 200,
+                "status": "OK",
+                "response": {
+                }
+         * }
+         *
+         */
+        this.getCouncilUsersCount = () => this.router.get('/count/council/:councilId', (req, res) => {
+            const councilId = parseInt(req.params.councilId);
+            this.userLogic.getCouncilUsersCount(councilId)
+                .then(response => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(response, res);
+            })
+                .catch(err => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
+            });
+        });
+        /**
+    * Get user information by given id
+    * GET /users/:id
+    *
+    * Response: {
+        "http": 200,
+        "status": "OK",
+        "response": {
+        }
+    * }
+    *
+    */
+        this.getAllUsersCount = () => this.router.get('/count/root/:id', (req, res) => {
+            this.userLogic.getAllUsersCount()
+                .then(response => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(response, res);
+            })
+                .catch(err => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
+            });
+        });
         /**
          * Login check
          * POST /users/login
@@ -269,6 +317,8 @@ class UserRestRouter {
         });
         this.getUserById();
         this.getCouncilUsers();
+        this.getCouncilUsersCount();
+        this.getAllUsersCount();
         this.createUser();
         this.editUser();
         this.removeUser();

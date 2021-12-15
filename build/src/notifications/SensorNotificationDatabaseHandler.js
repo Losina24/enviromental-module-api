@@ -1,9 +1,9 @@
 "use strict";
 /**
- * Name: EnviromentaDeviceDatabaseHandler.ts
+ * Name: SensorNotification.ts
  * Date: 02 - 11 - 2021
- * Author: Alejandro Losa García
- * Description: Manages the database queries of the enviromental device feature
+ * Author: Daniel Poquet Ramirez
+ * Description: Database connection handler for sensor notifications
  */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -19,6 +19,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = __importDefault(require("../database"));
+const Utils_1 = __importDefault(require("../Utils"));
 const SensorNotification_1 = __importDefault(require("./SensorNotification"));
 class SensorNotificationDatabaseHandler {
     // Private methods used to reuse code in EnviromentalDeviceDatabaseHandler class
@@ -38,6 +39,125 @@ class SensorNotificationDatabaseHandler {
     // Methods
     /**
      * Get the user related notifications
+     * userId: N -> getRootNotificationsCountFromDB() -> notification: SensorNotification[]
+     *
+     * @param userId - the id of the user you want to get the notifications from
+     * @returns
+     */
+    getRootNotificationsCountFromDB() {
+        return __awaiter(this, void 0, void 0, function* () {
+            var query = "SELECT COUNT(*) as count FROM notification;";
+            return new Promise((resolve, reject) => {
+                database_1.default.getConnection((error, conn) => {
+                    // If connection fails
+                    if (error) {
+                        reject(Utils_1.default.generateLogicError("error getting root notifications count", error));
+                    }
+                    conn.query(query, (err, results) => {
+                        conn.release();
+                        // If connection fails
+                        if (err) {
+                            reject(Utils_1.default.generateLogicError("error getting root notifications count", err));
+                        }
+                        try {
+                            if (results[0].count != 0) {
+                                resolve(Utils_1.default.generateLogicSuccess("root notifications count retrieved succesfully", results[0].count));
+                            }
+                            else {
+                                resolve(Utils_1.default.generateLogicSuccessEmpty("root notifications couldnt be retrieved"));
+                            }
+                        }
+                        catch (error) {
+                            reject(Utils_1.default.generateLogicError("error getting root notifications count", error));
+                        }
+                    });
+                });
+            });
+        });
+    }
+    /**
+     * Get the user related notifications
+     * councilId: N -> getNotificationsByUserIdFromDB() -> notification: SensorNotification[]
+     *
+     * @param councilId - the id of the user you want to get the notifications from
+     * @returns
+     */
+    getAdminNotificationsCountFromDB(councilId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var query = "SELECT COUNT(*) as count FROM `gateway` INNER JOIN device ON device.gateway_id = gateway.id INNER JOIN " +
+                "sensor ON sensor.device_id=device.id INNER JOIN notification ON sensor.id=notification.sensor_id WHERE gateway.council_id="
+                + councilId + ";";
+            console.log(query);
+            return new Promise((resolve, reject) => {
+                database_1.default.getConnection((error, conn) => {
+                    // If connection fails
+                    if (error) {
+                        reject(Utils_1.default.generateLogicError("error getting user notifications count", error));
+                    }
+                    conn.query(query, (err, results) => {
+                        conn.release();
+                        // If connection fails
+                        if (err) {
+                            reject(Utils_1.default.generateLogicError("error getting user notifications count", err));
+                        }
+                        try {
+                            if (results[0].count != 0) {
+                                resolve(Utils_1.default.generateLogicSuccess("user notifications count retrieved succesfully", results[0].count));
+                            }
+                            else {
+                                resolve(Utils_1.default.generateLogicSuccessEmpty("user notifications couldnt be retrieved"));
+                            }
+                        }
+                        catch (error) {
+                            reject(Utils_1.default.generateLogicError("error getting user notifications count", error));
+                        }
+                    });
+                });
+            });
+        });
+    }
+    /**
+     * Get the user related notifications
+     * userId: N -> getNotificationsByUserIdFromDB() -> notification: SensorNotification[]
+     *
+     * @param userId - the id of the user you want to get the notifications from
+     * @returns
+     */
+    getUserNotificationsCountFromDB(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var query = "SELECT COUNT(*) as count FROM `user_device` INNER JOIN `device` ON" +
+                " `user_device`.`device_id` = `device`.`id` INNER JOIN `sensor` ON `device`.`id` = `sensor`.`device_id`" +
+                " INNER JOIN notification ON sensor.id=notification.sensor_id WHERE `user_device`.`user_id` = " + userId + ";";
+            return new Promise((resolve, reject) => {
+                database_1.default.getConnection((error, conn) => {
+                    // If connection fails
+                    if (error) {
+                        reject(Utils_1.default.generateLogicError("error getting user notifications count", error));
+                    }
+                    conn.query(query, (err, results) => {
+                        conn.release();
+                        // If connection fails
+                        if (err) {
+                            reject(Utils_1.default.generateLogicError("error getting user notifications count", err));
+                        }
+                        try {
+                            if (results[0].count != 0) {
+                                resolve(Utils_1.default.generateLogicSuccess("user notifications count retrieved succesfully", results[0].count));
+                            }
+                            else {
+                                resolve(Utils_1.default.generateLogicSuccessEmpty("user notifications couldnt be retrieved"));
+                            }
+                        }
+                        catch (error) {
+                            reject(Utils_1.default.generateLogicError("error getting user notifications count", error));
+                        }
+                    });
+                });
+            });
+        });
+    }
+    /**
+     * Get the user related notifications
      * userId: N -> getNotificationsByUserIdFromDB() -> notification: SensorNotification[]
      *
      * @param userId - the id of the user you want to get the notifications from
@@ -51,16 +171,25 @@ class SensorNotificationDatabaseHandler {
                 database_1.default.getConnection((error, conn) => {
                     // If connection fails
                     if (error) {
-                        reject();
+                        reject(Utils_1.default.generateLogicError("error getting admin notifications", error));
                     }
                     conn.query(query, (err, results) => {
                         conn.release();
                         // If connection fails
                         if (err) {
-                            reject();
+                            reject(Utils_1.default.generateLogicError("error getting admin notifications", err));
                         }
-                        let notifications = this.queryResultsToEnviromentalDevices(results);
-                        resolve(notifications);
+                        try {
+                            if (results[0].count != 0) {
+                                resolve(Utils_1.default.generateLogicSuccess("admin notifications retrieved succesfully", results[0].count));
+                            }
+                            else {
+                                resolve(Utils_1.default.generateLogicSuccessEmpty("admin notifications couldnt be retrieved"));
+                            }
+                        }
+                        catch (error) {
+                            reject(Utils_1.default.generateLogicError("error getting admin notifications", error));
+                        }
                     });
                 });
             });

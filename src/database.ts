@@ -4,7 +4,7 @@ import mysql from 'mysql';
 const conn = mysql.createPool({
     host: 'localhost',
     user: 'root',
-    password: '',
+    password: 'root',
     database: 'gesinenEnviromental'
 });
 

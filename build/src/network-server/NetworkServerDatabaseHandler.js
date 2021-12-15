@@ -19,6 +19,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = __importDefault(require("../database"));
+const Utils_1 = __importDefault(require("../Utils"));
 const NetworkServer_1 = __importDefault(require("./NetworkServer"));
 class NetworkServerDatabaseHandler {
     // Private methods used to reuse code in EnviromentalDeviceDatabaseHandler class
@@ -125,6 +126,82 @@ class NetworkServerDatabaseHandler {
                 database_1.default.getConnection((error, conn) => {
                     // If connection fails
                     if (error) {
+                        reject(Utils_1.default.generateLogicError("error getting admin network servers count", error));
+                    }
+                    conn.query(query, (err, results) => {
+                        conn.release();
+                        // If connection fails
+                        if (err) {
+                            reject(Utils_1.default.generateLogicError("error getting admin network servers count", err));
+                        }
+                        try {
+                            if (results[0].count != 0) {
+                                resolve(Utils_1.default.generateLogicSuccess("admin network servers count retrieved succesfully", results[0].count));
+                            }
+                            else {
+                                resolve(Utils_1.default.generateLogicSuccessEmpty("admin has no related network servers"));
+                            }
+                        }
+                        catch (error) {
+                            reject(Utils_1.default.generateLogicError("error getting admin network servers count", error));
+                        }
+                    });
+                });
+            });
+        });
+    }
+    /**
+         * Get admin network servers ( * COUNT * )
+         * councilId: N -> getAdminNetworkServersFromDB() -> networkServers: NetworkServer[]
+         *
+         * @param councilId - ID of the council you want to get the network servers from
+         * @returns
+         */
+    getAdminNetworkServersFromDB(councilId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var query = "SELECT COUNT(*) as count FROM `gateway` INNER JOIN gateway_network_server ON gateway_network_server.gateway_id=gateway.id INNER" +
+                " JOIN network_server ON network_server.id=gateway_network_server.network_server_id WHERE gateway.council_id=" + councilId;
+            return new Promise((resolve, reject) => {
+                database_1.default.getConnection((error, conn) => {
+                    // If connection fails
+                    if (error) {
+                        reject(Utils_1.default.generateLogicError("error getting admin network servers count", error));
+                    }
+                    conn.query(query, (err, results) => {
+                        conn.release();
+                        // If connection fails
+                        if (err) {
+                            reject(Utils_1.default.generateLogicError("error getting admin network servers count", err));
+                        }
+                        try {
+                            if (results[0].count != 0) {
+                                resolve(Utils_1.default.generateLogicSuccess("admin network servers count retrieved succesfully", results[0].count));
+                            }
+                            else {
+                                resolve(Utils_1.default.generateLogicSuccessEmpty("admin has no related network servers"));
+                            }
+                        }
+                        catch (error) {
+                            reject(Utils_1.default.generateLogicError("error getting admin network servers count", error));
+                        }
+                    });
+                });
+            });
+        });
+    }
+    /**
+     * Get root network servers ( * COUNT * )
+     * getNetworkServersCountFromDB() -> networkServers: NetworkServer[]
+     *
+     * @returns
+     */
+    getNetworkServersCountFromDB() {
+        return __awaiter(this, void 0, void 0, function* () {
+            var query = "SELECT COUNT(*) as count FROM network_server";
+            return new Promise((resolve, reject) => {
+                database_1.default.getConnection((error, conn) => {
+                    // If connection fails
+                    if (error) {
                         reject(error);
                     }
                     conn.query(query, (err, results) => {
@@ -133,7 +210,17 @@ class NetworkServerDatabaseHandler {
                         if (err) {
                             reject(err);
                         }
-                        resolve(results);
+                        try {
+                            if (results[0].count != 0) {
+                                resolve(Utils_1.default.generateLogicSuccess("network servers count retrieved succesfully", results[0].count));
+                            }
+                            else {
+                                resolve(Utils_1.default.generateLogicSuccessEmpty("network servers has no related gateways"));
+                            }
+                        }
+                        catch (error) {
+                            reject(Utils_1.default.generateLogicError("error getting network servers count", error));
+                        }
                     });
                 });
             });

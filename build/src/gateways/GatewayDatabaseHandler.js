@@ -10,6 +10,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = __importDefault(require("../database"));
+const Utils_1 = __importDefault(require("../Utils"));
 const Gateway_1 = __importDefault(require("./Gateway"));
 class GatewayDatabaseHandler {
     // Private methods used to reuse code in EnviromentalDeviceDatabaseHandler class
@@ -106,15 +107,25 @@ class GatewayDatabaseHandler {
             database_1.default.getConnection((error, conn) => {
                 // If connection fails
                 if (error) {
-                    reject(error);
+                    reject(Utils_1.default.generateLogicError("error getting user gateways count", error));
                 }
                 conn.query(query, (err, results) => {
                     conn.release();
                     // If connection fails
                     if (err) {
-                        reject(err);
+                        reject(Utils_1.default.generateLogicError("error getting user gateways count", err));
                     }
-                    resolve(results);
+                    try {
+                        if (results[0].count != 0) {
+                            resolve(Utils_1.default.generateLogicSuccess("user gateways count retrieved succesfully", results[0].count));
+                        }
+                        else {
+                            resolve(Utils_1.default.generateLogicSuccessEmpty("user has no related gateways"));
+                        }
+                    }
+                    catch (error) {
+                        reject(Utils_1.default.generateLogicError("error getting user gateways count", error));
+                    }
                 });
             });
         });
@@ -208,6 +219,77 @@ class GatewayDatabaseHandler {
                         gateways = this.queryResultsToGateways(results);
                     }
                     resolve(gateways);
+                });
+            });
+        });
+    }
+    /**
+     * Get council related gateways count
+     * councilId: N -> getGatewaysCountAdmin() -> gateways: Gateway[]
+     *
+     * @param councilId - ID of the council we want to get the gateways from
+     * @returns
+     */
+    getGatewaysCountAdmin(councilId) {
+        var query = "SELECT COUNT(*) as count FROM `gateway` WHERE council_id = " + councilId;
+        return new Promise((resolve, reject) => {
+            database_1.default.getConnection((error, conn) => {
+                // If connection fails
+                if (error) {
+                    reject(Utils_1.default.generateLogicError("error getting admin gateways count", error));
+                }
+                conn.query(query, (err, results) => {
+                    conn.release();
+                    // If connection fails
+                    if (err) {
+                        reject(Utils_1.default.generateLogicError("error getting admin gateways count", err));
+                    }
+                    try {
+                        if (results[0].count != 0) {
+                            resolve(Utils_1.default.generateLogicSuccess("admin gateways count retrieved succesfully", results[0].count));
+                        }
+                        else {
+                            resolve(Utils_1.default.generateLogicSuccessEmpty("admin has no related gateways"));
+                        }
+                    }
+                    catch (error) {
+                        reject(Utils_1.default.generateLogicError("error getting admin gateways count", error));
+                    }
+                });
+            });
+        });
+    }
+    /**
+     * Get root related gateways count
+     * networkServerId: N -> getGatewaysFromNetworkServerInDB() -> gateways: Gateway[]
+     *
+     * @returns
+     */
+    getGatewaysCountRoot() {
+        var query = "SELECT COUNT(*) as count from gateway;";
+        return new Promise((resolve, reject) => {
+            database_1.default.getConnection((error, conn) => {
+                // If connection fails
+                if (error) {
+                    reject(Utils_1.default.generateLogicError("error getting root gateways count", error));
+                }
+                conn.query(query, (err, results) => {
+                    conn.release();
+                    // If connection fails
+                    if (err) {
+                        reject(Utils_1.default.generateLogicError("error getting root gateways count", err));
+                    }
+                    try {
+                        if (results[0].count != 0) {
+                            resolve(Utils_1.default.generateLogicSuccess("root gateways count retrieved succesfully", results[0].count));
+                        }
+                        else {
+                            resolve(Utils_1.default.generateLogicSuccessEmpty("root has no related gateways"));
+                        }
+                    }
+                    catch (error) {
+                        reject(Utils_1.default.generateLogicError("error getting root gateways count", error));
+                    }
                 });
             });
         });

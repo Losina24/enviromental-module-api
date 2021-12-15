@@ -10,6 +10,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
+const Utils_1 = __importDefault(require("../Utils"));
 const Gateway_1 = __importDefault(require("./Gateway"));
 const GatewayLogic_1 = __importDefault(require("./GatewayLogic"));
 class GatewayRestRouter {
@@ -51,7 +52,7 @@ class GatewayRestRouter {
         });
         /**
          * Get user related gateways
-         * GET /gateway/fromUser/:id
+         * GET /gateway/user/:id
          *
          * Response: {
                 "http": 200,
@@ -61,7 +62,7 @@ class GatewayRestRouter {
          * }
          *
          */
-        this.getUserGateways = () => this.router.get('/fromUser/:userId', (req, res) => {
+        this.getUserGateways = () => this.router.get('/user/:userId', (req, res) => {
             const id = parseInt(req.params.userId);
             this.gatewayLogic.getUserGateways(id)
                 .then(response => {
@@ -81,7 +82,7 @@ class GatewayRestRouter {
         });
         /**
          * Get user related gateways ( * COUNT * )
-         * GET /gateway/count/fromUser/:id
+         * GET /gateway/count/user/:userId
          *
          * Response: {
                 "http": 200,
@@ -91,22 +92,64 @@ class GatewayRestRouter {
          * }
          *
          */
-        this.getUserGatewaysCount = () => this.router.get('/count/fromUser/:userId', (req, res) => {
+        this.getUserGatewaysCount = () => this.router.get('/count/user/:userId', (req, res) => {
             const id = parseInt(req.params.userId);
             this.gatewayLogic.getUserGatewaysCount(id)
                 .then(response => {
-                res.status(200).send({
-                    http: 200,
-                    status: 'OK',
-                    response: response
-                });
+                // Sending the response            
+                Utils_1.default.sendRestResponse(response, res);
             })
                 .catch(err => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                });
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
+            });
+        });
+        /**
+         * Get admin related gateways ( * COUNT * )
+         * GET /gateway/count/admin/:councilId
+         *
+         * Response: {
+                "http": 200,
+                "status": "OK",
+                "response": {
+                }
+         * }
+         *
+         */
+        this.getAdminGatewaysCount = () => this.router.get('/count/admin/:councilId', (req, res) => {
+            const councilId = parseInt(req.params.councilId);
+            this.gatewayLogic.getAdminGatewaysCount(councilId)
+                .then(response => {
+                // Sending the response            
+                Utils_1.default.sendRestResponse(response, res);
+            })
+                .catch(err => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
+            });
+        });
+        /**
+        * Get user related gateways ( * COUNT * )
+        * GET /gateway/count/root/:id
+        *
+        * Response: {
+            "http": 200,
+            "status": "OK",
+            "response": {
+            }
+        * }
+        *
+        */
+        this.getRootGatewaysCount = () => this.router.get('/count/root/:id', (req, res) => {
+            const id = parseInt(req.params.userId);
+            this.gatewayLogic.getRootGatewaysCount()
+                .then(response => {
+                // Sending the response            
+                Utils_1.default.sendRestResponse(response, res);
+            })
+                .catch(err => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
             });
         });
         /**
@@ -374,6 +417,8 @@ class GatewayRestRouter {
         this.getGatewayById();
         this.getUserGateways();
         this.getUserGatewaysCount();
+        this.getAdminGatewaysCount();
+        this.getRootGatewaysCount();
         this.getAllCouncilGateways();
         this.getCouncilGatewayPagination();
         this.editGateway();

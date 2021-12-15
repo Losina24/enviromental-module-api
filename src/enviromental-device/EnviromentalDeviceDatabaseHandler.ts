@@ -506,14 +506,14 @@ export default class EnviromentalDeviceDatabaseHandler {
 
     /**
      * Get enviromental devices from an admin
-     * adminId: N, pageSize: N, pageIndex: N -> getAdminDevicePaginationFromDB() -> [JSON]
+     * adminId: N, pageSize: N, pageIndex: N -> getRootDevicePaginationFromDB() -> [JSON]
      *
      * @param adminId - ID of the admin that you want to get all enviromental devices
      * @param pageSize - Number of devices returned by the request
      * @param pageIndex - Index of the page that you want to receive from the request
      * @returns
      */
-    public getAdminDevicePaginationFromDB(adminId: number, pageSize: number, pageIndex: number): Promise<EnviromentalDevice[]> {
+    public getRootDevicePaginationFromDB(adminId: number, pageSize: number, pageIndex: number): Promise<EnviromentalDevice[]> {
         const firstValue = (pageSize * pageIndex) - pageSize;
         const secondValue = (pageSize * pageIndex);
 

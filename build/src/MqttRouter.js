@@ -12,10 +12,10 @@ class MqttRouter {
     constructor() {
         // Atributes
         this.client = null;
-        this.host = "mqtt://broker.hivemq.com";
-        this.port = 8000;
-        this.username = "GTI3A-M2";
-        this.password = "gti3am2";
+        this.port = 8882;
+        this.host = "mqtts://gesinen.es:" + this.port;
+        this.username = "gesinen";
+        this.password = "gesinen2110";
     }
     /**
      * Connect with the mqtt server

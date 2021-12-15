@@ -25,12 +25,12 @@ class EnviromentalDevice {
     }
     /**
      * Gets the the enviromental device EUI
-     * -> getMac() -> mac: Text
+     * -> getDeviceEUI() -> device_EUI: Text
      *
-     * @returns mac: Enviromental device's EUI
+     * @returns device_EUI: Enviromental device's EUI
      */
     getDeviceEUI() {
-        return this.mac;
+        return this.device_EUI;
     }
     /**
      * Gets the gateway id of the enviromental device
@@ -52,6 +52,24 @@ class EnviromentalDevice {
             latitude: this.coords[0],
             longitude: this.coords[1]
         };
+    }
+    /**
+     * Get latitude of the enviromental device
+     * -> getCoords() -> coords: [x:R, y:R]
+     *
+     * @returns
+     */
+    getLatitude() {
+        return this.coords[1];
+    }
+    /**
+     * Get longitude of the enviromental device
+     * -> getCoords() -> coords: [x:R, y:R]
+     *
+     * @returns
+     */
+    getLongitude() {
+        return this.coords[0];
     }
     /**
      * Gets sensors of the enviromental device
@@ -88,10 +106,10 @@ class EnviromentalDevice {
     }
     /**
      * Sets the enviromental device's EUI
-     * mac: Text -> setDeviceEUI() ->
+     * device_EUI: Text -> setDeviceEUI() ->
      */
-    setDeviceEUI(mac) {
-        this.mac = mac;
+    setDeviceEUI(device_EUI) {
+        this.device_EUI = device_EUI;
     }
     /**
      * Sets the enviromental device's gateway ID
@@ -126,7 +144,7 @@ class EnviromentalDevice {
         return {
             id: this.id,
             name: this.name,
-            mac: this.mac,
+            device_EUI: this.device_EUI,
             gatewayId: this.gatewayId,
             //sensors: this.sensors,
             coords: {

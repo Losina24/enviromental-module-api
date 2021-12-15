@@ -44,7 +44,7 @@ class Server {
         // Gateway
         this.app.use('/' + this.version + '/gateway', GatewayRestRouter_1.default);
         // Network server
-        this.app.use('/' + this.version + '/NS', NetworkServerRestRouter_1.default);
+        this.app.use('/' + this.version + '/network_servers', NetworkServerRestRouter_1.default);
         // Notifications
         this.app.use('/' + this.version + '/notifications', SensorNotificationRestRouter_1.default);
     }

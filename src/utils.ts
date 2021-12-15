@@ -1,3 +1,10 @@
+/**
+ * Name: Utils.ts
+ * Date: 02 - 11 - 2021
+ * Author: Alejandro Losa García
+ * Description: Manages the database queries of the enviromental device feature
+ */
+
 import EnviromentalDevice from "./enviromental-device/EnviromentalDevice";
 import {Response} from "express";
 

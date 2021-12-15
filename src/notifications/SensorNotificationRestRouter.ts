@@ -82,7 +82,7 @@ class SensorNotificationRestRouter {
      * }
      * 
      */
-    public getAdminSensorNotificationsCount = () => this.router.get('/count/admin/:councilId', (req: Request, res: Response) => {
+    public getAdminSensorNotificationsCount = () => this.router.get('/count/council/:councilId', (req: Request, res: Response) => {
         const councilId = parseInt(req.params.councilId);
         console.log(councilId)
         this.notificationLogic.getAdminNotificationsCount(councilId)

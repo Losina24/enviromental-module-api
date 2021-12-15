@@ -148,7 +148,7 @@ class SensorRestRouter {
      * }
      *
      */
-    public getAllAdminSensorsCount = () => this.router.get('/count/admin/:councilId', (req: Request, res: Response) => {
+    public getAllAdminSensorsCount = () => this.router.get('/count/council/:councilId', (req: Request, res: Response) => {
         const councilId = parseInt(req.params.councilId);
 
         this.sensorLogic.getAllAdminSensorsCount(councilId)

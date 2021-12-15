@@ -10,6 +10,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
+const Utils_1 = __importDefault(require("../Utils"));
 const SensorLogic_1 = __importDefault(require("./SensorLogic"));
 const Sensor_1 = __importDefault(require("./Sensor"));
 class SensorRestRouter {
@@ -40,18 +41,12 @@ class SensorRestRouter {
             const id = parseInt(req.params.id);
             this.sensorLogic.getSensorById(id)
                 .then(response => {
-                res.status(200).send({
-                    http: 200,
-                    status: 'OK',
-                    response: response
-                });
+                // Sending the response
+                Utils_1.default.sendRestResponse(response, res);
             })
                 .catch(err => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                });
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
             });
         });
         /**
@@ -78,18 +73,72 @@ class SensorRestRouter {
             this.sensorLogic.getAllUserSensors(userId)
                 .then(response => {
                 // Sending the response
-                res.status(200).send({
-                    http: 200,
-                    status: 'OK',
-                    response: response
-                });
+                Utils_1.default.sendRestResponse(response, res);
             })
                 .catch(err => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                });
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
+            });
+        });
+        /**
+         * Get all sensors from root ( * COUNT * )
+         * GET /sensors/list/:userId
+         *
+         * Response: {
+         *  "http": 200,
+         *  "status": "OK",
+         *  "response": [
+            {
+                "_id": 1,
+                "_deviceEUI": "AS63126",
+                "_deviceId": 1,
+                "_name": "ambientalSensor1",
+                "_type": 1,
+                "_status": 1
+            }]
+         * }
+         *
+         */
+        this.getAllRootSensorsCount = () => this.router.get('/count/root/:id', (req, res) => {
+            this.sensorLogic.getAllRootSensorsCount()
+                .then(response => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(response, res);
+            })
+                .catch(err => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
+            });
+        });
+        /**
+         * Get all sensors from admin ( * COUNT * )
+         * GET /sensors/list/:userId
+         *
+         * Response: {
+         *  "http": 200,
+         *  "status": "OK",
+         *  "response": [
+            {
+                "_id": 1,
+                "_deviceEUI": "AS63126",
+                "_deviceId": 1,
+                "_name": "ambientalSensor1",
+                "_type": 1,
+                "_status": 1
+            }]
+         * }
+         *
+         */
+        this.getAllAdminSensorsCount = () => this.router.get('/count/council/:councilId', (req, res) => {
+            const councilId = parseInt(req.params.councilId);
+            this.sensorLogic.getAllAdminSensorsCount(councilId)
+                .then(response => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(response, res);
+            })
+                .catch(err => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
             });
         });
         /**
@@ -108,31 +157,24 @@ class SensorRestRouter {
                 "_type": 1,
                 "_status": 1
             }]
-         * }
-         *
-         */
-        this.getAllUserSensorsCount = () => this.router.get('/count/list/:userId', (req, res) => {
+        * }
+        *
+        */
+        this.getAllUserSensorsCount = () => this.router.get('/count/user/:userId', (req, res) => {
             const userId = parseInt(req.params.userId);
             this.sensorLogic.getAllUserSensorsCount(userId)
                 .then(response => {
                 // Sending the response
-                res.status(200).send({
-                    http: 200,
-                    status: 'OK',
-                    response: response
-                });
+                Utils_1.default.sendRestResponse(response, res);
             })
                 .catch(err => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                });
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
             });
         });
         /**
          * Get all sensors from a user with pagination
-         * GET /sensors/user/:userId/:pageSize/:pageIndex
+         * GET /sensors/list/user/:userId/:pageSize/:pageIndex
          *
          * Response: {
          *  "http": 200,
@@ -149,25 +191,18 @@ class SensorRestRouter {
          * }
          *
          */
-        this.getUserSensorPagination = () => this.router.get('/user/:userId/:pageSize/:pageIndex', (req, res) => {
+        this.getUserSensorPagination = () => this.router.get('/list/user/:userId/:pageSize/:pageIndex', (req, res) => {
             const userId = parseInt(req.params.userId);
             const pageSize = parseInt(req.params.pageSize);
             const pageIndex = parseInt(req.params.pageIndex);
             this.sensorLogic.getUserSensorPagination(userId, pageSize, pageIndex)
                 .then(response => {
                 // Sending the response
-                res.status(200).send({
-                    http: 200,
-                    status: 'OK',
-                    response: response
-                });
+                Utils_1.default.sendRestResponse(response, res);
             })
                 .catch(err => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                });
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
             });
         });
         /**
@@ -194,18 +229,11 @@ class SensorRestRouter {
             this.sensorLogic.getAllCouncilSensors(councilId)
                 .then(response => {
                 // Sending the response
-                res.status(200).send({
-                    http: 200,
-                    status: 'OK',
-                    response: response
-                });
+                Utils_1.default.sendRestResponse(response, res);
             })
                 .catch(err => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                });
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
             });
         });
         /**
@@ -233,23 +261,16 @@ class SensorRestRouter {
             this.sensorLogic.getCouncilSensorPagination(councilId, pageSize, pageIndex)
                 .then(response => {
                 // Sending the response
-                res.status(200).send({
-                    http: 200,
-                    status: 'OK',
-                    response: response
-                });
+                Utils_1.default.sendRestResponse(response, res);
             })
                 .catch(err => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                });
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
             });
         });
         /**
          * Store a sensor in db
-         * POST /sensors/add
+         * POST /sensors/
          *
          * Response: {
          *  "http": 200,
@@ -260,30 +281,31 @@ class SensorRestRouter {
          *  }
          *
          */
-        this.storeSensor = () => this.router.post('/add', (req, res) => {
-            console.log(req.body);
+        this.storeSensor = () => this.router.post('/', (req, res) => {
             let sensor = new Sensor_1.default();
             sensor.setDeviceId(req.body.deviceId);
             sensor.setName(req.body.name);
             sensor.setDeviceEUI(req.body.deviceEUI);
             sensor.setType(req.body.type);
             sensor.setStatus(req.body.status);
+            /*if(req.body.deviceId && req.body.name && req.body.deviceEUI && req.body.type && req.body.status){
+                sensor.setDeviceId(req.body.deviceId)
+                sensor.setName(req.body.name)
+                sensor.setDeviceEUI(req.body.deviceEUI)
+                sensor.setType(req.body.type)
+                sensor.setStatus(req.body.status)
+            } else {
+                Utils.sendRestResponse(Utils.generateLogicSuccessEmpty("No body params found"), res)
+            }*/
             this.sensorLogic.storeSensor(sensor)
                 .then(response => {
                 // Sending the response
-                res.status(200).send({
-                    http: 200,
-                    status: 'OK',
-                    response: "Sensor created succesfully",
-                    lastInsertId: response
-                });
+                console.log(response);
+                console.log(Utils_1.default.sendRestResponse(response, res));
             })
                 .catch(err => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                });
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
             });
         });
         /**
@@ -311,18 +333,11 @@ class SensorRestRouter {
             this.sensorLogic.getAdminSensorPagination(adminId, pageSize, pageIndex)
                 .then(response => {
                 // Sending the response
-                res.status(200).send({
-                    http: 200,
-                    status: 'OK',
-                    response: response
-                });
+                Utils_1.default.sendRestResponse(response, res);
             })
                 .catch(err => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                });
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
             });
         });
         /**
@@ -348,18 +363,11 @@ class SensorRestRouter {
             this.sensorLogic.getAdminAllSensors(adminId)
                 .then(response => {
                 // Sending the response
-                res.status(200).send({
-                    http: 200,
-                    status: 'OK',
-                    response: response
-                });
+                Utils_1.default.sendRestResponse(response, res);
             })
                 .catch(err => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                });
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
             });
         });
         /**
@@ -385,51 +393,39 @@ class SensorRestRouter {
             this.sensorLogic.getDeviceSensors(deviceId)
                 .then(response => {
                 // Sending the response
-                res.status(200).send({
-                    http: 200,
-                    status: 'OK',
-                    response: response
-                });
+                Utils_1.default.sendRestResponse(response, res);
             })
                 .catch(err => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                });
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
             });
         });
         /**
          * Remove sensor with the given id
-         * Delete /sensors/delete/:sensorId
+         * Delete /sensors/:sensorId
          * Response: {
              "http": 200,
              "status": "OK",
              "response": true
          }
          */
-        this.removeSensor = () => this.router.delete('/delete/:sensorId', (req, res) => {
+        this.removeSensor = () => this.router.delete('/:sensorId', (req, res) => {
             const sensorId = parseInt(req.params.sensorId);
             this.sensorLogic.removeSensor(sensorId)
                 .then(response => {
                 // Sending the response
-                res.status(200).send({
-                    http: 200,
-                    status: 'OK',
-                    response: "Sensor was deleted succesfully"
-                });
+                Utils_1.default.sendRestResponse(response, res);
             })
                 .catch(err => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                });
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
             });
         });
         this.getSensorById();
         this.getAllUserSensors();
         this.getAllUserSensorsCount();
+        this.getAllAdminSensorsCount();
+        this.getAllRootSensorsCount();
         this.getUserSensorPagination();
         this.getAllCouncilSensors();
         this.storeSensor();

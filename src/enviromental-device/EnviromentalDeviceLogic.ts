@@ -209,7 +209,6 @@ export default class EnviromentaDeviceLogic {
         })
     }
 
-
     /**
      * Get enviromental devices from an admin
      * adminId: N, pageSize: N, pageIndex: N -> getAdminDevicePagination() -> [EnviromentalDevice]
@@ -219,9 +218,9 @@ export default class EnviromentaDeviceLogic {
      * @param pageIndex - Index of the page that you want to receive from the request
      * @returns 
      */
-    public async getAdminDevicePagination(adminId: number, pageSize: number, pageIndex: number): Promise<EnviromentalDevice[]> {
+    public async getRootDevicePagination(adminId: number, pageSize: number, pageIndex: number): Promise<EnviromentalDevice[]> {
         return new Promise<EnviromentalDevice[]>((resolve, reject) => {
-            this.enviromentalDeviceDB.getAdminDevicePaginationFromDB(adminId, pageSize, pageIndex)
+            this.enviromentalDeviceDB.getRootDevicePaginationFromDB(adminId, pageSize, pageIndex)
                 .then(res => {
                     resolve(res)
                 })
@@ -242,7 +241,7 @@ export default class EnviromentaDeviceLogic {
      */
     public async getCouncilDevicePagination(councilId: number, pageSize: number, pageIndex: number): Promise<EnviromentalDevice[]> {
         return new Promise<EnviromentalDevice[]>((resolve, reject) => {
-            this.enviromentalDeviceDB.getAdminDevicePaginationFromDB(councilId, pageSize, pageIndex)
+            this.enviromentalDeviceDB.getCouncilDevicePaginationFromDB(councilId, pageSize, pageIndex)
                 .then(res => {
                     resolve(res)
                 })

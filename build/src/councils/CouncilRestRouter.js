@@ -10,6 +10,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
+const Utils_1 = __importDefault(require("../Utils"));
 const Council_1 = __importDefault(require("./Council"));
 const CouncilLogic_1 = __importDefault(require("./CouncilLogic"));
 class CouncilRestRouter {
@@ -44,18 +45,35 @@ class CouncilRestRouter {
             const id = parseInt(req.params.id);
             this.councilLogic.getCouncilById(id)
                 .then(response => {
-                res.status(200).send({
-                    http: 200,
-                    status: 'OK',
-                    response: response
-                });
+                // Sending the response            
+                Utils_1.default.sendRestResponse(response, res);
             })
                 .catch(err => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                });
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
+            });
+        });
+        /**
+         * Get user information by given id
+         * GET /count/root/:id
+         *
+         * Response: {
+                "http": 200,
+                "status": "OK",
+                "response": {
+                }
+         * }
+         *
+         */
+        this.getCouncilCount = () => this.router.get('/count/root/:id', (req, res) => {
+            this.councilLogic.getCouncilCount()
+                .then(response => {
+                // Sending the response            
+                Utils_1.default.sendRestResponse(response, res);
+            })
+                .catch(err => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
             });
         });
         /**
@@ -78,20 +96,13 @@ class CouncilRestRouter {
             council.setPostalCode(req.body.postalCode);
             council.setIban(req.body.iban);
             this.councilLogic.createCouncil(council)
-                .then((response) => {
-                // Sending the response
-                res.status(200).send({
-                    http: 200,
-                    status: 'OK',
-                    response: response
-                });
+                .then(response => {
+                // Sending the response            
+                Utils_1.default.sendRestResponse(response, res);
             })
-                .catch((err) => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                });
+                .catch(err => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
             });
         });
         /**
@@ -113,9 +124,9 @@ class CouncilRestRouter {
          * }
          *
          */
-        this.editCouncil = () => this.router.put('/', (req, res) => {
+        this.editCouncil = () => this.router.put('/:councilId', (req, res) => {
             let council = new Council_1.default();
-            council.setId(req.body.id);
+            council.setId(parseInt(req.params.councilId));
             council.setName(req.body.name);
             council.setAddress(req.body.address);
             council.setPhone(req.body.phoneNumber);
@@ -124,20 +135,13 @@ class CouncilRestRouter {
             council.setPostalCode(req.body.postalCode);
             council.setIban(req.body.iban);
             this.councilLogic.editCouncil(council)
-                .then((response) => {
-                // Sending the response
-                res.status(200).send({
-                    http: 200,
-                    status: 'OK',
-                    response: response
-                });
+                .then(response => {
+                // Sending the response            
+                Utils_1.default.sendRestResponse(response, res);
             })
-                .catch((err) => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                });
+                .catch(err => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
             });
         });
         /**
@@ -161,26 +165,20 @@ class CouncilRestRouter {
         this.removeCouncil = () => this.router.delete('/:id', (req, res) => {
             const councilId = parseInt(req.params.id);
             this.councilLogic.removeCouncil(councilId)
-                .then((response) => {
-                // Sending the response
-                res.status(200).send({
-                    http: 200,
-                    status: 'OK',
-                    response: response
-                });
+                .then(response => {
+                // Sending the response            
+                Utils_1.default.sendRestResponse(response, res);
             })
-                .catch((err) => {
-                res.status(401).send({
-                    http: 401,
-                    status: 'Error',
-                    error: err
-                });
+                .catch(err => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
             });
         });
         this.getCouncilById();
         this.createCouncil();
         this.editCouncil();
         this.removeCouncil();
+        this.getCouncilCount();
     }
 }
 const sensorRestRouter = new CouncilRestRouter();

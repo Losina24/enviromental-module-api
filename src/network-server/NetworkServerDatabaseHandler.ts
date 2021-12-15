@@ -158,6 +158,50 @@ export default class NetworkServerDatabaseHandler {
     }
 
     /**
+     * Get all network servers paginated
+     * pageSize: N, pageIndex: N -> getUserNetworkServersByIdCountFromDB() -> networkServers: NetworkServer[]
+     *
+     * @param pageSize - Number of gateways returned by request
+     * @param pageIndex - Index of the page that you want to receive from the request
+     * @returns
+     */
+     public async getAllNetworkServersPaginatedFromDB(pageSize: number, pageIndex: number): Promise<NetworkServer> {
+        const firstValue = (pageSize * pageIndex) - pageSize;
+        const secondValue = (pageSize * pageIndex);
+
+        var query = "SELECT * FROM `network_server` ORDER BY id DESC LIMIT " + firstValue + ', ' + secondValue;
+
+        return new Promise<NetworkServer>((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+
+                // If connection fails
+                if (error) {
+                    reject(Utils.generateLogicError("error getting all network servers", error))
+                }
+
+                conn.query(query, (err: any, results: any) => {
+                    conn.release();
+
+                    // If connection fails
+                    if (err) {
+                        reject(Utils.generateLogicError("error getting all network servers", err))
+                    }
+                    try {
+                        if (results) {
+                            resolve(Utils.generateLogicSuccess("all network servers retrieved succesfully", results));
+                        } else {
+                            resolve(Utils.generateLogicSuccessEmpty("no network servers found"));
+                        }
+                    } catch (error) {
+                        reject(Utils.generateLogicError("error getting all network servers", error))
+                    }
+                })
+
+            })
+        })
+    }
+
+    /**
          * Get admin network servers ( * COUNT * )
          * councilId: N -> getAdminNetworkServersFromDB() -> networkServers: NetworkServer[]
          *

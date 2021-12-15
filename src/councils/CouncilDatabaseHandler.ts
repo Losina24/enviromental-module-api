@@ -61,6 +61,47 @@ export default class CouncilDatabaseHandler {
     }
 
     /**
+     * Get root councils
+     * councilId: N -> getCouncilCountFromDB() -> council: Council
+     * 
+     * @param pageSize - Number of councils returned by the request
+     * @param pageIndex - Index of the page that you want to receive from the request
+     * @returns
+     */
+    public getRootCouncilsPaginationFromDB(pageSize: number, pageIndex: number): Promise<Council> {
+        const firstValue = (pageSize * pageIndex) - pageSize;
+        const secondValue = (pageSize * pageIndex);
+        var query = "SELECT * FROM `council` ORDER BY `council`.`id` DESC LIMIT " + firstValue + "," + secondValue + ";";
+        return new Promise<Council>((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+
+                // If connection fails
+                if (error) {
+                    reject(Utils.generateLogicError("error getting councils", error))
+                }
+
+                conn.query(query, (err: any, results: any) => {
+                    conn.release();
+                    // If connection fails
+                    if (err) {
+                        reject(Utils.generateLogicError("error getting councils", err))
+                    }
+                    try {
+                        if (results) {
+                            resolve(Utils.generateLogicSuccess("councils retrieved succesfully", results));
+                        } else {
+                            resolve(Utils.generateLogicSuccessEmpty("root has no related councils"));
+                        }
+                    } catch (error) {
+                        reject(Utils.generateLogicError("error getting councils", error))
+                    }
+                })
+
+            })
+        })
+    }
+
+    /**
      * Get council information by given id
      * councilId: N -> getCouncilCountFromDB() -> council: Council
      *

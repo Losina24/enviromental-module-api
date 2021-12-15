@@ -418,6 +418,51 @@ export default class SensorDatabaseHandler {
     }
 
     /**
+     * Update new sensor in database
+     * sensor: Sensor -> updateSensorInDB() -> [JSON]
+     *
+     * @param sensor - Sensor we want to store in database
+     * @returns
+     */
+    public updateSensorInDB(sensor: Sensor): Promise<number> {
+        var query = "UPDATE sensor SET sensor_type_id='" + sensor.getType() + "', device_id='" + sensor.getDeviceId()
+            + "', device_EUI='" + sensor.getDeviceEUI() + "', name='" + sensor.getName() + "', status='" + sensor.getStatus() +
+            "' WHERE id = '" + sensor.getId() + "';";
+
+        console.log(query);
+
+        return new Promise<number>((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+
+                // If connection fails
+                if (error) {
+                    reject(Utils.generateLogicError("error updating sensor", error))
+                }
+
+                conn.query(query, (err: any, results: any) => {
+                    conn.release();
+                    console.log(results);
+
+                    // If connection fails
+                    if (err) {
+                        reject(Utils.generateLogicError("error updating sensor", err))
+                    }
+                    try {
+                        if (results) {
+                            resolve(Utils.generateLogicSuccess("sensor updating successfully", results.insertId))
+                        } else {
+                            resolve(Utils.generateLogicSuccessEmpty("sensor couldnt be updating"))
+                        }
+                    } catch (error) {
+                        reject(Utils.generateLogicError("error updating sensor", error))
+                    }
+                })
+
+            })
+        })
+    }
+
+    /**
      * Get admin related sensors with pagination format
      * adminId: N, pageSize: N, pageIndex: N -> getAdminSensorPaginationFromDB() -> [Sensor]
      *
@@ -454,9 +499,51 @@ export default class SensorDatabaseHandler {
                             resolve(Utils.generateLogicSuccess("admin sensors retrieved succesfully", sensors))
                         }
                     } catch (error) {
-                        reject(Utils.generateLogicError("error deleting sensor", error))
+                        reject(Utils.generateLogicError("sensors could not be retrieved", error))
                     }
                     resolve(Utils.generateLogicSuccessEmpty("admin has no related sensors"))
+                })
+
+            })
+        })
+    }
+
+    /**
+     * Get all sensors with pagination format
+     * pageSize: N, pageIndex: N -> getAdminSensorPaginationFromDB() -> [Sensor]
+     *
+     * @param pageSize - Number of sensors returned by the request
+     * @param pageIndex - Index of the page that you want to receive from the request
+     * @returns
+     */
+     public getAllSensorsPaginationFromDB(pageSize: number, pageIndex: number): Promise<Sensor[]> {
+        const firstValue = (pageSize * pageIndex) - pageSize;
+        const secondValue = (pageSize * pageIndex);
+
+        var query = "SELECT * FROM `sensor` ORDER BY `sensor`.`id` DESC LIMIT " + firstValue + "," + secondValue + ";"
+        return new Promise<Sensor[]>((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+
+                // If connection fails
+                if (error) {
+                    reject(Utils.generateLogicError("error getting all sensors", error))
+                }
+
+                conn.query(query, (err: any, results: any) => {
+                    conn.release();
+                    // If connection fails
+                    if (err) {
+                        reject(Utils.generateLogicError("error getting all sensors", err))
+                    }
+                    try {
+                        if (results.length != 0) {
+                            let sensors: Sensor[] = this.queryResultsToSensors(results)
+                            resolve(Utils.generateLogicSuccess("all sensors retrieved succesfully", sensors))
+                        }
+                    } catch (error) {
+                        reject(Utils.generateLogicError("error getting all sensors", error))
+                    }
+                    resolve(Utils.generateLogicSuccessEmpty("no sensors found"))
                 })
 
             })

@@ -76,6 +76,26 @@ export default class NetworkServerLogic {
     }
 
     /**
+     * Get all network servers paginated
+     * pageSize: N, pageIndex: N -> getAllNetworkServersPaginated() -> networkServers: NetworkServer[]
+     *
+     * @param pageSize - Number of network servers returned by request
+     * @param pageIndex - Index of the page that you want to receive from the request
+     * @returns
+     */
+     public async getAllNetworkServersPaginated( pageSize: number, pageIndex: number ) : Promise<NetworkServer[]> {
+        return new Promise<NetworkServer[]>((resolve, reject) => {
+            this.networkServerDB.getAllNetworkServersPaginatedFromDB( pageSize, pageIndex )
+                .then( (res: any) => {
+                    resolve(res)
+                })
+                .catch( err => {
+                    reject(err)
+                })
+        })
+    }
+    
+    /**
      * Get admin network servers ( * COUNT * )
      * councilId: N -> getAdminNetworkServerCount() -> networkServers: NetworkServer[]
      *

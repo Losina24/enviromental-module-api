@@ -214,6 +214,44 @@ export default class GatewayDatabaseHandler {
             })
         })
     }
+    /**
+         * Get all council related gateways with pagination
+         * councilId: N, pageSize: N, pageIndex: N -> getCouncilGatewayPaginationFromDB() -> gateways: Gateway[]
+         *
+         * @param pageSize - Number of gateways returned by request
+         * @param pageIndex - Index of the page that you want to receive from the request
+         * @returns
+         */
+    public getAllGatewaysRootPaginationFromDB(pageSize: number, pageIndex: number): Promise<Gateway> {
+        const firstValue = (pageSize * pageIndex) - pageSize;
+        const secondValue = (pageSize * pageIndex);
+
+        var query = "SELECT * FROM `gateway` ORDER BY gateway.id DESC LIMIT " + firstValue + ', ' + secondValue;
+        console.log(query)
+        return new Promise<Gateway>((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+
+                // If connection fails
+                if (error) {
+                    reject()
+                }
+
+                conn.query(query, (err: any, results: any) => {
+                    conn.release();
+                    // If connection fails
+                    if (err) {
+                        reject()
+                    }
+                    let gateways
+                    if (results.length != 0) {
+                        gateways = this.queryResultsToGateways(results)
+                    }
+                    resolve(gateways)
+                })
+
+            })
+        })
+    }
 
     /**
      * Get network server related gateways

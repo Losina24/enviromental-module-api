@@ -25,6 +25,7 @@ class NetworkServerRestRouter {
         this.getUserNetworkServersCountById();
         this.getRootNetworkServersCount();
         this.getAdminNetworkServersCount();
+        this.getAllNetworkServersPaginated();
         this.createNetworkServer();
         this.editNetworkServer();
         this.removeNetworkServer();
@@ -76,7 +77,29 @@ class NetworkServerRestRouter {
             })
     })
 
+    /**
+     * Get all network servers paginated
+     * pageSize: N, pageIndex: N -> getAllNetworkServersPaginated() -> networkServers: NetworkServer[]
+     *
+     * @param pageSize - Number of network servers returned by request
+     * @param pageIndex - Index of the page that you want to receive from the request
+     * @returns
+     */
+     public getAllNetworkServersPaginated = () => this.router.get('/root/:pageSize/:pageIndex', (req: Request, res: Response) => {
+        const pageSize = parseInt(req.params.pageSize);
+        const pageIndex = parseInt(req.params.pageIndex);
 
+        this.networkServerLogic.getAllNetworkServersPaginated(pageSize, pageIndex)
+            .then(response => {
+                // Sending the response            
+                Utils.sendRestResponse(response, res)
+            })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
+            })
+    })
+    
     /**
      * Get the information about a enviromental device
      * GET /device/:id

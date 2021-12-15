@@ -69,8 +69,8 @@ export default class UserDatabaseHandler {
      *
      * @returns
      */
-     public getCouncilUsersCountFromDB(councilId: number): Promise<User> {
-        var query = "SELECT COUNT(*) as count FROM `user` WHERE council_id="+councilId;
+    public getCouncilUsersCountFromDB(councilId: number): Promise<User> {
+        var query = "SELECT COUNT(*) as count FROM `user` WHERE council_id=" + councilId;
         return new Promise<User>((resolve: any, reject: any) => {
             db.getConnection((error: any, conn: any) => {
 
@@ -338,6 +338,51 @@ export default class UserDatabaseHandler {
                         resolve(Utils.generateLogicSuccess("council users retrieved successfully", user))
                     }
                     resolve(Utils.generateLogicSuccessEmpty("council has no related users"))
+                })
+
+            })
+        })
+    }
+
+    /**
+     * Get all users paginated
+     * pageSize: N, pageIndex: N -> getAllUsersPaginatedFromDB() -> users: [User]
+     * 
+     * @param pageSize - Number of network servers returned by request
+     * @param pageIndex - Index of the page that you want to receive from the request
+     * @returns
+     */
+    public getAllUsersPaginatedFromDB(pageSize: number, pageIndex: number): Promise<User[]> {
+        const firstValue = (pageSize * pageIndex) - pageSize;
+        const secondValue = (pageSize * pageIndex);
+
+        var query = "SELECT * FROM `user` ORDER BY id DESC LIMIT " + firstValue + ', ' + secondValue;
+
+        console.log(query)
+        return new Promise<User[]>((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+
+                // If connection fails
+                if (error) {
+                    reject(Utils.generateLogicError("error retrieving users", error))
+                }
+
+                conn.query(query, (err: any, results: any) => {
+                    conn.release();
+
+                    // If connection fails
+                    if (err) {
+                        reject(Utils.generateLogicError("error getting all users", err))
+                    }
+                    try {
+                        if (results) {
+                            resolve(Utils.generateLogicSuccess("all users retrieved succesfully", results));
+                        } else {
+                            resolve(Utils.generateLogicSuccessEmpty("no users found"));
+                        }
+                    } catch (error) {
+                        reject(Utils.generateLogicError("error getting all users", error))
+                    }
                 })
 
             })

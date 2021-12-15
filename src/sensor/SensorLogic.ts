@@ -15,7 +15,7 @@ export default class SensorLogic {
 
     // Constructor
     constructor() {
-        
+
     }
 
     // Logic Methods 
@@ -26,13 +26,13 @@ export default class SensorLogic {
      * @param sensorId - ID of the sensor you want to get data from
      * @returns 
      */
-    public async getSensorById( sensorId: number ) : Promise<Sensor> {
+    public async getSensorById(sensorId: number): Promise<Sensor> {
         return new Promise<Sensor>((resolve, reject) => {
-            this.sensorDB.getSensorByIdFromDB( sensorId )
-                .then( res => {
+            this.sensorDB.getSensorByIdFromDB(sensorId)
+                .then(res => {
                     resolve(res)
                 })
-                .catch( err => {
+                .catch(err => {
                     reject(err)
                 })
         })
@@ -45,13 +45,13 @@ export default class SensorLogic {
      * @param userId - ID of the user that you want to get all sensors from
      * @returns 
      */
-    public async getAllUserSensors( userId: number ): Promise<Sensor[]> {
+    public async getAllUserSensors(userId: number): Promise<Sensor[]> {
         return new Promise<Sensor[]>((resolve, reject) => {
-            this.sensorDB.getAllUserSensorsFromDB( userId )
-                .then( res => {
+            this.sensorDB.getAllUserSensorsFromDB(userId)
+                .then(res => {
                     resolve(res)
                 })
-                .catch( err => {
+                .catch(err => {
                     reject(err)
                 })
         })
@@ -63,14 +63,14 @@ export default class SensorLogic {
      *
      * @returns
      */
-     public async getAllRootSensorsCount(): Promise<Sensor[]> {
+    public async getAllRootSensorsCount(): Promise<Sensor[]> {
         return new Promise<Sensor[]>((resolve, reject) => {
             this.sensorDB.getAllRootSensorsCountFromDB()
-                .then( res => {
+                .then(res => {
                     //console.log("logicaRes")
                     resolve(res)
                 })
-                .catch( err => {
+                .catch(err => {
                     reject(err)
                 })
         })
@@ -83,14 +83,14 @@ export default class SensorLogic {
      * @param councilId - ID of the council that you want to get all sensors from
      * @returns
      */
-     public async getAllAdminSensorsCount( councilId: number ): Promise<Sensor[]> {
+    public async getAllAdminSensorsCount(councilId: number): Promise<Sensor[]> {
         return new Promise<Sensor[]>((resolve, reject) => {
-            this.sensorDB.getAllAdminSensorsCountFromDB( councilId )
-                .then( res => {
+            this.sensorDB.getAllAdminSensorsCountFromDB(councilId)
+                .then(res => {
                     //console.log("logicaRes")
                     resolve(res)
                 })
-                .catch( err => {
+                .catch(err => {
                     reject(err)
                 })
         })
@@ -103,14 +103,14 @@ export default class SensorLogic {
      * @param userId - ID of the user that you want to get all sensors from
      * @returns
      */
-    public async getAllUserSensorsCount( userId: number ): Promise<Sensor[]> {
+    public async getAllUserSensorsCount(userId: number): Promise<Sensor[]> {
         return new Promise<Sensor[]>((resolve, reject) => {
-            this.sensorDB.getAllUserSensorsCountFromDB( userId )
-                .then( res => {
+            this.sensorDB.getAllUserSensorsCountFromDB(userId)
+                .then(res => {
                     //console.log("logicaRes")
                     resolve(res)
                 })
-                .catch( err => {
+                .catch(err => {
                     reject(err)
                 })
         })
@@ -125,14 +125,14 @@ export default class SensorLogic {
      * @param pageIndex - Index of the page that you want to receive from the request
      * @returns 
      */
-    public async getUserSensorPagination( userId: number, pageSize: number, pageIndex: number ): Promise<Sensor[]> {
+    public async getUserSensorPagination(userId: number, pageSize: number, pageIndex: number): Promise<Sensor[]> {
         return new Promise<Sensor[]>((resolve, reject) => {
-            this.sensorDB.getUserSensorPaginationFromDB( userId, pageSize, pageIndex )
-                .then( res => {
+            this.sensorDB.getUserSensorPaginationFromDB(userId, pageSize, pageIndex)
+                .then(res => {
                     //console.log("logicaRes")
                     resolve(res)
                 })
-                .catch( err => {
+                .catch(err => {
                     reject(err)
                 })
         })
@@ -145,14 +145,14 @@ export default class SensorLogic {
      * @param councilId - ID of the council that you want to get all enviromental devices
      * @returns 
      */
-    public async getAllCouncilSensors( councilId: number ): Promise<Sensor[]> {
+    public async getAllCouncilSensors(councilId: number): Promise<Sensor[]> {
         return new Promise<Sensor[]>((resolve, reject) => {
-            this.sensorDB.getAllCouncilSensorsFromDB( councilId )
-                .then( res => {
+            this.sensorDB.getAllCouncilSensorsFromDB(councilId)
+                .then(res => {
                     //console.log("logicaRes")
                     resolve(res)
                 })
-                .catch( err => {
+                .catch(err => {
                     reject(err)
                 })
         })
@@ -165,14 +165,34 @@ export default class SensorLogic {
      * @param sensor - Sensor we want to store
      * @returns 
      */
-    public async storeSensor( sensor: Sensor ): Promise<number> {
+    public async storeSensor(sensor: Sensor): Promise<number> {
         return new Promise<number>((resolve, reject) => {
-            this.sensorDB.storeSensorInDB( sensor )
-                .then( res => {
+            this.sensorDB.storeSensorInDB(sensor)
+                .then(res => {
                     //console.log(res);
                     resolve(res)
                 })
-                .catch( err => {
+                .catch(err => {
+                    reject(err)
+                })
+        })
+    }
+
+    /**
+     * Update sensor on database
+     * sensor: Sensor -> updateSensor()
+     * 
+     * @param sensor - Sensor we want to update
+     * @returns 
+     */
+    public async updateSensor(sensor: Sensor): Promise<number> {
+        return new Promise<number>((resolve, reject) => {
+            this.sensorDB.updateSensorInDB(sensor)
+                .then(res => {
+                    //console.log(res);
+                    resolve(res)
+                })
+                .catch(err => {
                     reject(err)
                 })
         })
@@ -187,14 +207,35 @@ export default class SensorLogic {
      * @param pageIndex - Index of the page that you want to receive from the request
      * @returns 
      */
-    public async getAdminSensorPagination( adminId: number, pageSize: number, pageIndex: number ): Promise<Sensor[]> {
+    public async getAdminSensorPagination(adminId: number, pageSize: number, pageIndex: number): Promise<Sensor[]> {
         return new Promise<Sensor[]>((resolve, reject) => {
-            this.sensorDB.getAdminSensorPaginationFromDB( adminId, pageSize, pageIndex )
-                .then( res => {
+            this.sensorDB.getAdminSensorPaginationFromDB(adminId, pageSize, pageIndex)
+                .then(res => {
                     //console.log("logicaRes")
                     resolve(res)
                 })
-                .catch( err => {
+                .catch(err => {
+                    reject(err)
+                })
+        })
+    }
+
+    /**
+     * Get all sensors with pagination format
+     * pageSize: N, pageIndex: N -> getAllSensorsPagination() -> [Sensor]
+     *
+     * @param pageSize - Number of sensors returned by the request
+     * @param pageIndex - Index of the page that you want to receive from the request
+     * @returns 
+     */
+    public async getAllSensorsPagination(pageSize: number, pageIndex: number): Promise<Sensor[]> {
+        return new Promise<Sensor[]>((resolve, reject) => {
+            this.sensorDB.getAllSensorsPaginationFromDB(pageSize, pageIndex)
+                .then(res => {
+                    //console.log("logicaRes")
+                    resolve(res)
+                })
+                .catch(err => {
                     reject(err)
                 })
         })
@@ -207,14 +248,14 @@ export default class SensorLogic {
      * @param adminId - ID of the admin that you want to get all enviromental devices
      * @returns 
      */
-    public async getAdminAllSensors( adminId: number) : Promise<Sensor[]> {
+    public async getAdminAllSensors(adminId: number): Promise<Sensor[]> {
         return new Promise<Sensor[]>((resolve, reject) => {
-            this.sensorDB.getAdminAllSensorsFromDB( adminId )
-                .then( res => {
+            this.sensorDB.getAdminAllSensorsFromDB(adminId)
+                .then(res => {
                     //console.log("logicaRes")
                     resolve(res)
                 })
-                .catch( err => {
+                .catch(err => {
                     reject(err)
                 })
         })
@@ -229,14 +270,14 @@ export default class SensorLogic {
      * @param pageIndex - Index of the page that you want to receive from the request
      * @returns 
      */
-    public async getCouncilSensorPagination( councilId: number, pageSize: number, pageIndex: number ) : Promise<Sensor[]> {
+    public async getCouncilSensorPagination(councilId: number, pageSize: number, pageIndex: number): Promise<Sensor[]> {
         return new Promise<Sensor[]>((resolve, reject) => {
-            this.sensorDB.getCouncilSensorPaginationFromDB( councilId, pageSize, pageIndex )
-                .then( res => {
+            this.sensorDB.getCouncilSensorPaginationFromDB(councilId, pageSize, pageIndex)
+                .then(res => {
                     //console.log("logicaRes")
                     resolve(res)
                 })
-                .catch( err => {
+                .catch(err => {
                     reject(err)
                 })
         })
@@ -249,13 +290,13 @@ export default class SensorLogic {
      * @param deviceId - ID of the device we want to get the sensors from
      * @returns 
      */
-    public async getDeviceSensors( deviceId: number ) : Promise<Sensor[]> {
+    public async getDeviceSensors(deviceId: number): Promise<Sensor[]> {
         return new Promise<Sensor[]>((resolve, reject) => {
-            this.sensorDB.getDeviceSensorsFromDB( deviceId )
-                .then( res => {
+            this.sensorDB.getDeviceSensorsFromDB(deviceId)
+                .then(res => {
                     resolve(res)
                 })
-                .catch( err => {
+                .catch(err => {
                     reject(err)
                 })
         })
@@ -270,12 +311,12 @@ export default class SensorLogic {
      */
     public async removeSensor(sensorId: number): Promise<void> {
         return new Promise<void>((resolve, reject) => {
-            this.sensorDB.removeSensorInDB( sensorId )
-                .then( res => {
+            this.sensorDB.removeSensorInDB(sensorId)
+                .then(res => {
                     //console.log(res);
                     resolve(res)
                 })
-                .catch( err => {
+                .catch(err => {
                     reject(err)
                 })
         })

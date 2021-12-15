@@ -155,6 +155,26 @@ export default class GatewayLogic {
     }
 
     /**
+     * Get all gateways with pagination
+     * pageSize: N, pageIndex: N -> getAllGatewaysRootPagination() -> gateways: Gateway[]
+     *
+     * @param pageSize - Number of gateways returned by request
+     * @param pageIndex - Index of the page that you want to receive from the request
+     * @returns
+     */
+     public async getAllGatewaysRootPagination(pageSize: number, pageIndex: number): Promise<Gateway> {
+        return new Promise<Gateway>((resolve, reject) => {
+            this.gatewayDB.getAllGatewaysRootPaginationFromDB(pageSize, pageIndex)
+                .then(res => {
+                    resolve(res)
+                })
+                .catch(err => {
+                    reject(err)
+                })
+        })
+    }
+    
+    /**
      * Get network server related gateways
      * networkServerId: N -> getGatewaysFromNetworkServer() -> gateways: Gateway[]
      *

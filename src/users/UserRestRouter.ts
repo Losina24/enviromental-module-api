@@ -27,6 +27,7 @@ class UserRestRouter {
         this.editUser();
         this.removeUser();
         this.login();
+        this.getAllUsersPaginated();
     }
 
     /**
@@ -44,14 +45,41 @@ class UserRestRouter {
     public getCouncilUsersCount = () => this.router.get('/count/council/:councilId', (req: Request, res: Response) => {
         const councilId = parseInt(req.params.councilId);
         this.userLogic.getCouncilUsersCount(councilId)
-        .then(response => {
-            // Sending the response
-            Utils.sendRestResponse(response, res)
-        })
-        .catch(err => {
-            // Sending the response
-            Utils.sendRestResponse(err, res)
-        })
+            .then(response => {
+                // Sending the response
+                Utils.sendRestResponse(response, res)
+            })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
+            })
+    })
+
+    /**
+     * Get all users paginated
+     * GET /users/:id
+     *
+     * Response: {
+            "http": 200,
+            "status": "OK",
+            "response": {
+            }
+     * }
+     *
+     */
+    public getAllUsersPaginated = () => this.router.get('/root/:pageSize/:pageIndex', (req: Request, res: Response) => {
+        const pageSize = parseInt(req.params.pageSize);
+        const pageIndex = parseInt(req.params.pageIndex);
+
+        this.userLogic.getAllUsersPaginated(pageSize, pageIndex)
+            .then(response => {
+                // Sending the response
+                Utils.sendRestResponse(response, res)
+            })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
+            })
     })
 
     /**
@@ -68,14 +96,14 @@ class UserRestRouter {
 */
     public getAllUsersCount = () => this.router.get('/count/root/:id', (req: Request, res: Response) => {
         this.userLogic.getAllUsersCount()
-        .then(response => {
-            // Sending the response
-            Utils.sendRestResponse(response, res)
-        })
-        .catch(err => {
-            // Sending the response
-            Utils.sendRestResponse(err, res)
-        })
+            .then(response => {
+                // Sending the response
+                Utils.sendRestResponse(response, res)
+            })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
+            })
     })
 
     /**

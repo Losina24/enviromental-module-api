@@ -1,4 +1,4 @@
-var chai = require('chai');
+/*var chai = require('chai');
 var expect = chai.expect;    // Using Expect style
 // mod.cjs
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
@@ -93,3 +93,4 @@ describe('Test funcionalidad sensores', function () {
         });
 
 });
+*/

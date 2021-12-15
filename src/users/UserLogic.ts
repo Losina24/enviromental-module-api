@@ -49,7 +49,7 @@ export default class UserLogic {
                     } else {
                         role = "user"
                     }
-
+                    
                     res.role = role
 
                     resolve({
@@ -94,6 +94,27 @@ export default class UserLogic {
     public async getCouncilUsers( councilId: number ): Promise<User[]> {
         return new Promise<User[]>((resolve, reject) => {
             this.userDB.getCouncilUsersFromDB( councilId )
+                .then( res => {
+                    console.log("logicaRes")
+                    resolve(res)
+                })
+                .catch( err => {
+                    reject(err)
+                })
+        })
+    }
+
+    /**
+     * Get all users paginated
+     * pageSize: N, pageIndex: N -> getAllUsersPaginated() -> users: [User]
+     * 
+     * @param pageSize - Number of network servers returned by request
+     * @param pageIndex - Index of the page that you want to receive from the request
+     * @returns
+     */
+     public async getAllUsersPaginated( pageSize: number, pageIndex: number ): Promise<User[]> {
+        return new Promise<User[]>((resolve, reject) => {
+            this.userDB.getAllUsersPaginatedFromDB( pageSize, pageIndex )
                 .then( res => {
                     console.log("logicaRes")
                     resolve(res)

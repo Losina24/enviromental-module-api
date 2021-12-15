@@ -33,6 +33,7 @@ class GatewayRestRouter {
         this.addNetworkServerToGateway();
         this.removeNetworkServerFromGateway();
         this.removeGateway();
+        this.getAllGatewaysRootPagination();
     }
 
     /**
@@ -162,6 +163,7 @@ class GatewayRestRouter {
     */
     public getRootGatewaysCount = () => this.router.get('/count/root/:id', (req: Request, res: Response) => {
         const id = parseInt(req.params.userId);
+        console.log("getRootgateways")
         this.gatewayLogic.getRootGatewaysCount()
             .then(response => {
                 // Sending the response            
@@ -204,9 +206,10 @@ class GatewayRestRouter {
                 })
             })
     })
+
     /**
      * Get all council related gateways with pagination
-     * GET /gateway/fromCouncil/list/:councilId/:pageSize/:pageIndex
+     * GET /gateway/council/:councilId/:pageSize/:pageIndex
      *
      * Response: {
             "http": 200,
@@ -216,7 +219,7 @@ class GatewayRestRouter {
      * }
      *
      */
-    public getCouncilGatewayPagination = () => this.router.get('/fromCouncil/list/:councilId/:pageSize/:pageIndex', (req: Request, res: Response) => {
+    public getCouncilGatewayPagination = () => this.router.get('/council/:councilId/:pageSize/:pageIndex', (req: Request, res: Response) => {
         const councilId = parseInt(req.params.councilId);
         const pageSize = parseInt(req.params.pageSize);
         const pageIndex = parseInt(req.params.pageIndex);
@@ -237,6 +240,40 @@ class GatewayRestRouter {
                 })
             })
     })
+
+    /**
+     * Get all council related gateways with pagination
+     * GET /gateway/root/:pageSize/:pageIndex
+     *
+     * Response: {
+            "http": 200,
+            "status": "OK",
+            "response": {
+            }
+     * }
+     *
+     */
+    public getAllGatewaysRootPagination = () => this.router.get('/root/:pageSize/:pageIndex', (req: Request, res: Response) => {
+        const pageSize = parseInt(req.params.pageSize);
+        const pageIndex = parseInt(req.params.pageIndex);
+
+        this.gatewayLogic.getAllGatewaysRootPagination(pageSize, pageIndex)
+            .then(response => {
+                res.status(200).send({
+                    http: 200,
+                    status: 'OK',
+                    response: response
+                })
+            })
+            .catch(err => {
+                res.status(401).send({
+                    http: 401,
+                    status: 'Error',
+                    error: err
+                })
+            })
+    })
+
     /**
      * Get network server related gateways
      * GET /gateway/fromNS/list/:networkServerId

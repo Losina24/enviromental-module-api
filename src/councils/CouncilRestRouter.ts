@@ -24,6 +24,7 @@ class CouncilRestRouter {
         this.editCouncil();
         this.removeCouncil();
         this.getCouncilCount();
+        this.getRootCouncilsPagination();
     }
 
     /**
@@ -75,6 +76,33 @@ class CouncilRestRouter {
      */
     public getCouncilCount = () => this.router.get('/count/root/:id', (req: Request, res: Response) => {
         this.councilLogic.getCouncilCount()
+            .then(response => {
+                // Sending the response            
+                Utils.sendRestResponse(response, res)
+            })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
+            })
+    })
+
+    /**
+     * Get user information by given id
+     * GET /count/root/:id
+     *
+     * Response: {
+            "http": 200,
+            "status": "OK",
+            "response": {
+            }
+     * }
+     *
+     */
+    public getRootCouncilsPagination = () => this.router.get('/pagination/:pageSize/:pageIndex', (req: Request, res: Response) => {
+        const pageSize = parseInt(req.params.pageSize);
+        const pageIndex = parseInt(req.params.pageIndex);
+
+        this.councilLogic.getRootCouncilsPagination(pageSize,pageIndex)
             .then(response => {
                 // Sending the response            
                 Utils.sendRestResponse(response, res)

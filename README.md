@@ -12,6 +12,7 @@ This repository contains an API for an IoT management platform. It is developed 
   - [**Sensors**](#sensors)
   - [**Measures**](#measures)
 - [**Deployment**](#deployment)
+- [**Testing**](#testing)
 
 # **Pre requirements**
 This API is being developed using `Node.js` and `TypeScript` so you need to be installed `npm`. 
@@ -594,6 +595,14 @@ Body:
 
 # **Deployment**
 To upload the code to production, you just have to drag the files into the `/build` folder inside your server's folder (if it is local, it is not necessary). Then start the express server from the `index.js` file
+
+
+# **Testing**
+To run the automatized tests follow the next steps.
+```
+cd <path-to-directory>/enviromental-module-api
+npm run test
+```
 
 # **License**
 All the code in this repository is owned by [Alejandro Losa](https://alejandrolosa.es/). <br>

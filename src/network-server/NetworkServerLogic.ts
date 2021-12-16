@@ -106,7 +106,7 @@ export default class NetworkServerLogic {
      */
      public async getCouncilNetworkServersPaginated( councilId: number, pageSize: number, pageIndex: number ) : Promise<NetworkServer[]> {
         return new Promise<NetworkServer[]>((resolve, reject) => {
-            this.networkServerDB.getAllNetworkServersPaginatedFromDB( councilId, pageSize, pageIndex )
+            this.networkServerDB.getCouncilNetworkServersPaginatedFromDB( councilId, pageSize, pageIndex )
                 .then( (res: any) => {
                     resolve(res)
                 })

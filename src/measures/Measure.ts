@@ -10,8 +10,7 @@ export default class Measure {
     // Atributes
     private sensorId: number;
     private value: number;
-    private date: Date;
-    private type: string;
+    private date: string;
     private unit: string;
 
     // Constructor
@@ -40,16 +39,8 @@ export default class Measure {
      * Sets the measure's date
      * date: Date -> setDate() ->
      */
-    public setDate( date: Date ): void {
+    public setDate( date: string ): void {
         this.date = date;
-    }
-
-    /**
-     * Sets the measure's type
-     * type: Text -> setType() ->
-     */
-    public setType( type: string ): void {
-        this.type = type;
     }
 
     /**
@@ -86,18 +77,8 @@ export default class Measure {
      * 
      * @returns date: Measure's date
      */
-    public getDate(): Date {
+    public getDate(): string {
         return this.date;
-    }
-    
-    /**
-     * Gets the measure's type
-     * -> getType() -> type: Text
-     * 
-     * @returns type: Measure's type
-     */
-    public getType(): string {
-        return this.type;
     }
 
     /**
@@ -119,19 +100,17 @@ export default class Measure {
     public formatPayload( payload: string ): void {
         const formated = JSON.parse(payload);
         this.value = formated.value;
-        this.type = formated.type;
         this.unit = formated.unit;
         this.sensorId = formated.deviceEui;
-        this.date = new Date();
-    } 
-
+        this.date = formated.date;
+    }
+    
     public toObject(): object {
         return {
             "sensor_id": this.sensorId,
             "value": this.value,
             "unit": this.unit,
-            "type": this.type,
-            "date": this.date.getMilliseconds()
+            "date": this.date
         }
     }
  }

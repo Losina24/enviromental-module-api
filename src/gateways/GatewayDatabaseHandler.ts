@@ -72,6 +72,36 @@ export default class GatewayDatabaseHandler {
     }
 
     /**
+     * Get gateway information by given mac
+     * gatewayMac: N -> getGatewayByMacFromDB() -> gateway: Gateway
+     *
+     * @param mac - Mac of the gateway you want to get data from
+     * @returns
+     */
+    public getGatewayByMacAndAdminIdFromDB(mac: string): Promise<Gateway> {
+        var query = "SELECT gateway.id as gatewayId, user.id as adminId FROM `gateway` INNER JOIN user ON user.council_id=gateway.council_id WHERE mac = '" + mac + "';";
+        return new Promise<Gateway>((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+
+                // If connection fails
+                if (error) {
+                    reject()
+                }
+
+                conn.query(query, (err: any, results: any) => {
+                    conn.release();
+                    // If connection fails
+                    if (err) {
+                        reject()
+                    }
+                    resolve({gatewayId: results[0].gatewayId, adminId: results[0].adminId})
+                })
+
+            })
+        })
+    }
+
+    /**
      * Get user related gateways
      * gatewayId: N -> getUserGatewaysFromDB() -> count: N
      *

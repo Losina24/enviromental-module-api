@@ -21,13 +21,14 @@ class GatewayRestRouter {
     // All methods created in a Rest Router class must be called in the constructor for them to work
     constructor() {
         this.getGatewayById();
+        this.getGatewayByMacAndAdminId();
         this.getUserGateways();
         this.getUserGatewaysCount();
         this.getAdminGatewaysCount();
         this.getRootGatewaysCount();
         this.getAllCouncilGateways();
         this.getCouncilGatewayPagination();
-        this.editGateway()
+        this.editGateway();
         this.getGatewaysFromNetworkServerInDB();
         this.storeGateway();
         this.addNetworkServerToGateway();
@@ -51,6 +52,38 @@ class GatewayRestRouter {
     public getGatewayById = () => this.router.get('/:id', (req: Request, res: Response) => {
         const id = parseInt(req.params.id);
         this.gatewayLogic.getGatewayById(id)
+            .then(response => {
+                res.status(200).send({
+                    http: 200,
+                    status: 'OK',
+                    response: response
+                })
+            })
+            .catch(err => {
+                res.status(401).send({
+                    http: 401,
+                    status: 'Error',
+                    error: err
+                })
+            })
+    })
+
+
+    /**
+     * Get gateway information by given id
+     * GET /gateway/:id
+     *
+     * Response: {
+            "http": 200,
+            "status": "OK",
+            "response": {
+            }
+     * }
+     *
+     */
+    public getGatewayByMacAndAdminId = () => this.router.get('/mac/:mac', (req: Request, res: Response) => {
+        const mac = req.params.mac;
+        this.gatewayLogic.getGatewayByMacAndAdminId(mac)
             .then(response => {
                 res.status(200).send({
                     http: 200,

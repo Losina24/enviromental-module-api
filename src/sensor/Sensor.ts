@@ -8,12 +8,12 @@
 export default class Sensor {
     
     // Atributes
-    private _id: number;
-    private _deviceId: number;
-    private _deviceEUI: string;
-    private _name: string;
-    private _type: string;
-    private _status: boolean;
+    private id: number;
+    private deviceId: number;
+    private deviceEUI: string;
+    private name: string;
+    private type: string;
+    private status: boolean;
 
 
     // Constructor
@@ -29,7 +29,7 @@ export default class Sensor {
      * @returns id: sensor ID
      */
     public getId(): number {
-        return this._id;
+        return this.id;
     }
 
     /**
@@ -38,7 +38,7 @@ export default class Sensor {
      * @param value: new sensor id
      */
     public setId(value: number) {
-        this._id = value;
+        this.id = value;
     }
 
     /**
@@ -47,7 +47,7 @@ export default class Sensor {
      * @returns id: device ID
      */
     public getDeviceId(): number {
-        return this._deviceId;
+        return this.deviceId;
     }
 
     /**
@@ -56,7 +56,7 @@ export default class Sensor {
      * @param value: new device id
      */
     public setDeviceId(value: number) {
-        this._deviceId = value;
+        this.deviceId = value;
     }
 
     /**
@@ -65,7 +65,7 @@ export default class Sensor {
      * @returns _deviceEUI: device EUI identifier
      */
     public getDeviceEUI(): string {
-        return this._deviceEUI;
+        return this.deviceEUI;
     }
 
     /**
@@ -74,7 +74,7 @@ export default class Sensor {
      * @param value: new device EUI
      */
     public setDeviceEUI(value: string) {
-        this._deviceEUI = value;
+        this.deviceEUI = value;
     }
 
     /**
@@ -83,7 +83,7 @@ export default class Sensor {
      * @returns name: name of the device
      */
     public getName(): string {
-        return this._name;
+        return this.name;
     }
 
     /**
@@ -92,7 +92,7 @@ export default class Sensor {
      * @param value: new name for the device
      */
     public setName(value: string) {
-        this._name = value;
+        this.name = value;
     }
 
     /**
@@ -101,7 +101,7 @@ export default class Sensor {
      * @returns _type: sensor type
      */
     public getType(): string {
-        return this._type;
+        return this.type;
     }
 
     /**
@@ -110,7 +110,7 @@ export default class Sensor {
      * @param value: new sensor type
      */
     public setType(value: string) {
-        this._type = value;
+        this.type = value;
     }
 
     /**
@@ -119,7 +119,7 @@ export default class Sensor {
      * @returns _status: sensor status
      */
     public getStatus(): boolean {
-        return this._status;
+        return this.status;
     }
 
     /**
@@ -128,6 +128,6 @@ export default class Sensor {
      * @param value: new status value
      */
     public setStatus(value: boolean) {
-        this._status = value;
+        this.status = value;
     }
 }

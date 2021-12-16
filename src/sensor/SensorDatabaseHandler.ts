@@ -37,11 +37,60 @@ export default class SensorDatabaseHandler {
      * sensorId: N -> getSensorByIdFromDB() -> JSON
      *
      * @param sensorId - ID of the sensor you want to get data from
-     * @returns object
+     * @returns
      */
     public getSensorByIdFromDB(sensorId: number): Promise<Sensor> {
         //console.log("getSensorDB")
         var query = "SELECT * FROM sensor WHERE id = " + sensorId;
+        //console.log(query)
+        return new Promise<Sensor>((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+
+                // If connection fails
+                if (error) {
+                    reject(Utils.generateLogicError("error getting sensor", error))
+                }
+
+                conn.query(query, (err: any, results: any) => {
+                    conn.release();
+                    // If connection fails
+                    if (err) {
+                        reject(Utils.generateLogicError("error getting sensor", err))
+                    }
+                    //console.log("*** results getsensorbyid ***")
+                    //console.log(results)
+                    let sensor = new Sensor()
+                    try {
+                        if (results.length == 1) {
+                            sensor.setId(results[0].id)
+                            sensor.setDeviceEUI(results[0].device_EUI);
+                            sensor.setDeviceId(results[0].device_id);
+                            sensor.setName(results[0].name);
+                            // posible Enum
+                            sensor.setType(([results[0].sensor_type_id]).toString());
+                            sensor.setStatus(results[0].status);
+                            resolve(Utils.generateLogicSuccess("sensor info retrieved succesfully", sensor))
+                        }
+                    } catch (error) {
+                        reject(Utils.generateLogicError("error deleting sensor", error))
+                    }
+                    resolve(Utils.generateLogicSuccessEmpty("no sensor was found with given id"))
+                })
+
+            })
+        })
+    }
+
+    /**
+     * Get the information about a sensor given their name from the database
+     * name: text -> getSensorByNameFromDB() -> JSON
+     *
+     * @param name - name of the sensor you want to get data from
+     * @returns 
+     */
+     public getSensorByNameFromDB(name: string): Promise<Sensor> {
+        //console.log("getSensorDB")
+        var query = "SELECT * FROM sensor WHERE name = '" + name + "'";
         //console.log(query)
         return new Promise<Sensor>((resolve: any, reject: any) => {
             db.getConnection((error: any, conn: any) => {

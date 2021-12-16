@@ -40,6 +40,25 @@ export default class GatewayLogic {
     }
 
     /**
+     * Get gateway information by given mac
+     * mac: N -> getGatewayById() -> gateway: Gateway
+     *
+     * @param mac - Mac of the gateway you want to get data from
+     * @returns
+     */
+     public async getGatewayByMacAndAdminId(mac: string): Promise<Gateway> {
+        return new Promise<Gateway>((resolve, reject) => {
+            this.gatewayDB.getGatewayByMacAndAdminIdFromDB(mac)
+                .then(res => {
+                    resolve(res)
+                })
+                .catch(err => {
+                    reject(err)
+                })
+        })
+    }
+
+    /**
      * Get user related gateways
      * gatewayId: N -> getUserGateways() -> gateways: Gateway[]
      *

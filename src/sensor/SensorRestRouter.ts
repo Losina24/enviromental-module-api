@@ -33,7 +33,8 @@ class SensorRestRouter {
         this.getCouncilSensorPagination();
         this.getDeviceSensors();
         this.removeSensor();
-        this.getAllSensorsPagination()
+        this.getAllSensorsPagination();
+        this.getSensorByName();
     }
 
     /**
@@ -66,6 +67,37 @@ class SensorRestRouter {
                 Utils.sendRestResponse(err, res)
             })
     })
+
+    /**
+     * Get the information about a sensor
+     * GET /sensors/:id
+     *
+     * Response: {
+     *  "http": 200,
+     *  "status": "OK",
+     *  "response": {
+            "_id": 1,
+            "_deviceEUI": "AS63126",
+            "_deviceId": 1,
+            "_name": "ambientalSensor1",
+            "_type": 1,
+            "_status": 1
+        }
+     * }
+     *
+     */
+        public getSensorByName = () => this.router.get('/name/:name', (req: Request, res: Response) => {
+            const name = req.params.name;
+            this.sensorLogic.getSensorByName(name)
+                .then(response => {
+                    // Sending the response
+                    Utils.sendRestResponse(response, res)
+                })
+                .catch(err => {
+                    // Sending the response
+                    Utils.sendRestResponse(err, res)
+                })
+        })
 
     /**
      * Get all sensors from a user

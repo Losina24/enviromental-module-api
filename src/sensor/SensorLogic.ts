@@ -39,6 +39,25 @@ export default class SensorLogic {
     }
 
     /**
+     * Get the information about a sensor given their name
+     * name: text -> getSensorByName() -> JSON
+     *
+     * @param name - name of the sensor you want to get data from
+     * @returns 
+     */
+     public async getSensorByName(name: string): Promise<Sensor> {
+        return new Promise<Sensor>((resolve, reject) => {
+            this.sensorDB.getSensorByNameFromDB(name)
+                .then(res => {
+                    resolve(res)
+                })
+                .catch(err => {
+                    reject(err)
+                })
+        })
+    }
+
+    /**
      * Get all user sensors
      * userId: N -> getAllUserSensors() -> [Sensor]
      * 

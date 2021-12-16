@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 15-12-2021 a las 20:06:57
+-- Tiempo de generación: 16-12-2021 a las 22:02:24
 -- Versión del servidor: 10.4.20-MariaDB
 -- Versión de PHP: 8.0.8
 
@@ -72,6 +72,7 @@ CREATE TABLE `gateway` (
   `status` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+
 -- --------------------------------------------------------
 
 --
@@ -82,6 +83,22 @@ CREATE TABLE `gateway_network_server` (
   `id` int(11) NOT NULL,
   `gateway_id` int(11) NOT NULL,
   `network_server_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `measure`
+--
+
+CREATE TABLE `measure` (
+  `id` int(16) NOT NULL,
+  `sensor_id` int(16) NOT NULL,
+  `value` float NOT NULL,
+  `timestamp` datetime NOT NULL,
+  `unit` varchar(16) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
@@ -117,7 +134,6 @@ CREATE TABLE `notification` (
   `magnitude` enum('red','yellow','green') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-
 -- --------------------------------------------------------
 
 --
@@ -128,6 +144,8 @@ CREATE TABLE `role` (
   `id` int(11) NOT NULL,
   `name` varchar(32) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
 
 -- --------------------------------------------------------
 
@@ -176,6 +194,7 @@ CREATE TABLE `user` (
   `postal_code` varchar(32) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+
 -- --------------------------------------------------------
 
 --
@@ -187,6 +206,7 @@ CREATE TABLE `user_device` (
   `user_id` int(11) NOT NULL,
   `device_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 
 --
 -- Índices para tablas volcadas
@@ -224,6 +244,13 @@ ALTER TABLE `gateway_network_server`
   ADD PRIMARY KEY (`id`),
   ADD KEY `Foreign_key_network_server_id` (`network_server_id`),
   ADD KEY `Foreign_key_gateway_id2` (`gateway_id`);
+
+--
+-- Indices de la tabla `measure`
+--
+ALTER TABLE `measure`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `measure_sensor_restrict_fk` (`sensor_id`);
 
 --
 -- Indices de la tabla `network_server`
@@ -293,19 +320,25 @@ ALTER TABLE `council`
 -- AUTO_INCREMENT de la tabla `device`
 --
 ALTER TABLE `device`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT de la tabla `gateway`
 --
 ALTER TABLE `gateway`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `gateway_network_server`
 --
 ALTER TABLE `gateway_network_server`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
+-- AUTO_INCREMENT de la tabla `measure`
+--
+ALTER TABLE `measure`
+  MODIFY `id` int(16) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT de la tabla `network_server`
@@ -329,7 +362,7 @@ ALTER TABLE `role`
 -- AUTO_INCREMENT de la tabla `sensor`
 --
 ALTER TABLE `sensor`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=99;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=127;
 
 --
 -- AUTO_INCREMENT de la tabla `sensor_type`
@@ -347,7 +380,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT de la tabla `user_device`
 --
 ALTER TABLE `user_device`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- Restricciones para tablas volcadas
@@ -373,11 +406,16 @@ ALTER TABLE `gateway_network_server`
   ADD CONSTRAINT `Foreign_key_network_server_id` FOREIGN KEY (`network_server_id`) REFERENCES `network_server` (`id`);
 
 --
+-- Filtros para la tabla `measure`
+--
+ALTER TABLE `measure`
+  ADD CONSTRAINT `measure_sensor_restrict_fk` FOREIGN KEY (`sensor_id`) REFERENCES `sensor` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Filtros para la tabla `notification`
 --
 ALTER TABLE `notification`
   ADD CONSTRAINT `Foreign_key_sensor_id` FOREIGN KEY (`sensor_id`) REFERENCES `sensor` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-COMMIT;
 
 --
 -- Filtros para la tabla `sensor`

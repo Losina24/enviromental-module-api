@@ -376,7 +376,8 @@ ALTER TABLE `gateway_network_server`
 -- Filtros para la tabla `notification`
 --
 ALTER TABLE `notification`
-  ADD CONSTRAINT `Foreign_key_sensor_id` FOREIGN KEY (`sensor_id`) REFERENCES `sensor` (`id`);
+  ADD CONSTRAINT `Foreign_key_sensor_id` FOREIGN KEY (`sensor_id`) REFERENCES `sensor` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+COMMIT
 
 --
 -- Filtros para la tabla `sensor`
@@ -384,7 +385,7 @@ ALTER TABLE `notification`
 ALTER TABLE `sensor`
   ADD CONSTRAINT `Foreign_key_device_id` FOREIGN KEY (`device_id`) REFERENCES `device` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `Foreign_key_sensor_type_id` FOREIGN KEY (`sensor_type_id`) REFERENCES `sensor_type` (`id`);
-
+  
 --
 -- Filtros para la tabla `user`
 --

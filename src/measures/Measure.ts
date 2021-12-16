@@ -6,15 +6,16 @@
  */
 
 export default class Measure {
-    
+
     // Atributes
     private sensorId: number;
     private value: number;
     private date: string;
     private unit: string;
+    private danger: string;
 
     // Constructor
-    constructor(){
+    constructor() {
     }
 
     // Methods
@@ -23,7 +24,7 @@ export default class Measure {
      * Sets the measure's sensor ID
      * sensorId: N -> setSensorId() ->
      */
-    public setSensorId( sensorId: number ): void {
+    public setSensorId(sensorId: number): void {
         this.sensorId = sensorId;
     }
 
@@ -31,7 +32,7 @@ export default class Measure {
      * Sets the measure's value
      * value: R -> setValue() ->
      */
-    public setValue( value: number ): void {
+    public setValue(value: number): void {
         this.value = value;
     }
 
@@ -39,7 +40,7 @@ export default class Measure {
      * Sets the measure's date
      * date: Date -> setDate() ->
      */
-    public setDate( date: string ): void {
+    public setDate(date: string): void {
         this.date = date;
     }
 
@@ -47,8 +48,16 @@ export default class Measure {
      * Sets the measure's unit
      * unit: Text -> setUnit() ->
      */
-    public setUnit( unit: string ): void {
+    public setUnit(unit: string): void {
         this.unit = unit;
+    }
+
+    /**
+     * Sets the measure's danger
+     * danger: Text -> setUnit() ->
+     */
+    public setDanger(value: string) {
+        this.danger = value;
     }
 
     /**
@@ -92,19 +101,29 @@ export default class Measure {
     }
 
     /**
+     * Gets the measure's danger
+     * -> getUnit() -> id: N
+     * 
+     * @returns
+     */
+    public getDanger(): string {
+        return this.danger;
+    }
+
+    /**
      * Set the measurement by payload
      * payload: Text -> formatPayload() ->
      * 
      * @param payload 
      */
-    public formatPayload( payload: string ): void {
+    public formatPayload(payload: string): void {
         const formated = JSON.parse(payload);
         this.value = formated.value;
         this.unit = formated.unit;
         this.sensorId = formated.deviceEui;
         this.date = formated.date;
     }
-    
+
     public toObject(): object {
         return {
             "sensor_id": this.sensorId,
@@ -113,4 +132,4 @@ export default class Measure {
             "date": this.date
         }
     }
- }
+}

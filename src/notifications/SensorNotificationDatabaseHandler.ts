@@ -504,8 +504,7 @@ export default class SensorNotificationDatabaseHandler {
                     if (err) {
                         reject()
                     }
-
-                    resolve();
+                    resolve(Utils.generateLogicSuccess("notification removed succesfully", results));
                 })
 
             })

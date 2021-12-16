@@ -64,8 +64,8 @@ export default class MeasureDatabaseHandler {
         */
     public async insertMeasureInDB(measure: Measure): Promise<Measure[]> {
         console.log(measure)
-        var query = "INSERT INTO `measure` (`sensor_id`, `value`, `timestamp`, `unit`) VALUES ('"+measure.getSensorId()
-        +"', '"+measure.getValue()+"', '"+measure.getDate()+"', '"+measure.getUnit()+"');";
+        var query = "INSERT INTO `measure` (`sensor_id`, `value`, `timestamp`, `unit`, `danger`) VALUES ('"+measure.getSensorId()
+        +"', '"+measure.getValue()+"', '"+measure.getDate()+"', '"+measure.getUnit()+"', '"+measure.getDanger()+"');";
 
         return new Promise<Measure[]>((resolve: any, reject: any) => {
             db.getConnection((error: any, conn: any) => {

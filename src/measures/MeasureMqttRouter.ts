@@ -58,6 +58,14 @@ export default class MeasureMqttRouter extends MqttRouter {
                 let sensor: Sensor = res.result
                 let measure: Measure = new Measure()
                 let date: string = new Date(Date.now()).toJSON().replace("T", " ").slice(0, -5)
+                if (jsonData.value > 800) {
+                    measure.setDanger('red')
+                } else if (jsonData.value > 500) {
+                    measure.setDanger('yellow')
+                } else {
+                    measure.setDanger('green')
+
+                }
                 measure.setDate(date)
                 measure.setUnit(jsonData.unit)
                 measure.setValue(jsonData.value)

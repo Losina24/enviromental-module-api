@@ -123,7 +123,7 @@ export default class SensorDatabaseHandler {
                     } catch (error) {
                         reject(Utils.generateLogicError("error deleting sensor", error))
                     }
-                    resolve(Utils.generateLogicSuccessEmpty("no sensor was found with given id"))
+                    resolve(Utils.generateLogicSuccessEmpty("no sensor was found with given name"))
                 })
 
             })

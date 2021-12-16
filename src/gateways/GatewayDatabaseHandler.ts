@@ -373,7 +373,7 @@ export default class GatewayDatabaseHandler {
      */
     public storeGatewayInDB(gateway: Gateway): Promise<void> {
         var query = "INSERT INTO `gateway` (`mac`, `council_id`, `name`, `latitude`, `longitude`, `status`) VALUES ('" + gateway.getMac() +
-            "', " + gateway.getCouncilId() + ", '" + gateway.getName() + "', '" + gateway.getCoords()[0] + "', '" + gateway.getCouncilId()[1] + "', " +
+            "', " + gateway.getCouncilId() + ", '" + gateway.getName() + "', '" + gateway.getCoords()[0] + "', '" + gateway.getCoords()[1] + "', " +
             gateway.getStatus() + ")\n"
         console.log(query)
         return new Promise((resolve: any, reject: any) => {

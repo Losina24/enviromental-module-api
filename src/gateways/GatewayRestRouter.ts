@@ -394,7 +394,7 @@ class GatewayRestRouter {
         const gatewayId = parseInt(req.params.id);
         let gateway = new Gateway()
 
-        gateway.setId(req.body.id)
+        gateway.setId(gatewayId)
         gateway.setMac(req.body.mac)
         gateway.setName(req.body.name)
         gateway.setCouncilId(req.body.councilId);

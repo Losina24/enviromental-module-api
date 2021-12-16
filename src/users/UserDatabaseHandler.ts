@@ -100,6 +100,8 @@ export default class UserDatabaseHandler {
         })
     }
 
+
+
     /**
      * Get all users from db (* COUNT *)
      * getAllUsersCountFromDB() -> count: N
@@ -358,7 +360,6 @@ export default class UserDatabaseHandler {
 
         var query = "SELECT * FROM `user` ORDER BY id DESC LIMIT " + firstValue + ', ' + secondValue;
 
-        console.log(query)
         return new Promise<User[]>((resolve: any, reject: any) => {
             db.getConnection((error: any, conn: any) => {
 
@@ -382,6 +383,51 @@ export default class UserDatabaseHandler {
                         }
                     } catch (error) {
                         reject(Utils.generateLogicError("error getting all users", error))
+                    }
+                })
+
+            })
+        })
+    }
+
+    /**
+     * Get council users paginated
+     * pageSize: N, pageIndex: N -> getCouncilUsersPaginatedFromDB() -> users: [User]
+     * 
+     * @param pageSize - Number of network servers returned by request
+     * @param pageIndex - Index of the page that you want to receive from the request
+     * @returns
+     */
+    public getCouncilUsersPaginatedFromDB(councilId: number, pageSize: number, pageIndex: number): Promise<User[]> {
+        const firstValue = (pageSize * pageIndex) - pageSize;
+        const secondValue = (pageSize * pageIndex);
+
+        var query = "SELECT * FROM `user` WHERE council_id='" + councilId + "' ORDER BY id DESC LIMIT " 
+        + firstValue + ', ' + secondValue;
+
+        return new Promise<User[]>((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+
+                // If connection fails
+                if (error) {
+                    reject(Utils.generateLogicError("error retrieving users", error))
+                }
+
+                conn.query(query, (err: any, results: any) => {
+                    conn.release();
+
+                    // If connection fails
+                    if (err) {
+                        reject(Utils.generateLogicError("error getting council users", err))
+                    }
+                    try {
+                        if (results) {
+                            resolve(Utils.generateLogicSuccess("council users retrieved succesfully", results));
+                        } else {
+                            resolve(Utils.generateLogicSuccessEmpty("no council users found"));
+                        }
+                    } catch (error) {
+                        reject(Utils.generateLogicError("error getting council users", error))
                     }
                 })
 

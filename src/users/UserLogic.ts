@@ -126,6 +126,28 @@ export default class UserLogic {
     }
 
     /**
+     * Get all users paginated
+     * councilId: N, pageSize: N, pageIndex: N -> getCouncilUsersPaginated() -> users: [User]
+     * 
+     * @param councilId - id of the council we want to retrieve the users from
+     * @param pageSize - Number of network servers returned by request
+     * @param pageIndex - Index of the page that you want to receive from the request
+     * @returns
+     */
+     public async getCouncilUsersPaginated( councilId: number, pageSize: number, pageIndex: number ): Promise<User[]> {
+        return new Promise<User[]>((resolve, reject) => {
+            this.userDB.getCouncilUsersPaginatedFromDB( councilId, pageSize, pageIndex )
+                .then( res => {
+                    console.log("logicaRes")
+                    resolve(res)
+                })
+                .catch( err => {
+                    reject(err)
+                })
+        })
+    }
+
+    /**
      * Get all users from a council (* COUNT *)
      * councilId: N -> getCouncilUsersCount() -> count: N
      * 

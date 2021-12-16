@@ -28,6 +28,7 @@ class UserRestRouter {
         this.removeUser();
         this.login();
         this.getAllUsersPaginated();
+        this.getCouncilUsersPaginated();
     }
 
     /**
@@ -72,6 +73,34 @@ class UserRestRouter {
         const pageIndex = parseInt(req.params.pageIndex);
 
         this.userLogic.getAllUsersPaginated(pageSize, pageIndex)
+            .then(response => {
+                // Sending the response
+                Utils.sendRestResponse(response, res)
+            })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
+            })
+    })
+
+    /**
+     * Get all users paginated
+     * GET /users/:id
+     *
+     * Response: {
+            "http": 200,
+            "status": "OK",
+            "response": {
+            }
+     * }
+     *
+     */
+    public getCouncilUsersPaginated = () => this.router.get('/council/:councilId/:pageSize/:pageIndex', (req: Request, res: Response) => {
+        const councilId = parseInt(req.params.councilId);
+        const pageSize = parseInt(req.params.pageSize);
+        const pageIndex = parseInt(req.params.pageIndex);
+
+        this.userLogic.getCouncilUsersPaginated(councilId, pageSize, pageIndex)
             .then(response => {
                 // Sending the response
                 Utils.sendRestResponse(response, res)

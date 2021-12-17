@@ -30,6 +30,7 @@ class MeasureRestRouter {
         this.getUserMeasuresCount();
         this.getAdminMeasuresCount();
         this.getRootMeasuresCount();
+        this.getDeviceMeasures();
         this.insertMeasure();
     }
 
@@ -59,6 +60,31 @@ class MeasureRestRouter {
                 Utils.sendRestResponse(response, res)
             })
             .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
+            })
+    })
+
+    /**
+     * Get user measures
+     * GET /measures/user/:userId
+     *
+     * Response: {
+            "http": 200,
+            "status": "OK",
+            "response": {
+            }
+    * }
+    *
+    */
+    public getDeviceMeasures = () => this.router.get('/device/:deviceId', (req: Request, res: Response) => {
+        const deviceId = parseInt(req.params.deviceId);
+        this.measureLogic.getAllMeasuresByDeviceId(deviceId)
+            .then((response: any) => {
+                // Sending the response            
+                Utils.sendRestResponse(response, res)
+            })
+            .catch((err: any) => {
                 // Sending the response
                 Utils.sendRestResponse(err, res)
             })

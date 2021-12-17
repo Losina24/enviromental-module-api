@@ -74,6 +74,49 @@ export default class EnviromentalDeviceDatabaseHandler {
             })
         })
     }
+    
+      /**
+     * Get the information about a enviromental device given their ID from the database
+     * deviceId: N -> getDeviceByIdFromDB() -> EnviromentalDevice
+     *
+     * @param userId - user id we wantto retrieve info from
+     * @returns
+     */
+       public async getMapJsonDataUserFromDB(userId: number): Promise<EnviromentalDevice> {
+        const query = "SELECT * FROM device WHERE id = ";
+        console.log(query)
+        return new Promise<EnviromentalDevice>((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+                // If connection fails
+                if (error) {
+                    reject(Utils.generateLogicError("error getting device", error))
+                }
+                conn.query(query, (err: any, results: any) => {
+                    conn.release();
+                    // If connection fails
+                    if (err) {
+                        reject(Utils.generateLogicError("error getting device", err))
+                    }
+                    try {
+                        if (results.length != 0) {
+                            let device = new EnviromentalDevice();
+
+                            device.setId(results[0].id)
+                            device.setName(results[0].name);
+                            device.setDeviceEUI(results[0].device_EUI);
+                            device.setGatewayId(results[0].gateway_id);
+                            device.setCoords([results[0].latitude, results[0].longitude]);
+                            device.setStatus(results[0].status);
+                            resolve(Utils.generateLogicSuccess("device found with the given id", device))
+                        }
+                    } catch (error) {
+                        reject(Utils.generateLogicError("error getting device", error))
+                    }
+                    resolve(Utils.generateLogicSuccessEmpty("no device found with the given id"))
+                })
+            })
+        })
+    }
 
     /**
      * Get all enviroment devices of a user from the database

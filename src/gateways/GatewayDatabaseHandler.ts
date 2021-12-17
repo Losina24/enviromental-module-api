@@ -128,7 +128,7 @@ export default class GatewayDatabaseHandler {
                     if (results && results.length != 0) {
                         gateways = this.queryResultsToGateways(results)
                     }
-                    resolve(gateways)
+                    resolve(Utils.generateLogicSuccess("user gateways retrieved succesfully", gateways))
                 })
 
             })

@@ -45,16 +45,16 @@ export default class MeasureLogic {
      * @param deviceId 
      * @returns 
      */
-    public async getAllMeasuresByDeviceId(deviceId: number): Promise<Measure[]> {
+     public async getAllMeasuresByDeviceId( deviceId: number ) : Promise<Measure[]> {
         return new Promise<Measure[]>((resolve, reject) => {
-            this.measureDB.getAllMeasuresByDeviceIdFromDB(deviceId)
-                .then(res => {
+            this.measureDB.getDeviceMeasuresFromDB(deviceId)
+                .then( res => {
                     resolve(res)
                 })
-                .catch(err => {
+                .catch( err => {
                     reject(err)
                 })
-        })
+        })   
     }
 
     /**

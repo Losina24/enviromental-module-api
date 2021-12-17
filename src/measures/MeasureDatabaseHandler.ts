@@ -56,6 +56,46 @@ export default class MeasureDatabaseHandler {
     }
 
     /**
+     * Get user measures
+     * userId: N -> getUserMeasures() -> [Measure]
+     * 
+     * @param userId id of the user we want to retrieve the measures from
+     * @returns 
+     */
+    public async getDeviceMeasuresFromDB(deviceId: number): Promise<Measure[]> {
+        var query = "SELECT * FROM measure INNER JOIN sensor ON sensor.id=measure.sensor_id WHERE sensor.device_id =" + deviceId + ";";
+
+        return new Promise<Measure[]>((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+
+                // If connection fails
+                if (error) {
+                    reject(Utils.generateLogicError("error getting device measures", error))
+                }
+
+                conn.query(query, (err: any, results: any) => {
+                    conn.release();
+
+                    // If connection fails
+                    if (err) {
+                        reject(Utils.generateLogicError("error getting device measures", err))
+                    }
+                    try {
+                        if (results) {
+                            resolve(Utils.generateLogicSuccess("device measures retrieved succesfully", results));
+                        } else {
+                            resolve(Utils.generateLogicSuccessEmpty("no device measures found"));
+                        }
+                    } catch (error) {
+                        reject(Utils.generateLogicError("error getting all device measures", error))
+                    }
+                })
+
+            })
+        })
+    }
+
+    /**
         * Get user measures
         * userId: N -> getUserMeasures() -> [Measure]
         * 
@@ -64,8 +104,8 @@ export default class MeasureDatabaseHandler {
         */
     public async insertMeasureInDB(measure: Measure): Promise<Measure[]> {
         console.log(measure)
-        var query = "INSERT INTO `measure` (`sensor_id`, `value`, `timestamp`, `unit`, `danger`) VALUES ('"+measure.getSensorId()
-        +"', '"+measure.getValue()+"', '"+measure.getDate()+"', '"+measure.getUnit()+"', '"+measure.getDanger()+"');";
+        var query = "INSERT INTO `measure` (`sensor_id`, `value`, `timestamp`, `unit`, `danger`) VALUES ('" + measure.getSensorId()
+            + "', '" + measure.getValue() + "', '" + measure.getDate() + "', '" + measure.getUnit() + "', '" + measure.getDanger() + "');";
 
         return new Promise<Measure[]>((resolve: any, reject: any) => {
             db.getConnection((error: any, conn: any) => {
@@ -437,7 +477,7 @@ export default class MeasureDatabaseHandler {
      * @param deviceId 
      * @returns [Measure]
      */
-    public async getAllMeasuresByDeviceIdFromDB(deviceId: number): Promise<Measure[]> {
+/*    public async getAllMeasuresByDeviceIdFromDB(deviceId: number): Promise<Measure[]> {
 
         return new Promise<Measure[]>((resolve: any, reject: any) => {
             let measur = fs.readFileSync("/Users/losina/Desktop/Desarrollo/enviromental-module-api/db/measures.json", 'utf-8');
@@ -456,7 +496,7 @@ export default class MeasureDatabaseHandler {
 
             resolve(res)
         })
-    }
+    }*/
 
     /**
      * Save a measure in the database

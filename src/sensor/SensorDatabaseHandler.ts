@@ -142,6 +142,7 @@ export default class SensorDatabaseHandler {
             "`device_eui`,`sensor`.`name`,`sensor`.`status` FROM `user_device` INNER JOIN `device` ON" +
             " `user_device`.`device_id` = `device`.`id` INNER JOIN `sensor` ON `device`.`id` = `sensor`.`device_id`" +
             " WHERE `user_device`.`user_id` = " + userId + ";";
+            console.log(query)
         return new Promise<Sensor[]>((resolve: any, reject: any) => {
             db.getConnection((error: any, conn: any) => {
 

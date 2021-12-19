@@ -20,9 +20,11 @@ class EnviromentalDeviceRestRouter {
     // All methods created in a Rest Router class must be called in the constructor for them to work
     constructor() {
         this.getDeviceById();
+        this.getDeviceByDeviceEUI();
         this.getAllUserDevices();
         this.getAllUserDevicesCount();
         this.getAllAdminDevicesCount();
+        this.getAllAdminDevices();
         this.getAllRootDevicesCount();
         this.getUserDevicePagination();
         this.getAllCouncilDevices();
@@ -33,8 +35,8 @@ class EnviromentalDeviceRestRouter {
         this.getCouncilDevicePagination();
         this.removeDevice();
         this.getMapJsonDataUser();
-        //this.getMapJsonDataAdmin();
-        //this.getMapJsonDataRoot();
+        this.getMapJsonDataAdmin();
+        this.getMapJsonDataRoot();
     }
 
     /**
@@ -56,11 +58,78 @@ class EnviromentalDeviceRestRouter {
      * }
      *
      */
-     public getMapJsonDataUser = () => this.router.get('/map/user/:userId/:councilId', async (req: Request, res: Response) => {
+    public getMapJsonDataUser = () => this.router.get('/map/user/:userId/:councilId', async (req: Request, res: Response) => {
         const userId = parseInt(req.params.userId);
         const councilId = parseInt(req.params.councilId);
 
         await this.enviromentalDeviceLogic.getMapJsonDataUser(userId, councilId)
+            .then(response => {
+                // Sending the response
+                Utils.sendRestResponse(response, res)
+            })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
+            })
+    })
+
+    /**
+     * Get the information about a enviromental device
+     * GET enviromental/devices /device/:id
+     *
+     * Response: {
+     *  "http": 200,
+     *  "status": "OK",
+     *  "response": {
+     *      "id": 32,
+     *      "name": "Device 32",
+     *      "mac": "2c549188c9e3",
+     *      "gatewayId": 6,
+     *      "sensors": [100, 101, 102, 103, 104],
+     *      "coords": [21.2222, -34.3333],
+     *      "status": true
+     *  }
+     * }
+     *
+     */
+    public getMapJsonDataAdmin = () => this.router.get('/map/admin/:councilId', async (req: Request, res: Response) => {
+        const councilId = parseInt(req.params.councilId);
+
+
+        await this.enviromentalDeviceLogic.getMapJsonDataAdmin(councilId)
+            .then(response => {
+                // Sending the response
+                Utils.sendRestResponse(response, res)
+            })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
+            })
+    })
+
+    /**
+     * Get the information about a enviromental device
+     * GET enviromental/devices /device/:id
+     *
+     * Response: {
+     *  "http": 200,
+     *  "status": "OK",
+     *  "response": {
+     *      "id": 32,
+     *      "name": "Device 32",
+     *      "mac": "2c549188c9e3",
+     *      "gatewayId": 6,
+     *      "sensors": [100, 101, 102, 103, 104],
+     *      "coords": [21.2222, -34.3333],
+     *      "status": true
+     *  }
+     * }
+     *
+     */
+    public getMapJsonDataRoot = () => this.router.get('/map/root/', async (req: Request, res: Response) => {
+
+
+        await this.enviromentalDeviceLogic.getMapJsonDataRoot()
             .then(response => {
                 // Sending the response
                 Utils.sendRestResponse(response, res)
@@ -103,6 +172,19 @@ class EnviromentalDeviceRestRouter {
             })
     })
 
+    public getDeviceByDeviceEUI = () => this.router.get('/deviceEUI/:deveui', async (req: Request, res: Response) => {
+        const deveui = req.params.deveui;
+        await this.enviromentalDeviceLogic.getDeviceByDeviceEUI(deveui)
+            .then(response => {
+                // Sending the response
+                Utils.sendRestResponse(response, res)
+            })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
+            })
+    })
+
     /**
      * Get all enviromental devices from a user
      * GET enviromental/devices/user/:userId
@@ -129,7 +211,7 @@ class EnviromentalDeviceRestRouter {
             .then(response => {
                 // Sending the response
                 console.log(response);
-                
+
                 Utils.sendRestResponse(response, res)
             })
             .catch(err => {
@@ -157,7 +239,7 @@ class EnviromentalDeviceRestRouter {
      * }
      *
      */
-     public getAllRootDevicesCount = () => this.router.get('/count/root/:id', (req: Request, res: Response) => {
+    public getAllRootDevicesCount = () => this.router.get('/count/root/:id', (req: Request, res: Response) => {
 
         this.enviromentalDeviceLogic.getAllRootDevicesCount()
             .then(response => {
@@ -189,10 +271,24 @@ class EnviromentalDeviceRestRouter {
      * }
      *
      */
-     public getAllAdminDevicesCount = () => this.router.get('/count/council/:councilId', (req: Request, res: Response) => {
+    public getAllAdminDevicesCount = () => this.router.get('/count/council/:councilId', (req: Request, res: Response) => {
         const councilId = parseInt(req.params.councilId);
 
         this.enviromentalDeviceLogic.getAllAdminDevicesCount(councilId)
+            .then(response => {
+                // Sending the response            
+                Utils.sendRestResponse(response, res)
+            })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
+            })
+    })
+
+    public getAllAdminDevices = () => this.router.get('/council/:councilId', (req: Request, res: Response) => {
+        const councilId = parseInt(req.params.councilId);
+
+        this.enviromentalDeviceLogic.getAllAdminDevices(councilId)
             .then(response => {
                 // Sending the response            
                 Utils.sendRestResponse(response, res)
@@ -395,7 +491,7 @@ class EnviromentalDeviceRestRouter {
      * }
      *
      */
-     public updateDevice = () => this.router.put('/:deviceId', (req: Request, res: Response) => {
+    public updateDevice = () => this.router.put('/:deviceId', (req: Request, res: Response) => {
         console.log("router reached updateDevice()")
         let enviromentalDevice = new EnviromentalDevice();
         enviromentalDevice.setId(parseInt(req.params.deviceId));

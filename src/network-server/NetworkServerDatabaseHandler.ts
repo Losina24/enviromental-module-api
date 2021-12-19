@@ -264,6 +264,53 @@ export default class NetworkServerDatabaseHandler {
             })
         })
     }
+    
+    /**
+     * Get all network servers paginated
+     * pageSize: N, pageIndex: N -> getCouncilNetworkServersPaginatedFromDB() -> networkServers: NetworkServer[]
+     *
+     * @param councilId - id of the council we want to retrieve the network servers from
+     * @param pageSize - Number of gateways returned by request
+     * @param pageIndex - Index of the page that you want to receive from the request
+     * @returns
+     */
+     public async getCouncilNetworkServersPaginatedFromDB(councilId: number, pageSize: number, pageIndex: number): Promise<NetworkServer> {
+        const firstValue = (pageSize * pageIndex) - pageSize;
+        const secondValue = (pageSize * pageIndex);
+
+        var query = "SELECT COUNT(*) as count FROM `gateway` INNER JOIN gateway_network_server ON gateway_network_server.gateway_id=gateway.id INNER" +
+            " JOIN network_server ON network_server.id=gateway_network_server.network_server_id WHERE gateway.council_id="
+            + councilId + " ORDER BY id DESC LIMIT " + firstValue + ', ' + secondValue;;
+
+        return new Promise<NetworkServer>((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+
+                // If connection fails
+                if (error) {
+                    reject(Utils.generateLogicError("error getting council network servers", error))
+                }
+
+                conn.query(query, (err: any, results: any) => {
+                    conn.release();
+
+                    // If connection fails
+                    if (err) {
+                        reject(Utils.generateLogicError("error getting council network servers", err))
+                    }
+                    try {
+                        if (results) {
+                            resolve(Utils.generateLogicSuccess("council network servers retrieved succesfully", results));
+                        } else {
+                            resolve(Utils.generateLogicSuccessEmpty("no council network servers found"));
+                        }
+                    } catch (error) {
+                        reject(Utils.generateLogicError("error getting council network servers", error))
+                    }
+                })
+
+            })
+        })
+    }
 
     /**
      * Get root network servers ( * COUNT * )

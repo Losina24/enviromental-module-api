@@ -225,6 +225,7 @@ export default class MeasureLogic {
         })
     }
 
+    /*
     public async storeMeasure(measure: Measure): Promise<boolean> {
 
         return new Promise<boolean>((resolve, reject) => {
@@ -237,5 +238,5 @@ export default class MeasureLogic {
                     reject(false);
                 })
         })
-    }
+    }*/
 }

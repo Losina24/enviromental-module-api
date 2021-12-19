@@ -35,7 +35,7 @@ class EnviromentalDeviceRestRouter {
         this.getCouncilDevicePagination();
         this.removeDevice();
         this.getMapJsonDataUser();
-        this.getMapJsonDataAdmin();
+        //this.getMapJsonDataAdmin();
         this.getMapJsonDataRoot();
     }
 
@@ -91,7 +91,7 @@ class EnviromentalDeviceRestRouter {
      *  }
      * }
      *
-     */
+     *//*
     public getMapJsonDataAdmin = () => this.router.get('/map/admin/:councilId', async (req: Request, res: Response) => {
         const councilId = parseInt(req.params.councilId);
 
@@ -105,7 +105,7 @@ class EnviromentalDeviceRestRouter {
                 // Sending the response
                 Utils.sendRestResponse(err, res)
             })
-    })
+    })*/
 
     /**
      * Get the information about a enviromental device

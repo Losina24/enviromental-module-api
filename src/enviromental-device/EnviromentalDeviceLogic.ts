@@ -267,7 +267,7 @@ export default class EnviromentaDeviceLogic {
 * 
 * @param deviceId - ID of the enviromental device you want to get data from
 * @returns 
-*/
+*//*
     public async getMapJsonDataAdmin(councilId: number): Promise<EnviromentalDevice> {
         let spawn: any = childs.spawn('python3', ['../enviromental-module-api/src/map/mapa.py'])
 
@@ -364,7 +364,7 @@ export default class EnviromentaDeviceLogic {
         console.log(formatedJsonResponse)
         return new Promise<EnviromentalDevice>((resolve, reject) => {
         })
-    }
+    }*/
 
     /**
      * Get all enviroment devices of a user

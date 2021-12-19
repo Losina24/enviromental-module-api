@@ -47,7 +47,7 @@ CREATE TABLE `council` (
 
 CREATE TABLE `device` (
   `id` int(11) NOT NULL,
-  `device_EUI` int(11) NOT NULL,
+  `device_EUI` varchar(64) NOT NULL,
   `gateway_id` int(11) NOT NULL,
   `name` varchar(32) NOT NULL,
   `latitude` decimal(8,6) NOT NULL,
@@ -98,7 +98,8 @@ CREATE TABLE `measure` (
   `sensor_id` int(16) NOT NULL,
   `value` float NOT NULL,
   `timestamp` datetime NOT NULL,
-  `unit` varchar(16) NOT NULL
+  `unit` varchar(16) NOT NULL,
+  `danger` enum('red','yellow','green','') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
@@ -453,82 +454,54 @@ INSERT INTO `council` (`id`, `name`, `address`, `phone_number`, `email`, `web`, 
 --
 -- gateway seeds 
 --
-INSERT INTO `gateway` (`id`, `mac`, `council_id`, `name`, `latitude`, `longitude`, `status`) VALUES (1, 'SXV16431C', '1', 'root_gateway_1', '12', '15', '1');
-INSERT INTO `gateway` (`id`, `mac`, `council_id`, `name`, `latitude`, `longitude`, `status`) VALUES (2, 'LXV16431C', '1', 'root_gateway_2', '12', '15', '1');
-INSERT INTO `gateway` (`id`, `mac`, `council_id`, `name`, `latitude`, `longitude`, `status`) VALUES (3, 'PXV16431C', '2', 'gandia_gateway_1', '12', '15', '1');
-INSERT INTO `gateway` (`id`, `mac`, `council_id`, `name`, `latitude`, `longitude`, `status`) VALUES (4, 'VXV16431C', '2', 'gandia_gateway_2', '12', '15', '1');
-INSERT INTO `gateway` (`id`, `mac`, `council_id`, `name`, `latitude`, `longitude`, `status`) VALUES (5, 'NXV16431C', '3', 'alcoy_gateway_1', '12', '15', '1');
-INSERT INTO `gateway` (`id`, `mac`, `council_id`, `name`, `latitude`, `longitude`, `status`) VALUES (6, 'RXV16431C', '3', 'alcoy_gateway_2', '12', '15', '1');
+INSERT INTO `gateway` (`id`, `mac`, `council_id`, `name`, `latitude`, `longitude`, `status`) VALUES (1, 'SXV16431C', '3', 'gandia_gateway_1', '38.968', '-0.1844', '1');
 --
 -- device seeds 
 --
-INSERT INTO `device` (`id`, `device_EUI`, `gateway_id`, `name`, `latitude`, `longitude`, `status`) VALUES (1, '15634', '1', 'amb_dev1', '6', '77', '1');
-INSERT INTO `device` (`id`, `device_EUI`, `gateway_id`, `name`, `latitude`, `longitude`, `status`) VALUES (2, '32532', '1', 'amb_dev2', '3', '88', '1');
-INSERT INTO `device` (`id`, `device_EUI`, `gateway_id`, `name`, `latitude`, `longitude`, `status`) VALUES (3, '3251', '2', 'amb_dev3', '3', '88', '1');
-INSERT INTO `device` (`id`, `device_EUI`, `gateway_id`, `name`, `latitude`, `longitude`, `status`) VALUES (4, '5321', '2', 'amb_dev4', '3', '88', '1');
-INSERT INTO `device` (`id`, `device_EUI`, `gateway_id`, `name`, `latitude`, `longitude`, `status`) VALUES (5, '5634', '3', 'amb_dev5', '6', '77', '1');
-INSERT INTO `device` (`id`, `device_EUI`, `gateway_id`, `name`, `latitude`, `longitude`, `status`) VALUES (6, '322', '3', 'amb_dev6', '3', '88', '1');
-INSERT INTO `device` (`id`, `device_EUI`, `gateway_id`, `name`, `latitude`, `longitude`, `status`) VALUES (7, '32521', '4', 'amb_dev7', '3', '88', '1');
-INSERT INTO `device` (`id`, `device_EUI`, `gateway_id`, `name`, `latitude`, `longitude`, `status`) VALUES (8, '21', '4', 'amb_dev8', '3', '88', '1');
-INSERT INTO `device` (`id`, `device_EUI`, `gateway_id`, `name`, `latitude`, `longitude`, `status`) VALUES (9, '1634', '5', 'amb_dev9', '6', '77', '1');
-INSERT INTO `device` (`id`, `device_EUI`, `gateway_id`, `name`, `latitude`, `longitude`, `status`) VALUES (10, '352', '5', 'amb_dev10', '3', '88', '1');
-INSERT INTO `device` (`id`, `device_EUI`, `gateway_id`, `name`, `latitude`, `longitude`, `status`) VALUES (11, '751', '6', 'amb_dev11', '3', '88', '1');
-INSERT INTO `device` (`id`, `device_EUI`, `gateway_id`, `name`, `latitude`, `longitude`, `status`) VALUES (12, '6367', '6', 'amb_dev12', '3', '88', '1');
+INSERT INTO `device` (`id`, `device_EUI`, `gateway_id`, `name`, `latitude`, `longitude`, `status`) VALUES (1, 'dev1', '1', 'amb_dev1', '38.958', '-0.185', '1');
+INSERT INTO `device` (`id`, `device_EUI`, `gateway_id`, `name`, `latitude`, `longitude`, `status`) VALUES (2, 'dev2', '1', 'amb_dev2', '38.96', '-0.182', '1');
+INSERT INTO `device` (`id`, `device_EUI`, `gateway_id`, `name`, `latitude`, `longitude`, `status`) VALUES (3, 'dev3', '1', 'amb_dev3', '38.959', '-0.1833', '1');
+INSERT INTO `device` (`id`, `device_EUI`, `gateway_id`, `name`, `latitude`, `longitude`, `status`) VALUES (4, 'dev4', '1', 'amb_dev4', '38.972', '-0.1844', '1');
+INSERT INTO `device` (`id`, `device_EUI`, `gateway_id`, `name`, `latitude`, `longitude`, `status`) VALUES (5, 'dev5', '1', 'amb_dev5', '38.965', '-0.186', '1');
+INSERT INTO `device` (`id`, `device_EUI`, `gateway_id`, `name`, `latitude`, `longitude`, `status`) VALUES (6, 'dev6', '1', 'amb_dev6', '38.97', '-0.178', '1');
+INSERT INTO `device` (`id`, `device_EUI`, `gateway_id`, `name`, `latitude`, `longitude`, `status`) VALUES (7, 'dev7', '1', 'amb_dev7', '38.973', '-0.189', '1');
+INSERT INTO `device` (`id`, `device_EUI`, `gateway_id`, `name`, `latitude`, `longitude`, `status`) VALUES (8, 'dev8', '1', 'amb_dev8', '38.962', '-0.192', '1');
+INSERT INTO `device` (`id`, `device_EUI`, `gateway_id`, `name`, `latitude`, `longitude`, `status`) VALUES (9, 'dev9', '1', 'amb_dev9', '38.965', '-0.194', '1');
+INSERT INTO `device` (`id`, `device_EUI`, `gateway_id`, `name`, `latitude`, `longitude`, `status`) VALUES (10, 'dev10', '1', 'amb_dev10', '38.976', '-0.19', '1');
+INSERT INTO `device` (`id`, `device_EUI`, `gateway_id`, `name`, `latitude`, `longitude`, `status`) VALUES (11, 'dev11', '1', 'amb_dev11', '38.977', '-0.183', '1');
+INSERT INTO `device` (`id`, `device_EUI`, `gateway_id`, `name`, `latitude`, `longitude`, `status`) VALUES (12, 'dev12', '1', 'amb_dev12', '38.954', '-0.185', '1');
 
 --
 -- sensor type seeds
 --
 INSERT INTO `sensor_type` (`id`, `name`) VALUES (1, 'ambiental_type');
-INSERT INTO `sensor_type` (`id`, `name`) VALUES (2, 'water_type');
-INSERT INTO `sensor_type` (`id`, `name`) VALUES (3, 'light_type');
-INSERT INTO `sensor_type` (`id`, `name`) VALUES (4, 'humidity_type');
-INSERT INTO `sensor_type` (`id`, `name`) VALUES (5, 'co2_type');
-INSERT INTO `sensor_type` (`id`, `name`) VALUES (6, 'parking_type');
 --
 -- sensor seeds 
 --
 INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (1, '1', '1', 'AS63126', 'ambientalDevice1', '1');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (2, '2', '2', 'BD84526', 'ambientalDevice2', '');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (3, '3', '3', 'CS63126', 'ambientalDevice2', '1');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (4, '4', '4', 'DS63126', 'ambientalDevice3', '');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (5, '5', '4', 'ES63126', 'ambientalDevice4', '1');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (6, '6', '3', 'FS63126', 'ambientalDevice5', '');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (7, '6', '2', 'GS63126', 'ambientalDevice6', '1');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (8, '5', '1', 'HS63126', 'ambientalDevice7', '');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (9, '4', '1', 'IS63126', 'ambientalDevice8', '1');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (10, '3', '2', 'JS63126', 'ambientalDevice9', '');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (11, '2', '3', 'KS63126', 'ambientalDevice10', '1');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (12, '1', '4', 'LS63126', 'ambientalDevice11', '');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (13, '1', '4', 'MS63126', 'ambientalDevice12', '1');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (14, '2', '3', 'NS63126', 'ambientalDevice13', '');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (15, '3', '2', 'OS63126', 'ambientalDevice14', '1');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (16, '4', '1', 'PS63126', 'ambientalDevice15', '');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (17, '5', '1', 'QS63126', 'ambientalDevice16', '1');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (18, '6', '2', 'RS63126', 'ambientalDevice17', '');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (19, '6', '3', 'SS63126', 'ambientalDevice18', '1');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (20, '5', '4', 'TS63126', 'ambientalDevice19', '');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (21, '4', '4', 'US63126', 'ambientalDevice20', '1');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (22, '1', '7', 'AS631261', 'ambientalDevice21', '1');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (23, '2', '7', 'BD845261', 'ambientalDevice22', '');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (25, '4', '7', 'DS631261', 'ambientalDevice23', '');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (26, '5', '8', 'ES631261', 'ambientalDevice24', '1');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (27, '6', '8', 'FS631261', 'ambientalDevice25', '');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (28, '6', '8', 'GS631261', 'ambientalDevice26', '1');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (29, '5', '8', 'HS631261', 'ambientalDevice27', '');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (30, '4', '8', 'IS631261', 'ambientalDevice28', '1');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (31, '3', '9', 'JS631261', 'ambientalDevice29', '');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (32, '2', '9', 'KS631261', 'ambientalDevice30', '1');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (33, '1', '9', 'LS631261', 'ambientalDevice31', '');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (34, '1', '9', 'MS631261', 'ambientalDevice32', '1');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (35, '2', '10', 'NS631261', 'ambientalDevice33', '');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (36, '3', '10', 'OS631261', 'ambientalDevice34', '1');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (37, '4', '10', 'PS631261', 'ambientalDevice35', '');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (38, '5', '11', 'QS631261', 'ambientalDevice36', '1');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (39, '6', '11', 'RS631261', 'ambientalDevice37', '');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (40, '6', '12', 'SS631261', 'ambientalDevice38', '1');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (41, '5', '12', 'TS631261', 'ambientalDevice39', '');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (42, '4', '12', 'US631261', 'ambientalDevice40', '1');
-INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (24, '3', '7', 'CS631261', 'ambientalDevice41', '1');
+INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (2, '1', '1', 'BD84526', 'ambientalDevice2', '1');
+INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (3, '1', '2', 'CS63126', 'ambientalDevice3', '1');
+INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (4, '1', '2', 'DS63126', 'ambientalDevice4', '1');
+INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (5, '1', '3', 'ES63126', 'ambientalDevice5', '1');
+INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (6, '1', '3', 'FS63126', 'ambientalDevice6', '1');
+INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (7, '1', '4', 'GS63126', 'ambientalDevice7', '1');
+INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (8, '1', '4', 'HS63126', 'ambientalDevice8', '1');
+INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (9, '1', '5', 'IS63126', 'ambientalDevice9', '1');
+INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (10, '1', '5', 'JS63126', 'ambientalDevice10', '1');
+INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (11, '1', '6', 'KS63126', 'ambientalDevice11', '1');
+INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (12, '1', '6', 'LS63126', 'ambientalDevice12', '1');
+INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (13, '1', '7', 'MS63126', 'ambientalDevice13', '1');
+INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (14, '1', '7', 'NS63126', 'ambientalDevice14', '1');
+INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (15, '1', '8', 'OS63126', 'ambientalDevice15', '1');
+INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (16, '1', '8', 'PS63126', 'ambientalDevice16', '1');
+INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (17, '1', '9', 'QS63126', 'ambientalDevice17', '1');
+INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (18, '1', '9', 'RS63126', 'ambientalDevice18', '1');
+INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (19, '1', '10', 'SS63126', 'ambientalDevice19', '1');
+INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (20, '1', '10', 'TS63126', 'ambientalDevice20', '1');
+INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (21, '1', '11', 'US63126', 'ambientalDevice21', '1');
+INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (22, '1', '11', 'AS631261', 'ambientalDevice22', '1');
+INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (23, '1', '12', 'BD845261', 'ambientalDevice23', '1');
+INSERT INTO `sensor` (`id`, `sensor_type_id`, `device_id`, `device_eui`, `name`, `status`) VALUES (24, '1', '12', 'DS631261', 'ambientalDevice24', '1');
 
 --
 -- role seeds
@@ -545,64 +518,53 @@ INSERT INTO `user` (`id`, `role_id`, `council_id`, `name`, `surnames`, `password
 --
 -- user_device seeds
 --
-INSERT INTO `user_device` (`id`, `user_id`, `device_id`) VALUES (1, '2', '1');
-INSERT INTO `user_device` (`id`, `user_id`, `device_id`) VALUES (2, '2', '2');
+INSERT INTO `user_device` (`id`, `user_id`, `device_id`) VALUES (1, '3', '1');
+INSERT INTO `user_device` (`id`, `user_id`, `device_id`) VALUES (2, '3', '2');
 INSERT INTO `user_device` (`id`, `user_id`, `device_id`) VALUES (3, '3', '3');
 INSERT INTO `user_device` (`id`, `user_id`, `device_id`) VALUES (4, '3', '4');
-INSERT INTO `user_device` (`id`, `user_id`, `device_id`) VALUES (5, '2', '5');
-INSERT INTO `user_device` (`id`, `user_id`, `device_id`) VALUES (6, '2', '6');
+INSERT INTO `user_device` (`id`, `user_id`, `device_id`) VALUES (5, '3', '5');
+INSERT INTO `user_device` (`id`, `user_id`, `device_id`) VALUES (6, '3', '6');
 INSERT INTO `user_device` (`id`, `user_id`, `device_id`) VALUES (7, '3', '7');
 INSERT INTO `user_device` (`id`, `user_id`, `device_id`) VALUES (8, '3', '8');
-INSERT INTO `user_device` (`id`, `user_id`, `device_id`) VALUES (9, '2', '9');
-INSERT INTO `user_device` (`id`, `user_id`, `device_id`) VALUES (10, '2', '10');
+INSERT INTO `user_device` (`id`, `user_id`, `device_id`) VALUES (9, '3', '9');
+INSERT INTO `user_device` (`id`, `user_id`, `device_id`) VALUES (10, '3', '10');
 INSERT INTO `user_device` (`id`, `user_id`, `device_id`) VALUES (11, '3', '11');
-INSERT INTO `user_device` (`id`, `user_id`, `device_id`) VALUES (12, '3', '11');
---
+INSERT INTO `user_device` (`id`, `user_id`, `device_id`) VALUES (12, '3', '12');--
 -- network_server seeds
 --
 INSERT INTO `network_server` (`id`, `identifier`, `name`, `centralized`, `status`, `url`, `type`, `token`, `provider`) VALUES
-(9, 123, 'ns1', 1, 1, 'nsurl1', 'mqtt', 'nstok1', 'nsprov1'),
-(10, 1234, 'ns2', 1, 1, 'nsurl2', 'mqtt', 'nstok2', 'nsprov2'),
-(11, 12345, 'ns3', 1, 1, 'nsurl3', 'mqtt', 'nstok3', 'nsprov3'),
-(12, 123456, 'ns4', 1, 1, 'nsurl4', 'rest', 'nstok4', 'nsprov4');
+ (1, '123', 'ns1', '1', '1', 'nsUrl1', 'mqtt', 'nstok1', 'nsprov1');
 --
 -- gateway_network_server seeds
 --
 INSERT INTO `gateway_network_server` (`id`, `gateway_id`, `network_server_id`) VALUES
-(5, 2, 9),
-(6, 2, 10),
-(7, 3, 11),
-(8, 6, 12),
-(9, 4, 12),
-(10, 1, 11),
-(11, 6, 10),
-(12, 3, 9);
+(1, 1, 1);
 --
 -- notification seeds
 --
 INSERT INTO `notification` (`id`, `sensor_id`, `body`, `subject`, `magnitude`) VALUES
 (5, 1, 'body1', 'subj1', 'yellow'),
-(6, 22, 'body2', 'subj2', 'red'),
-(7, 2, 'body3', 'subj3', 'green'),
-(8, 23, 'body4', 'subj4', 'yellow');
+(6, 2, 'body2', 'subj2', 'red'),
+(7, 3, 'body3', 'subj3', 'green'),
+(8, 4, 'body4', 'subj4', 'yellow');
 
 --
 -- measure seeds
 --
 
-INSERT INTO `measure` (`id`, `sensor_id`, `value`, `timestamp`, `unit`) VALUES
-(1, 1, 1, '2021-12-16 10:33:40', 'm3'),
-(2, 2, 2, '2021-12-16 10:33:40', 'm3'),
-(3, 3, 3, '2021-12-16 10:33:40', 'm3'),
-(4, 4, 4, '2021-12-16 10:33:40', 'm3'),
-(5, 5, 5, '2021-12-16 10:33:40', 'm3'),
-(6, 6, 6, '2021-12-16 10:33:40', 'm3'),
-(7, 7, 7, '2021-12-16 10:33:40', 'm3'),
-(8, 8, 8, '2021-12-16 10:33:40', 'm3'),
-(9, 9, 9, '2021-12-16 10:33:40', 'm3'),
-(10, 10, 10, '2021-12-16 10:33:40', 'm3'),
-(11, 11, 11, '2021-12-16 10:33:40', 'm3'),
-(12, 12, 12, '2021-12-16 15:19:18', 'm3'),
-(13, 13, 13, '2021-12-16 15:19:18', 'm3'),
-(14, 14, 15, '2021-12-16 14:58:13', 'm3'),
-(15, 15, 15, '2021-12-16 14:59:10', 'm3');
+INSERT INTO `measure` (`id`, `sensor_id`, `value`, `timestamp`, `unit`, `danger`) VALUES
+(1, 1, 100, '2021-12-16 10:33:40', 'ppm', 'green'),
+(2, 2, 120, '2021-12-16 10:33:40', 'ppm', 'green'),
+(3, 3, 110, '2021-12-16 10:33:40', 'ppm', 'green'),
+(4, 4, 210, '2021-12-16 10:33:40', 'ppm', 'green'),
+(5, 5, 80, '2021-12-16 10:33:40', 'ppm', 'green'),
+(6, 6, 92, '2021-12-16 10:33:40', 'ppm', 'green'),
+(7, 7, 810, '2021-12-16 10:33:40', 'ppm', 'red'),
+(8, 8, 710, '2021-12-16 10:33:40', 'ppm', 'yellow'),
+(9, 9, 890, '2021-12-16 10:33:40', 'ppm', 'red'),
+(10, 10, 421, '2021-12-16 10:33:40', 'ppm', 'green'),
+(11, 11, 324, '2021-12-16 10:33:40', 'ppm', 'green'),
+(12, 12, 300, '2021-12-16 15:19:18', 'ppm', 'green'),
+(13, 13, 784, '2021-12-16 15:19:18', 'ppm', 'yellow'),
+(14, 14, 742, '2021-12-16 14:58:13', 'ppm', 'yellow'),
+(15, 15, 15, '2021-12-16 14:59:10', 'ppm', 'green');

@@ -47,7 +47,7 @@ CREATE TABLE `council` (
 
 CREATE TABLE `device` (
   `id` int(11) NOT NULL,
-  `device_EUI` int(11) NOT NULL,
+  `device_EUI` varchar(64) NOT NULL,
   `gateway_id` int(11) NOT NULL,
   `name` varchar(32) NOT NULL,
   `latitude` decimal(8,6) NOT NULL,

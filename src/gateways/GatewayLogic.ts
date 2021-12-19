@@ -119,6 +119,25 @@ export default class GatewayLogic {
      * Get user related gateways
      * gatewayId: N -> getUserGatewaysCount() -> count: N
      *
+     * @param councilId - ID of the council we want to get the gateways from
+     * @returns
+     */
+     public async getAdminGateways(councilId: number): Promise<Gateway> {
+        return new Promise<Gateway>((resolve, reject) => {
+            this.gatewayDB.getGatewaysAdmin(councilId)
+                .then(res => {
+                    resolve(res) 
+                })
+                .catch(err => {
+                    reject(err)
+                })
+        })
+    }
+
+    /**
+     * Get user related gateways
+     * gatewayId: N -> getUserGatewaysCount() -> count: N
+     *
      * @returns
      */
     public async getRootGatewaysCount(): Promise<Gateway> {

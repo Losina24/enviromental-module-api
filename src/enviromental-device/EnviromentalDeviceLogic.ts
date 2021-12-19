@@ -42,6 +42,18 @@ export default class EnviromentaDeviceLogic {
         })
     }
 
+    public async getDeviceByDeviceEUI(deviceEUI: string): Promise<EnviromentalDevice> {
+        return new Promise<EnviromentalDevice>((resolve, reject) => {
+            this.enviromentalDeviceDB.getDeviceByDeviceEUIFromDB(deviceEUI)
+                .then(res => {
+                    resolve(res)
+                })
+                .catch(err => {
+                    reject(err)
+                })
+        })
+    }
+
     /**
     * Get the information about a enviromental device given their ID
     * userId: N -> getDeviceById() -> EnviromentalDevice
@@ -145,6 +157,216 @@ export default class EnviromentaDeviceLogic {
     }
 
     /**
+    * Get the information about a enviromental device given their ID
+    * userId: N -> getDeviceById() -> EnviromentalDevice
+    * 
+    * @param deviceId - ID of the enviromental device you want to get data from
+    * @returns 
+    */
+    public async getMapJsonDataRoot(): Promise<EnviromentalDevice> {
+        let spawn: any = childs.spawn('python3', ['../enviromental-module-api/src/map/mapa.py'])
+
+        let councilLogic = new CouncilLogic();
+        let gatewayLogic = new GatewayLogic();
+        let deviceLogic = new EnviromentaDeviceLogic();
+        let measureLogic = new MeasureLogic();
+
+        let gateways: any = await gatewayLogic.getAllGatewaysRootPagination(9999, 1).catch(err => {
+            console.log(err)
+        })
+        console.log("****** gateways ******")
+        console.log(gateways)
+        let gatewaysFORMATED: any[] = []
+        gateways.forEach((gateway: any) => {
+            let councilName;
+            if (gateway.councilId == 1) {
+                councilName = "root council"
+            } else if (gateway.councilId == 2) {
+                councilName = "ayuntamiento gandia"
+            } else if (gateway.councilId == 3) {
+                councilName = "ayuntamiento alcoy"
+            }
+            gatewaysFORMATED.push({
+                name: gateway.name,
+                lat: gateway.coords[0],
+                lng: gateway.coords[1],
+                councilName: councilName,
+                radius: 15
+            })
+        });
+
+        let devices: any = await deviceLogic.getRootDevicePagination(1, 9999, 1).catch(err => {
+            console.log(err)
+        })
+        console.log("****** devices ******")
+        console.log(devices.result)
+        let devicesFORMATED: any[] = []
+        for (const device of devices.result) {
+
+            let measuresResponse: any = await measureLogic.getRootMeasures()
+            let measurements: any[] = []
+            measuresResponse.result.forEach((measure: any) => {
+                measurements.push({
+                    name: device.name,
+                    measurements: [{
+                        type: "o2",
+                        value: measure.value,
+                        unit: measure.unit,
+                        dangerous: measure.danger,
+                        date: measure.timestamp.toJSON().slice(0, 16).replace("T", " ")
+                    }]
+                })
+            });
+            devicesFORMATED.push({
+                name: device.name,
+                measurements: measurements
+            })
+        }
+
+        let councils: any = await councilLogic.getRootCouncilsPagination(9999, 1).catch(err => {
+            console.log(err)
+        })
+        console.log("****** councils ******")
+        console.log(councils.result)
+        let councilsFormated: any[] = []
+
+        councils.result.forEach((council: any) => {
+            councilsFormated.push({
+                name: council.name,
+                radius: 30,
+                lat: gatewaysFORMATED[0].lat,
+                lng: gatewaysFORMATED[0].lng
+            })
+        });
+        let formatedJsonResponse = {
+            councils: councilsFormated,
+            gateways: gatewaysFORMATED,
+            devices: devicesFORMATED
+        }
+        fs.writeFile('../enviromental-module-api/src/map/data.json', JSON.stringify(formatedJsonResponse), function (err) {
+            if (err) {
+                return console.error(err);
+            }
+            console.log("File created!");
+        });
+        spawn.on('close', (code: any) => {
+            //console.log(`child process close all stdio with code ${code}`);
+            // send data to browser
+            console.log("***** PY CODE *****")
+            console.log(code)
+            //res.send(dataToSend)
+        });
+        console.log(formatedJsonResponse)
+        return new Promise<EnviromentalDevice>((resolve, reject) => {
+        })
+    }
+
+    /**
+* Get the information about a enviromental device given their ID
+* userId: N -> getDeviceById() -> EnviromentalDevice
+* 
+* @param deviceId - ID of the enviromental device you want to get data from
+* @returns 
+*/
+    public async getMapJsonDataAdmin(councilId: number): Promise<EnviromentalDevice> {
+        let spawn: any = childs.spawn('python3', ['../enviromental-module-api/src/map/mapa.py'])
+
+        let councilLogic = new CouncilLogic();
+        let gatewayLogic = new GatewayLogic();
+        let deviceLogic = new EnviromentaDeviceLogic();
+        let measureLogic = new MeasureLogic();
+
+        let gateways: any = await gatewayLogic.getAdminGateways(councilId).catch(err => {
+            console.log(err)
+        })
+        console.log("****** gateways ******")
+        console.log(gateways)
+        let gatewaysFORMATED: any[] = []
+        gateways.result.forEach((gateway: any) => {
+            let councilName;
+            if (gateway.councilId == 1) {
+                councilName = "root council"
+            } else if (gateway.councilId == 2) {
+                councilName = "ayuntamiento gandia"
+            } else if (gateway.councilId == 3) {
+                councilName = "ayuntamiento alcoy"
+            }
+            gatewaysFORMATED.push({
+                name: gateway.name,
+                lat: gateway.coords[0],
+                lng: gateway.coords[1],
+                councilName: councilName,
+                radius: 15
+            })
+        });
+
+        let devices: any = await deviceLogic.getAllAdminDevices(councilId).catch(err => {
+            console.log(err)
+        })
+        console.log("****** devices ******")
+        console.log(devices)
+        let devicesFORMATED: any[] = []
+        for (const device of devices.result) {
+
+            let measuresResponse: any = await measureLogic.getAdminMeasures(adminId)
+            let measurements: any[] = []
+            measuresResponse.result.forEach((measure: any) => {
+                measurements.push({
+                    name: device.name,
+                    measurements: [{
+                        type: "o2",
+                        value: measure.value,
+                        unit: measure.unit,
+                        dangerous: measure.danger,
+                        date: measure.timestamp.toJSON().slice(0, 16).replace("T", " ")
+                    }]
+                })
+            });
+            devicesFORMATED.push({
+                name: device.name,
+                measurements: measurements
+            })
+        }
+
+        let councils: any = await councilLogic.admin(9999, 1).catch(err => {
+            console.log(err)
+        })
+        console.log("****** councils ******")
+        console.log(councils.result)
+        let councilsFormated: any[] = []
+
+        councils.result.forEach((council: any) => {
+            councilsFormated.push({
+                name: council.name,
+                radius: 30,
+                lat: gatewaysFORMATED[0].lat,
+                lng: gatewaysFORMATED[0].lng
+            })
+        });
+        let formatedJsonResponse = {
+            councils: councilsFormated,
+            gateways: gatewaysFORMATED,
+            devices: devicesFORMATED
+        }
+        fs.writeFile('../enviromental-module-api/src/map/data.json', JSON.stringify(formatedJsonResponse), function (err) {
+            if (err) {
+                return console.error(err);
+            }
+            console.log("File created!");
+        });
+        spawn.on('close', (code: any) => {
+            //console.log(`child process close all stdio with code ${code}`);
+            // send data to browser
+            console.log("***** PY CODE *****")
+            console.log(code)
+            //res.send(dataToSend)
+        });
+        console.log(formatedJsonResponse)
+        return new Promise<EnviromentalDevice>((resolve, reject) => {
+        })
+    }
+
+    /**
      * Get all enviroment devices of a user
      * userId: N -> getAllUserDevices() -> [EnviromentalDevice]
      * 
@@ -191,6 +413,18 @@ export default class EnviromentaDeviceLogic {
     public async getAllAdminDevicesCount(councilId: number): Promise<EnviromentalDevice[]> {
         return new Promise<EnviromentalDevice[]>((resolve, reject) => {
             this.enviromentalDeviceDB.getAllAdminDevicesCountFromDB(councilId)
+                .then(res => {
+                    resolve(res)
+                })
+                .catch(err => {
+                    reject(err)
+                })
+        })
+    }
+
+    public async getAllAdminDevices(councilId: number): Promise<EnviromentalDevice[]> {
+        return new Promise<EnviromentalDevice[]>((resolve, reject) => {
+            this.enviromentalDeviceDB.getAllAdminDevicesFromDB(councilId)
                 .then(res => {
                     resolve(res)
                 })

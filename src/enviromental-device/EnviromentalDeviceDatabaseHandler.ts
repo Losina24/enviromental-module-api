@@ -41,6 +41,41 @@ export default class EnviromentalDeviceDatabaseHandler {
      */
     public async getDeviceByIdFromDB(deviceId: number): Promise<EnviromentalDevice> {
         const query = "SELECT * FROM device WHERE id = " + deviceId;
+        return new Promise<EnviromentalDevice>((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+                // If connection fails
+                if (error) {
+                    reject(Utils.generateLogicError("error getting device", error))
+                }
+                conn.query(query, (err: any, results: any) => {
+                    conn.release();
+                    // If connection fails
+                    if (err) {
+                        reject(Utils.generateLogicError("error getting device", err))
+                    }
+                    try {
+                        if (results.length != 0) {
+                            let device = new EnviromentalDevice();
+
+                            device.setId(results[0].id)
+                            device.setName(results[0].name);
+                            device.setDeviceEUI(results[0].device_EUI);
+                            device.setGatewayId(results[0].gateway_id);
+                            device.setCoords([results[0].latitude, results[0].longitude]);
+                            device.setStatus(results[0].status);
+                            resolve(Utils.generateLogicSuccess("device found with the given id", device))
+                        }
+                    } catch (error) {
+                        reject(Utils.generateLogicError("error getting device", error))
+                    }
+                    resolve(Utils.generateLogicSuccessEmpty("no device found with the given id"))
+                })
+            })
+        })
+    }
+
+    public async getDeviceByDeviceEUIFromDB(deviceEUI: string): Promise<EnviromentalDevice> {
+        const query = "SELECT * FROM device WHERE device_EUI = '" + deviceEUI +"'";
         console.log(query)
         return new Promise<EnviromentalDevice>((resolve: any, reject: any) => {
             db.getConnection((error: any, conn: any) => {
@@ -238,6 +273,41 @@ export default class EnviromentalDeviceDatabaseHandler {
                         }
                     } catch (error) {
                         reject(Utils.generateLogicError("error getting admin user devices count", err))
+                    }
+                })
+            })
+        })
+    }
+
+    public getAllAdminDevicesFromDB(councilId: number): Promise<EnviromentalDevice[]> {
+        var query = "SELECT * FROM `gateway` INNER JOIN device ON device.gateway_id = gateway.id  WHERE gateway.council_id=" + councilId + ";"
+        return new Promise<EnviromentalDevice[]>((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+
+                // If connection fails
+                if (error) {
+                    reject(Utils.generateLogicError("error getting admin user devices", error))
+                }
+
+                conn.query(query, (err: any, results: any) => {
+                    conn.release();
+
+                    // If connection fails
+                    if (err) {
+                        reject(Utils.generateLogicError("error getting admin user devices", err))
+                    }
+                    try {
+                        console.log("results.count")
+
+                        console.log(results)
+
+                        if (results) {
+                            resolve(Utils.generateLogicSuccess("admin user devices retrieved succesfully", results));
+                        } else {
+                            resolve(Utils.generateLogicSuccessEmpty("admin user has no related devices"));
+                        }
+                    } catch (error) {
+                        reject(Utils.generateLogicError("error getting admin user devices", err))
                     }
                 })
             })

@@ -80,6 +80,7 @@ export default class GatewayDatabaseHandler {
      */
     public getGatewayByMacAndAdminIdFromDB(mac: string): Promise<Gateway> {
         var query = "SELECT gateway.id as gatewayId, user.id as adminId FROM `gateway` INNER JOIN user ON user.council_id=gateway.council_id WHERE mac = '" + mac + "';";
+        console.log(query)
         return new Promise<Gateway>((resolve: any, reject: any) => {
             db.getConnection((error: any, conn: any) => {
 
@@ -94,7 +95,13 @@ export default class GatewayDatabaseHandler {
                     if (err) {
                         reject()
                     }
-                    resolve({gatewayId: results[0].gatewayId, adminId: results[0].adminId})
+                    console.log("gatewayByMac",results)
+                    try {
+                        resolve({gatewayId: results[0].gatewayId, adminId: results[0].adminId})
+                    } catch (error) {
+                        reject(error)
+                    }
+                    
                 })
 
             })
@@ -350,6 +357,44 @@ export default class GatewayDatabaseHandler {
                         }
                     } catch (error) {
                         reject(Utils.generateLogicError("error getting admin gateways count", error))
+                    }
+                })
+
+            })
+        })
+    }
+
+    /**
+     * Get council related gateways count
+     * councilId: N -> getGatewaysCountAdmin() -> gateways: Gateway[]
+     *
+     * @param councilId - ID of the council we want to get the gateways from
+     * @returns
+     */
+     public getGatewaysAdmin(councilId: number): Promise<Gateway> {
+        var query = "SELECT * FROM `gateway` WHERE council_id = " + councilId;
+        return new Promise<Gateway>((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+
+                // If connection fails
+                if (error) {
+                    reject(Utils.generateLogicError("error getting admin gateways", error))
+                }
+
+                conn.query(query, (err: any, results: any) => {
+                    conn.release();
+                    // If connection fails
+                    if (err) {
+                        reject(Utils.generateLogicError("error getting admin gateways", err))
+                    }
+                    try {
+                        if (results) {
+                            resolve(Utils.generateLogicSuccess("admin gateways retrieved succesfully", results));
+                        } else {
+                            resolve(Utils.generateLogicSuccessEmpty("admin has no related gateways"));
+                        }
+                    } catch (error) {
+                        reject(Utils.generateLogicError("error getting admin gateways", error))
                     }
                 })
 

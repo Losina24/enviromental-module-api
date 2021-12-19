@@ -21,9 +21,9 @@ export default class MeasureDatabaseHandler {
      * @returns 
      */
     public async getUserMeasuresFromDB(userId: number): Promise<Measure[]> {
-        var query = "SELECT `measure`.* FROM `user_device` INNER JOIN `device` ON" +
+        var query = "SELECT `measure`.*, sensor_type.name as sensor_type_name FROM `user_device` INNER JOIN `device` ON" +
             " `user_device`.`device_id` = `device`.`id` INNER JOIN `sensor` ON `device`.`id` = `sensor`.`device_id`" +
-            " INNER JOIN `measure` ON `measure`.`sensor_id` = `sensor`.`id` WHERE `user_device`.`user_id` = " + userId + ";";
+            " INNER JOIN `measure` ON `measure`.`sensor_id` = `sensor`.`id` INNER JOIN sensor_type ON sensor_type.id=sensor.sensor_type_id WHERE `user_device`.`user_id` = " + userId + ";";
 
         return new Promise<Measure[]>((resolve: any, reject: any) => {
             db.getConnection((error: any, conn: any) => {
@@ -63,7 +63,7 @@ export default class MeasureDatabaseHandler {
      * @returns 
      */
     public async getDeviceMeasuresFromDB(deviceId: number): Promise<Measure[]> {
-        var query = "SELECT * FROM measure INNER JOIN sensor ON sensor.id=measure.sensor_id WHERE sensor.device_id =" + deviceId + ";";
+        var query = "SELECT sensor.*, measure.*, sensor_type.name as sensor_type_name FROM measure INNER JOIN sensor ON sensor.id=measure.sensor_id INNER JOIN sensor_type ON sensor_type.id=sensor.id WHERE sensor.device_id = " + deviceId + ";";
 
         return new Promise<Measure[]>((resolve: any, reject: any) => {
             db.getConnection((error: any, conn: any) => {
@@ -145,9 +145,9 @@ export default class MeasureDatabaseHandler {
      * @returns 
      */
     public async getAdminMeasuresFromDB(councilId: number): Promise<Measure[]> {
-        var query = "SELECT measure.* FROM `gateway` INNER JOIN device ON device.gateway_id = gateway.id INNER JOIN " +
+        var query = "SELECT measure.*, sensor_type.name as sensor_type_name FROM `gateway` INNER JOIN device ON device.gateway_id = gateway.id INNER JOIN " +
             "sensor ON sensor.device_id=device.id INNER JOIN `measure` ON `measure`.`sensor_id` = `sensor`.`id` " +
-            "WHERE gateway.council_id=" + councilId + ";";
+            "INNER JOIN sensor_type ON sensor_type.id=sensor.sensor_type_id WHERE gateway.council_id=" + councilId + ";";
         return new Promise<Measure[]>((resolve: any, reject: any) => {
             db.getConnection((error: any, conn: any) => {
 
@@ -185,7 +185,7 @@ export default class MeasureDatabaseHandler {
      * @returns 
      */
     public async getRootMeasuresFromDB(): Promise<Measure[]> {
-        var query = "SELECT * FROM `measure`;";
+        var query = "SELECT measure.*, sensor_type.name as sensor_type_name FROM `measure` INNER JOIN sensor ON sensor.id=measure.sensor_id INNER JOIN sensor_type ON sensor_type.id=sensor.sensor_type_id;";
         return new Promise<Measure[]>((resolve: any, reject: any) => {
             db.getConnection((error: any, conn: any) => {
 
@@ -349,9 +349,9 @@ export default class MeasureDatabaseHandler {
         const firstValue = (pageSize * pageIndex) - pageSize;
         const secondValue = (pageSize * pageIndex);
 
-        var query = "SELECT `measure`.* FROM `user_device` INNER JOIN `device` ON" +
+        var query = "SELECT `measure`.*, sensor_type.name as sensor_type_name FROM `user_device` INNER JOIN `device` ON" +
             " `user_device`.`device_id` = `device`.`id` INNER JOIN `sensor` ON `device`.`id` = `sensor`.`device_id`" +
-            " INNER JOIN `measure` ON `measure`.`sensor_id` = `sensor`.`id` WHERE `user_device`.`user_id` = " + userId
+            " INNER JOIN `measure` ON `measure`.`sensor_id` = `sensor`.`id` INNER JOIN sensor_type ON sensor_type.id=sensor.sensor_type_id WHERE `user_device`.`user_id` = " + userId
             + " ORDER BY id DESC LIMIT " + firstValue + ', ' + secondValue + ";";
 
         return new Promise<Measure[]>((resolve: any, reject: any) => {
@@ -395,9 +395,9 @@ export default class MeasureDatabaseHandler {
         const firstValue = (pageSize * pageIndex) - pageSize;
         const secondValue = (pageSize * pageIndex);
 
-        var query = "SELECT measure.* FROM `gateway` INNER JOIN device ON device.gateway_id = gateway.id INNER JOIN " +
+        var query = "SELECT measure.*, sensor_type.name as sensor_type_name FROM `gateway` INNER JOIN device ON device.gateway_id = gateway.id INNER JOIN " +
             "sensor ON sensor.device_id=device.id INNER JOIN `measure` ON `measure`.`sensor_id` = `sensor`.`id` " +
-            "WHERE gateway.council_id=" + councilId + " ORDER BY id DESC LIMIT " + firstValue + ', ' + secondValue + ";";
+            " INNER JOIN sensor_type ON sensor_type.id=sensor.sensor_type_id WHERE gateway.council_id=" + councilId + " ORDER BY id DESC LIMIT " + firstValue + ', ' + secondValue + ";";
 
         return new Promise<Measure[]>((resolve: any, reject: any) => {
             db.getConnection((error: any, conn: any) => {
@@ -439,7 +439,7 @@ export default class MeasureDatabaseHandler {
         const firstValue = (pageSize * pageIndex) - pageSize;
         const secondValue = (pageSize * pageIndex);
 
-        var query = "SELECT * FROM `measure` ORDER BY id DESC LIMIT " + firstValue + ', ' + secondValue + ";";
+        var query = "SELECT measure.*, sensor_type.name as sensor_type_name FROM `measure` INNER JOIN sensor ON sensor.id=measure.sensor_id INNER JOIN sensor_type ON sensor_type.id=sensor.sensor_type_id ORDER BY id DESC LIMIT " + firstValue + ', ' + secondValue + ";";
         return new Promise<Measure[]>((resolve: any, reject: any) => {
             db.getConnection((error: any, conn: any) => {
 
@@ -504,7 +504,7 @@ export default class MeasureDatabaseHandler {
      * 
      * @param measure 
      * @returns boolean
-     */
+     *//*
     public async storeMeasureInDB(measure: Measure): Promise<boolean> {
         return new Promise<boolean>((resolve: any, reject: any) => {
             let measur = fs.readFileSync("/Users/losina/Desktop/Desarrollo/enviromental-module-api/db/measures.json", 'utf-8');
@@ -514,6 +514,6 @@ export default class MeasureDatabaseHandler {
             fs.writeFileSync('/Users/losina/Desktop/Desarrollo/enviromental-module-api/db/measures.json', JSON.stringify(array))
             resolve(true)
         })
-    }
+    }*/
 
 }

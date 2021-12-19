@@ -44,37 +44,66 @@ export default class MeasureMqttRouter extends MqttRouter {
     public addSensorMeasure = () => {
         this.suscribe('measure/send');
         this.client.on("message", async (topic: any, message: any) => {
+            let deviceLogic = new EnviromentaDeviceLogic()
+            const msg = message.toString();
+            let jsonData: any = JSON.parse(msg)
+            console.log(jsonData)
+            let measureLogic: MeasureLogic = new MeasureLogic()
+            let sensorLogic: SensorLogic = new SensorLogic()
+
             if (topic == 'measure/send') {
-                const msg = message.toString();
-                let jsonData: any = JSON.parse(msg)
-                console.log(jsonData)
-                let measureLogic: MeasureLogic = new MeasureLogic()
-                let sensorLogic: SensorLogic = new SensorLogic()
-
-                let res: any = await sensorLogic.getSensorByName(jsonData.name).catch((err: any) => {
+                let deviceByDevEui: any = await deviceLogic.getDeviceByDeviceEUI(jsonData.deviceEui).catch((err: any) => {
                     console.log(err)
                 })
-                console.log(res)
-                let sensor: Sensor = res.result
-                let measure: Measure = new Measure()
-                let date: string = new Date(Date.now()).toJSON().replace("T", " ").slice(0, -5)
-                if (jsonData.value > 800) {
-                    measure.setDanger('red')
-                } else if (jsonData.value > 500) {
-                    measure.setDanger('yellow')
-                } else {
-                    measure.setDanger('green')
+                console.log("deviceByDevEui", deviceByDevEui)
+                // Si existe el device
+                if (deviceByDevEui.http == 200) {
+                    let res: any = await sensorLogic.getSensorByName(jsonData.deviceEui + "-" + jsonData.name).catch((err: any) => {
+                    })
+                    console.log("getSensorByName", res)
 
+                    let sensor: any
+                    if (res.http == 200) {
+                        // si existe el sensor guardo los datos
+                        sensor = res.result
+                    } else if (res.http == 204) {
+                        // si no existe CREO el sensor y añado la medida
+                        let sensorToCreate: Sensor = new Sensor()
+                        sensorToCreate.setDeviceEUI(jsonData.deviceEui)
+                        sensorToCreate.setDeviceId(deviceByDevEui.result.id)
+                        sensorToCreate.setName(jsonData.deviceEui + "-" + jsonData.name)
+                        sensorToCreate.setStatus(false)
+                        sensorToCreate.setType("1")
+                        let sensorInsertedId: any = await sensorLogic.storeSensor(sensorToCreate).catch((err: any) => {
+                            console.log(err)
+                        })
+                        console.log("*** RESULT FROM storeSensor() ***",sensorInsertedId)
+                        sensor = await sensorLogic.getSensorById(sensorInsertedId.result).catch((err: any) => {
+                            console.log(err)
+                        })
+                        console.log("*** sensorInserted ***",sensor)
+                        sensor = sensor.result
+                    }
+                    let measure: Measure = new Measure()
+                    let date: string = new Date(Date.now()).toJSON().replace("T", " ").slice(0, -5)
+                    if (jsonData.value > 800) {
+                        measure.setDanger('red')
+                    } else if (jsonData.value > 500) {
+                        measure.setDanger('yellow')
+                    } else {
+                        measure.setDanger('green')
+                    }
+                    measure.setDate(date)
+                    measure.setUnit(jsonData.unit)
+                    measure.setValue(jsonData.value)
+                    measure.setSensorId(sensor.getId())
+                    await measureLogic.insertMeasure(measure).then((res: any) => {
+                        console.log(res)
+                    }).catch((err: any) => {
+                        console.log(err)
+                    })
                 }
-                measure.setDate(date)
-                measure.setUnit(jsonData.unit)
-                measure.setValue(jsonData.value)
-                measure.setSensorId(sensor.getId())
-                await measureLogic.insertMeasure(measure).then((res: any) => {
-                    console.log(res)
-                }).catch((err: any) => {
-                    console.log(err)
-                })
+
             }
 
         })
@@ -118,35 +147,46 @@ export default class MeasureMqttRouter extends MqttRouter {
                 device.setStatus(true)
                 device.setGatewayId(gatewayAndAdminIdJSON.gatewayId)
                 console.log(device)
-                let deviceInsertRes: any = await deviceLogic.storeDevice(device, gatewayAndAdminIdJSON.adminId).catch((err: any) => {
+                let deviceByDevEui: any = await deviceLogic.getDeviceByDeviceEUI(jsonData.device.deviceEui).catch((err: any) => {
                     console.log(err)
                 })
-                console.log("device insert id")
-                console.log(deviceInsertRes.result)
-                // create device sensors
-                let sensors: Sensor[] = []
-                let contador: number = 0
-                jsonData.sensors.forEach((sensor: any) => {
-                    let sensorObj: Sensor = new Sensor()
-                    sensorObj.setName(sensor.name)
-                    sensorObj.setDeviceEUI("deviceEUI-" + sensor.name)
-                    sensorObj.setStatus(false)
-                    sensorObj.setType("1")
-                    sensorObj.setDeviceId(deviceInsertRes.result)
-                    sensors.push(sensorObj)
-                    contador++;
-                });
-                console.log("SENSORS TO CREATE MQTT")
-                console.log(sensors)
-                sensors.forEach(async sensor => {
-                    await sensorLogic.storeSensor(sensor).then((res: any) => {
-                        console.log(res)
-                    }).catch((err: any) => {
+                console.log("deviceByDevEui", deviceByDevEui)
+                if (deviceByDevEui.http == 200) {
+
+                } else if (deviceByDevEui.http == 204) {
+                    let deviceInsertRes: any = await deviceLogic.storeDevice(device, gatewayAndAdminIdJSON.adminId).catch((err: any) => {
                         console.log(err)
                     })
-                });
+                }
+                /* console.log("device insert id")
+                 console.log(deviceInsertRes.result)
+                 // create device sensors
+                 let sensors: Sensor[] = []
+                 let contador: number = 0
+                 jsonData.sensors.forEach((sensor: any) => {
+                     let sensorObj: Sensor = new Sensor()
+                     sensorObj.setName(sensor.name)
+                     sensorObj.setDeviceEUI("deviceEUI-" + sensor.name)
+                     sensorObj.setStatus(false)
+                     sensorObj.setType("1")
+                     sensorObj.setDeviceId(deviceInsertRes.result)
+                     sensors.push(sensorObj)
+                     contador++;
+                 });
+                 console.log("SENSORS TO CREATE MQTT")
+                 console.log(sensors)
+                 sensors.forEach(async sensor => {
+                     await sensorLogic.storeSensor(sensor).then((res: any) => {
+                         console.log(res)
+                     }).catch((err: any) => {
+                         console.log(err)
+                     })
+                 });*/
 
-                this.publish(jsonData.device.deviceEui + "/syncDone", "")
+                this.publish("deviceSync/" + jsonData.device.deviceEui, 
+                '{\n\"SYNCHRONIZED\":\"'+jsonData.device.deviceEui+'\"\n}'
+                )
+                
             }
         });
     }

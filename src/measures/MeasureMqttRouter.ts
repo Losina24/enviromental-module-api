@@ -30,7 +30,7 @@ export default class MeasureMqttRouter extends MqttRouter {
     }
 
     public updateOTA = () => {
-        this.publish("UPDATE","")
+        this.publish("46701/ambiental/2","UPDATE")
     }
 
     /**

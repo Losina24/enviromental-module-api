@@ -26,21 +26,25 @@ export default class MeasureMqttRouter extends MqttRouter {
         this.storeMeasure();
         this.syncDevice();
         this.addSensorMeasure();
+        this.updateOTA();
     }
 
+    public updateOTA = () => {
+        this.publish("UPDATE","")
+    }
 
     /**
- * Save a new measure 
- * GET postalcode/ambiental/1/#
- * 
- * Body: {
- *  "deviceEui": 1,
- *  "value": 10.32,
- *  "unit": "ppm"
- *  "type": "CO2"
- * }
- * 
- */
+     * Save a new measure 
+     * GET postalcode/ambiental/1/#
+     * 
+     * Body: {
+     *  "deviceEui": 1,
+     *  "value": 10.32,
+     *  "unit": "ppm"
+     *  "type": "CO2"
+     * }
+     * 
+     */
     public addSensorMeasure = () => {
         this.suscribe('measure/send');
         this.client.on("message", async (topic: any, message: any) => {
@@ -73,15 +77,16 @@ export default class MeasureMqttRouter extends MqttRouter {
                         sensorToCreate.setDeviceId(deviceByDevEui.result.id)
                         sensorToCreate.setName(jsonData.deviceEui + "-" + jsonData.name)
                         sensorToCreate.setStatus(false)
-                        sensorToCreate.setType("1")
+                        let typeId: string = this.getSensorTypeId(jsonData.type)
+                        sensorToCreate.setType(typeId)
                         let sensorInsertedId: any = await sensorLogic.storeSensor(sensorToCreate).catch((err: any) => {
                             console.log(err)
                         })
-                        console.log("*** RESULT FROM storeSensor() ***",sensorInsertedId)
+                        console.log("*** RESULT FROM storeSensor() ***", sensorInsertedId)
                         sensor = await sensorLogic.getSensorById(sensorInsertedId.result).catch((err: any) => {
                             console.log(err)
                         })
-                        console.log("*** sensorInserted ***",sensor)
+                        console.log("*** sensorInserted ***", sensor)
                         sensor = sensor.result
                     }
                     let measure: Measure = new Measure()
@@ -108,6 +113,50 @@ export default class MeasureMqttRouter extends MqttRouter {
 
         })
     }
+
+    getSensorTypeId(typeStr: String): string {
+        switch (typeStr) {
+            case 'SOIL':
+                return "1"
+            case 'HCO':
+                return "2"
+            case 'VOC':
+                return "3"
+            case 'CO':
+                return "4"
+            case 'C12':
+                return "5"
+            case 'H2':
+                return "6"
+            case 'H2S':
+                return "7"
+            case 'HCL':
+                return "8"
+            case 'HCN':
+                return "9"
+            case 'HF':
+                return "10"
+            case 'NH3':
+                return "11"
+            case 'NO2':
+                return "12"
+            case 'O3':
+                return "13"
+            case 'O2':
+                return "14"
+            case 'SO2':
+                return "15"
+            case 'TEMP':
+                return "16"
+            case 'NOISE':
+                return "17"
+            case 'EPSILON':
+                return "18"
+            default:
+                break;
+        }
+    }
+
     /**
      * Save a new measure 
      * GET postalcode/ambiental/1/#
@@ -183,10 +232,10 @@ export default class MeasureMqttRouter extends MqttRouter {
                      })
                  });*/
 
-                this.publish("deviceSync/" + jsonData.device.deviceEui, 
-                '{\n\"SYNCHRONIZED\":\"'+jsonData.device.deviceEui+'\"\n}'
+                this.publish("deviceSync/" + jsonData.device.deviceEui,
+                    '{\n\"SYNCHRONIZED\":\"' + jsonData.device.deviceEui + '\"\n}'
                 )
-                
+
             }
         });
     }

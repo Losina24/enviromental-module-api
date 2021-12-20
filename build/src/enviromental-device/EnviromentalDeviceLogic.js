@@ -5,6 +5,25 @@
  * Author: Alejandro Losa García
  * Description: Manages the logic of the enviromental device feature
  */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -19,6 +38,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const EnviromentalDeviceDatabaseHandler_1 = __importDefault(require("./EnviromentalDeviceDatabaseHandler"));
+const CouncilLogic_1 = __importDefault(require("../councils/CouncilLogic"));
+const GatewayLogic_1 = __importDefault(require("../gateways/GatewayLogic"));
+const MeasureLogic_1 = __importDefault(require("../measures/MeasureLogic"));
+const childs = __importStar(require("child_process"));
+const fs_1 = __importDefault(require("fs"));
 class EnviromentaDeviceLogic {
     // Constructor
     constructor() {
@@ -46,6 +70,324 @@ class EnviromentaDeviceLogic {
             });
         });
     }
+    getDeviceByDeviceEUI(deviceEUI) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.enviromentalDeviceDB.getDeviceByDeviceEUIFromDB(deviceEUI)
+                    .then(res => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
+    * Get the information about a enviromental device given their ID
+    * userId: N -> getDeviceById() -> EnviromentalDevice
+    *
+    * @param deviceId - ID of the enviromental device you want to get data from
+    * @returns
+    */
+    getMapJsonDataUser(userId, councilId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let spawn = childs.spawn('python3', ['../enviromental-module-api/src/map/mapa.py']);
+            let councilLogic = new CouncilLogic_1.default();
+            let gatewayLogic = new GatewayLogic_1.default();
+            let deviceLogic = new EnviromentaDeviceLogic();
+            let measureLogic = new MeasureLogic_1.default();
+            let gateways = yield gatewayLogic.getUserGateways(userId).catch(err => {
+                console.log(err);
+            });
+            console.log("****** gateways ******");
+            console.log(gateways.result);
+            let gatewaysFORMATED = [];
+            gateways.result.forEach((gateway) => {
+                let councilName;
+                if (gateway.councilId == 1) {
+                    councilName = "root council";
+                }
+                else if (gateway.councilId == 2) {
+                    councilName = "ayuntamiento gandia";
+                }
+                else if (gateway.councilId == 3) {
+                    councilName = "ayuntamiento alcoy";
+                }
+                gatewaysFORMATED.push({
+                    name: gateway.name,
+                    lat: gateway.coords[0],
+                    lng: gateway.coords[1],
+                    councilName: councilName,
+                    radius: 15
+                });
+            });
+            let devices = yield deviceLogic.getAllUserDevices(userId).catch(err => {
+                console.log(err);
+            });
+            console.log("****** devices ******");
+            console.log(devices.result);
+            let devicesFORMATED = [];
+            for (const device of devices.result) {
+                let measuresResponse = yield measureLogic.getAllMeasuresByDeviceId(device.id);
+                let measurements = [];
+                measuresResponse.result.forEach((measure) => {
+                    measurements.push({
+                        name: device.name,
+                        measurements: [{
+                                type: "o2",
+                                value: measure.value,
+                                unit: measure.unit,
+                                dangerous: measure.danger,
+                                date: measure.timestamp.toJSON().slice(0, 16).replace("T", " ")
+                            }]
+                    });
+                });
+                devicesFORMATED.push({
+                    name: device.name,
+                    measurements: measurements
+                });
+            }
+            let councils = yield councilLogic.getCouncilById(councilId).catch(err => {
+                console.log(err);
+            });
+            console.log("****** councils ******");
+            console.log(councils.result);
+            let councilsFORMATED = {
+                name: councils.result.name,
+                radius: 30,
+                lat: gatewaysFORMATED[0].lat,
+                lng: gatewaysFORMATED[0].lng
+            };
+            let formatedJsonResponse = {
+                councils: councilsFORMATED,
+                gateways: gatewaysFORMATED,
+                devices: devicesFORMATED
+            };
+            fs_1.default.writeFile('../enviromental-module-api/src/map/data.json', JSON.stringify(formatedJsonResponse), function (err) {
+                if (err) {
+                    return console.error(err);
+                }
+                console.log("File created!");
+            });
+            spawn.on('close', (code) => {
+                //console.log(`child process close all stdio with code ${code}`);
+                // send data to browser
+                console.log("***** PY CODE *****");
+                console.log(code);
+                //res.send(dataToSend)
+            });
+            console.log(formatedJsonResponse);
+            return new Promise((resolve, reject) => {
+            });
+        });
+    }
+    /**
+    * Get the information about a enviromental device given their ID
+    * userId: N -> getDeviceById() -> EnviromentalDevice
+    *
+    * @param deviceId - ID of the enviromental device you want to get data from
+    * @returns
+    */
+    getMapJsonDataRoot() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let spawn = childs.spawn('python3', ['../enviromental-module-api/src/map/mapa.py']);
+            let councilLogic = new CouncilLogic_1.default();
+            let gatewayLogic = new GatewayLogic_1.default();
+            let deviceLogic = new EnviromentaDeviceLogic();
+            let measureLogic = new MeasureLogic_1.default();
+            let gateways = yield gatewayLogic.getAllGatewaysRootPagination(9999, 1).catch(err => {
+                console.log(err);
+            });
+            console.log("****** gateways ******");
+            console.log(gateways);
+            let gatewaysFORMATED = [];
+            gateways.forEach((gateway) => {
+                let councilName;
+                if (gateway.councilId == 1) {
+                    councilName = "root council";
+                }
+                else if (gateway.councilId == 2) {
+                    councilName = "ayuntamiento gandia";
+                }
+                else if (gateway.councilId == 3) {
+                    councilName = "ayuntamiento alcoy";
+                }
+                gatewaysFORMATED.push({
+                    name: gateway.name,
+                    lat: gateway.coords[0],
+                    lng: gateway.coords[1],
+                    councilName: councilName,
+                    radius: 15
+                });
+            });
+            let devices = yield deviceLogic.getRootDevicePagination(1, 9999, 1).catch(err => {
+                console.log(err);
+            });
+            console.log("****** devices ******");
+            console.log(devices.result);
+            let devicesFORMATED = [];
+            for (const device of devices.result) {
+                let measuresResponse = yield measureLogic.getRootMeasures();
+                let measurements = [];
+                measuresResponse.result.forEach((measure) => {
+                    measurements.push({
+                        name: device.name,
+                        measurements: [{
+                                type: "o2",
+                                value: measure.value,
+                                unit: measure.unit,
+                                dangerous: measure.danger,
+                                date: measure.timestamp.toJSON().slice(0, 16).replace("T", " ")
+                            }]
+                    });
+                });
+                devicesFORMATED.push({
+                    name: device.name,
+                    measurements: measurements
+                });
+            }
+            let councils = yield councilLogic.getRootCouncilsPagination(9999, 1).catch(err => {
+                console.log(err);
+            });
+            console.log("****** councils ******");
+            console.log(councils.result);
+            let councilsFormated = [];
+            councils.result.forEach((council) => {
+                councilsFormated.push({
+                    name: council.name,
+                    radius: 30,
+                    lat: gatewaysFORMATED[0].lat,
+                    lng: gatewaysFORMATED[0].lng
+                });
+            });
+            let formatedJsonResponse = {
+                councils: councilsFormated,
+                gateways: gatewaysFORMATED,
+                devices: devicesFORMATED
+            };
+            fs_1.default.writeFile('../enviromental-module-api/src/map/data.json', JSON.stringify(formatedJsonResponse), function (err) {
+                if (err) {
+                    return console.error(err);
+                }
+                console.log("File created!");
+            });
+            spawn.on('close', (code) => {
+                //console.log(`child process close all stdio with code ${code}`);
+                // send data to browser
+                console.log("***** PY CODE *****");
+                console.log(code);
+                //res.send(dataToSend)
+            });
+            console.log(formatedJsonResponse);
+            return new Promise((resolve, reject) => {
+            });
+        });
+    }
+    /**
+* Get the information about a enviromental device given their ID
+* userId: N -> getDeviceById() -> EnviromentalDevice
+*
+* @param deviceId - ID of the enviromental device you want to get data from
+* @returns
+*/ /*
+        public async getMapJsonDataAdmin(councilId: number): Promise<EnviromentalDevice> {
+            let spawn: any = childs.spawn('python3', ['../enviromental-module-api/src/map/mapa.py'])
+    
+            let councilLogic = new CouncilLogic();
+            let gatewayLogic = new GatewayLogic();
+            let deviceLogic = new EnviromentaDeviceLogic();
+            let measureLogic = new MeasureLogic();
+    
+            let gateways: any = await gatewayLogic.getAdminGateways(councilId).catch(err => {
+                console.log(err)
+            })
+            console.log("****** gateways ******")
+            console.log(gateways)
+            let gatewaysFORMATED: any[] = []
+            gateways.result.forEach((gateway: any) => {
+                let councilName;
+                if (gateway.councilId == 1) {
+                    councilName = "root council"
+                } else if (gateway.councilId == 2) {
+                    councilName = "ayuntamiento gandia"
+                } else if (gateway.councilId == 3) {
+                    councilName = "ayuntamiento alcoy"
+                }
+                gatewaysFORMATED.push({
+                    name: gateway.name,
+                    lat: gateway.coords[0],
+                    lng: gateway.coords[1],
+                    councilName: councilName,
+                    radius: 15
+                })
+            });
+    
+            let devices: any = await deviceLogic.getAllAdminDevices(councilId).catch(err => {
+                console.log(err)
+            })
+            console.log("****** devices ******")
+            console.log(devices)
+            let devicesFORMATED: any[] = []
+            for (const device of devices.result) {
+    
+                let measuresResponse: any = await measureLogic.getAdminMeasures(adminId)
+                let measurements: any[] = []
+                measuresResponse.result.forEach((measure: any) => {
+                    measurements.push({
+                        name: device.name,
+                        measurements: [{
+                            type: "o2",
+                            value: measure.value,
+                            unit: measure.unit,
+                            dangerous: measure.danger,
+                            date: measure.timestamp.toJSON().slice(0, 16).replace("T", " ")
+                        }]
+                    })
+                });
+                devicesFORMATED.push({
+                    name: device.name,
+                    measurements: measurements
+                })
+            }
+    
+            let councils: any = await councilLogic.admin(9999, 1).catch(err => {
+                console.log(err)
+            })
+            console.log("****** councils ******")
+            console.log(councils.result)
+            let councilsFormated: any[] = []
+    
+            councils.result.forEach((council: any) => {
+                councilsFormated.push({
+                    name: council.name,
+                    radius: 30,
+                    lat: gatewaysFORMATED[0].lat,
+                    lng: gatewaysFORMATED[0].lng
+                })
+            });
+            let formatedJsonResponse = {
+                councils: councilsFormated,
+                gateways: gatewaysFORMATED,
+                devices: devicesFORMATED
+            }
+            fs.writeFile('../enviromental-module-api/src/map/data.json', JSON.stringify(formatedJsonResponse), function (err) {
+                if (err) {
+                    return console.error(err);
+                }
+                console.log("File created!");
+            });
+            spawn.on('close', (code: any) => {
+                //console.log(`child process close all stdio with code ${code}`);
+                // send data to browser
+                console.log("***** PY CODE *****")
+                console.log(code)
+                //res.send(dataToSend)
+            });
+            console.log(formatedJsonResponse)
+            return new Promise<EnviromentalDevice>((resolve, reject) => {
+            })
+        }*/
     /**
      * Get all enviroment devices of a user
      * userId: N -> getAllUserDevices() -> [EnviromentalDevice]
@@ -96,6 +438,19 @@ class EnviromentaDeviceLogic {
         return __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => {
                 this.enviromentalDeviceDB.getAllAdminDevicesCountFromDB(councilId)
+                    .then(res => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    getAllAdminDevices(councilId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.enviromentalDeviceDB.getAllAdminDevicesFromDB(councilId)
                     .then(res => {
                     resolve(res);
                 })

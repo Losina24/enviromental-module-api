@@ -60,6 +60,45 @@ class CouncilDatabaseHandler {
         });
     }
     /**
+     * Get root councils
+     * councilId: N -> getCouncilCountFromDB() -> council: Council
+     *
+     * @param pageSize - Number of councils returned by the request
+     * @param pageIndex - Index of the page that you want to receive from the request
+     * @returns
+     */
+    getRootCouncilsPaginationFromDB(pageSize, pageIndex) {
+        const firstValue = (pageSize * pageIndex) - pageSize;
+        const secondValue = (pageSize * pageIndex);
+        var query = "SELECT * FROM `council` ORDER BY `council`.`id` DESC LIMIT " + firstValue + "," + secondValue + ";";
+        return new Promise((resolve, reject) => {
+            database_1.default.getConnection((error, conn) => {
+                // If connection fails
+                if (error) {
+                    reject(Utils_1.default.generateLogicError("error getting councils", error));
+                }
+                conn.query(query, (err, results) => {
+                    conn.release();
+                    // If connection fails
+                    if (err) {
+                        reject(Utils_1.default.generateLogicError("error getting councils", err));
+                    }
+                    try {
+                        if (results) {
+                            resolve(Utils_1.default.generateLogicSuccess("councils retrieved succesfully", results));
+                        }
+                        else {
+                            resolve(Utils_1.default.generateLogicSuccessEmpty("root has no related councils"));
+                        }
+                    }
+                    catch (error) {
+                        reject(Utils_1.default.generateLogicError("error getting councils", error));
+                    }
+                });
+            });
+        });
+    }
+    /**
      * Get council information by given id
      * councilId: N -> getCouncilCountFromDB() -> council: Council
      *

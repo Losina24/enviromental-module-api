@@ -50,6 +50,54 @@ class GatewayRestRouter {
                 });
             });
         });
+        this.getAdminGateways = () => this.router.get('/admin/:adminId', (req, res) => {
+            const id = parseInt(req.params.id);
+            this.gatewayLogic.getAdminGateways(id)
+                .then(response => {
+                res.status(200).send({
+                    http: 200,
+                    status: 'OK',
+                    response: response
+                });
+            })
+                .catch(err => {
+                res.status(401).send({
+                    http: 401,
+                    status: 'Error',
+                    error: err
+                });
+            });
+        });
+        /**
+         * Get gateway information by given id
+         * GET /gateway/:id
+         *
+         * Response: {
+                "http": 200,
+                "status": "OK",
+                "response": {
+                }
+         * }
+         *
+         */
+        this.getGatewayByMacAndAdminId = () => this.router.get('/mac/:mac', (req, res) => {
+            const mac = req.params.mac;
+            this.gatewayLogic.getGatewayByMacAndAdminId(mac)
+                .then(response => {
+                res.status(200).send({
+                    http: 200,
+                    status: 'OK',
+                    response: response
+                });
+            })
+                .catch(err => {
+                res.status(401).send({
+                    http: 401,
+                    status: 'Error',
+                    error: err
+                });
+            });
+        });
         /**
          * Get user related gateways
          * GET /gateway/user/:id
@@ -116,7 +164,7 @@ class GatewayRestRouter {
          * }
          *
          */
-        this.getAdminGatewaysCount = () => this.router.get('/count/admin/:councilId', (req, res) => {
+        this.getAdminGatewaysCount = () => this.router.get('/count/council/:councilId', (req, res) => {
             const councilId = parseInt(req.params.councilId);
             this.gatewayLogic.getAdminGatewaysCount(councilId)
                 .then(response => {
@@ -142,6 +190,7 @@ class GatewayRestRouter {
         */
         this.getRootGatewaysCount = () => this.router.get('/count/root/:id', (req, res) => {
             const id = parseInt(req.params.userId);
+            console.log("getRootgateways");
             this.gatewayLogic.getRootGatewaysCount()
                 .then(response => {
                 // Sending the response            
@@ -185,7 +234,7 @@ class GatewayRestRouter {
         });
         /**
          * Get all council related gateways with pagination
-         * GET /gateway/fromCouncil/list/:councilId/:pageSize/:pageIndex
+         * GET /gateway/council/:councilId/:pageSize/:pageIndex
          *
          * Response: {
                 "http": 200,
@@ -195,11 +244,42 @@ class GatewayRestRouter {
          * }
          *
          */
-        this.getCouncilGatewayPagination = () => this.router.get('/fromCouncil/list/:councilId/:pageSize/:pageIndex', (req, res) => {
+        this.getCouncilGatewayPagination = () => this.router.get('/council/:councilId/:pageSize/:pageIndex', (req, res) => {
             const councilId = parseInt(req.params.councilId);
             const pageSize = parseInt(req.params.pageSize);
             const pageIndex = parseInt(req.params.pageIndex);
             this.gatewayLogic.getCouncilGatewayPagination(councilId, pageSize, pageIndex)
+                .then(response => {
+                res.status(200).send({
+                    http: 200,
+                    status: 'OK',
+                    response: response
+                });
+            })
+                .catch(err => {
+                res.status(401).send({
+                    http: 401,
+                    status: 'Error',
+                    error: err
+                });
+            });
+        });
+        /**
+         * Get all council related gateways with pagination
+         * GET /gateway/root/:pageSize/:pageIndex
+         *
+         * Response: {
+                "http": 200,
+                "status": "OK",
+                "response": {
+                }
+         * }
+         *
+         */
+        this.getAllGatewaysRootPagination = () => this.router.get('/root/:pageSize/:pageIndex', (req, res) => {
+            const pageSize = parseInt(req.params.pageSize);
+            const pageIndex = parseInt(req.params.pageIndex);
+            this.gatewayLogic.getAllGatewaysRootPagination(pageSize, pageIndex)
                 .then(response => {
                 res.status(200).send({
                     http: 200,
@@ -330,7 +410,7 @@ class GatewayRestRouter {
         this.editGateway = () => this.router.put('/:id', (req, res) => {
             const gatewayId = parseInt(req.params.id);
             let gateway = new Gateway_1.default();
-            gateway.setId(req.body.id);
+            gateway.setId(gatewayId);
             gateway.setMac(req.body.mac);
             gateway.setName(req.body.name);
             gateway.setCouncilId(req.body.councilId);
@@ -415,9 +495,11 @@ class GatewayRestRouter {
             });
         });
         this.getGatewayById();
+        this.getGatewayByMacAndAdminId();
         this.getUserGateways();
         this.getUserGatewaysCount();
         this.getAdminGatewaysCount();
+        this.getAdminGateways();
         this.getRootGatewaysCount();
         this.getAllCouncilGateways();
         this.getCouncilGatewayPagination();
@@ -427,6 +509,7 @@ class GatewayRestRouter {
         this.addNetworkServerToGateway();
         this.removeNetworkServerFromGateway();
         this.removeGateway();
+        this.getAllGatewaysRootPagination();
     }
 }
 const sensorRestRouter = new GatewayRestRouter();

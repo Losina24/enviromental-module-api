@@ -111,6 +111,51 @@ class UserLogic {
         });
     }
     /**
+     * Get all users paginated
+     * pageSize: N, pageIndex: N -> getAllUsersPaginated() -> users: [User]
+     *
+     * @param pageSize - Number of network servers returned by request
+     * @param pageIndex - Index of the page that you want to receive from the request
+     * @returns
+     */
+    getAllUsersPaginated(pageSize, pageIndex) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.userDB.getAllUsersPaginatedFromDB(pageSize, pageIndex)
+                    .then(res => {
+                    console.log("logicaRes");
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
+     * Get all users paginated
+     * councilId: N, pageSize: N, pageIndex: N -> getCouncilUsersPaginated() -> users: [User]
+     *
+     * @param councilId - id of the council we want to retrieve the users from
+     * @param pageSize - Number of network servers returned by request
+     * @param pageIndex - Index of the page that you want to receive from the request
+     * @returns
+     */
+    getCouncilUsersPaginated(councilId, pageSize, pageIndex) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.userDB.getCouncilUsersPaginatedFromDB(councilId, pageSize, pageIndex)
+                    .then(res => {
+                    console.log("logicaRes");
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
      * Get all users from a council (* COUNT *)
      * councilId: N -> getCouncilUsersCount() -> count: N
      *

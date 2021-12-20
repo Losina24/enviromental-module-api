@@ -87,6 +87,49 @@ class NetworkServerLogic {
         });
     }
     /**
+     * Get all network servers paginated
+     * pageSize: N, pageIndex: N -> getAllNetworkServersPaginated() -> networkServers: NetworkServer[]
+     *
+     * @param pageSize - Number of network servers returned by request
+     * @param pageIndex - Index of the page that you want to receive from the request
+     * @returns
+     */
+    getAllNetworkServersPaginated(pageSize, pageIndex) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.networkServerDB.getAllNetworkServersPaginatedFromDB(pageSize, pageIndex)
+                    .then((res) => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
+     * Get all network servers paginated
+     * pageSize: N, pageIndex: N -> getCouncilNetworkServersPaginated() -> networkServers: NetworkServer[]
+     *
+     * @param councilId - id of the council we want to retrieve the network servers from
+     * @param pageSize - Number of network servers returned by request
+     * @param pageIndex - Index of the page that you want to receive from the request
+     * @returns
+     */
+    getCouncilNetworkServersPaginated(councilId, pageSize, pageIndex) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.networkServerDB.getCouncilNetworkServersPaginatedFromDB(councilId, pageSize, pageIndex)
+                    .then((res) => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
      * Get admin network servers ( * COUNT * )
      * councilId: N -> getAdminNetworkServerCount() -> networkServers: NetworkServer[]
      *

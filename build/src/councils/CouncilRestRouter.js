@@ -77,6 +77,31 @@ class CouncilRestRouter {
             });
         });
         /**
+         * Get user information by given id
+         * GET /count/root/:id
+         *
+         * Response: {
+                "http": 200,
+                "status": "OK",
+                "response": {
+                }
+         * }
+         *
+         */
+        this.getRootCouncilsPagination = () => this.router.get('/pagination/:pageSize/:pageIndex', (req, res) => {
+            const pageSize = parseInt(req.params.pageSize);
+            const pageIndex = parseInt(req.params.pageIndex);
+            this.councilLogic.getRootCouncilsPagination(pageSize, pageIndex)
+                .then(response => {
+                // Sending the response            
+                Utils_1.default.sendRestResponse(response, res);
+            })
+                .catch(err => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
+            });
+        });
+        /**
          * Create a new user
          * POST /users/
          *
@@ -179,6 +204,7 @@ class CouncilRestRouter {
         this.editCouncil();
         this.removeCouncil();
         this.getCouncilCount();
+        this.getRootCouncilsPagination();
     }
 }
 const sensorRestRouter = new CouncilRestRouter();

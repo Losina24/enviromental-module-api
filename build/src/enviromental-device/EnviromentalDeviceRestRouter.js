@@ -47,9 +47,116 @@ class EnviromentalDeviceRestRouter {
          * }
          *
          */
+        this.getMapJsonDataUser = () => this.router.get('/map/user/:userId/:councilId', (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const userId = parseInt(req.params.userId);
+            const councilId = parseInt(req.params.councilId);
+            yield this.enviromentalDeviceLogic.getMapJsonDataUser(userId, councilId)
+                .then(response => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(response, res);
+            })
+                .catch(err => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
+            });
+        }));
+        /**
+         * Get the information about a enviromental device
+         * GET enviromental/devices /device/:id
+         *
+         * Response: {
+         *  "http": 200,
+         *  "status": "OK",
+         *  "response": {
+         *      "id": 32,
+         *      "name": "Device 32",
+         *      "mac": "2c549188c9e3",
+         *      "gatewayId": 6,
+         *      "sensors": [100, 101, 102, 103, 104],
+         *      "coords": [21.2222, -34.3333],
+         *      "status": true
+         *  }
+         * }
+         *
+         */ /*
+       public getMapJsonDataAdmin = () => this.router.get('/map/admin/:councilId', async (req: Request, res: Response) => {
+           const councilId = parseInt(req.params.councilId);
+   
+   
+           await this.enviromentalDeviceLogic.getMapJsonDataAdmin(councilId)
+               .then(response => {
+                   // Sending the response
+                   Utils.sendRestResponse(response, res)
+               })
+               .catch(err => {
+                   // Sending the response
+                   Utils.sendRestResponse(err, res)
+               })
+       })*/
+        /**
+         * Get the information about a enviromental device
+         * GET enviromental/devices /device/:id
+         *
+         * Response: {
+         *  "http": 200,
+         *  "status": "OK",
+         *  "response": {
+         *      "id": 32,
+         *      "name": "Device 32",
+         *      "mac": "2c549188c9e3",
+         *      "gatewayId": 6,
+         *      "sensors": [100, 101, 102, 103, 104],
+         *      "coords": [21.2222, -34.3333],
+         *      "status": true
+         *  }
+         * }
+         *
+         */
+        this.getMapJsonDataRoot = () => this.router.get('/map/root/', (req, res) => __awaiter(this, void 0, void 0, function* () {
+            yield this.enviromentalDeviceLogic.getMapJsonDataRoot()
+                .then(response => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(response, res);
+            })
+                .catch(err => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
+            });
+        }));
+        /**
+         * Get the information about a enviromental device
+         * GET enviromental/devices /device/:id
+         *
+         * Response: {
+         *  "http": 200,
+         *  "status": "OK",
+         *  "response": {
+         *      "id": 32,
+         *      "name": "Device 32",
+         *      "mac": "2c549188c9e3",
+         *      "gatewayId": 6,
+         *      "sensors": [100, 101, 102, 103, 104],
+         *      "coords": [21.2222, -34.3333],
+         *      "status": true
+         *  }
+         * }
+         *
+         */
         this.getDeviceById = () => this.router.get('/:id', (req, res) => __awaiter(this, void 0, void 0, function* () {
             const id = parseInt(req.params.id);
             yield this.enviromentalDeviceLogic.getDeviceById(id)
+                .then(response => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(response, res);
+            })
+                .catch(err => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
+            });
+        }));
+        this.getDeviceByDeviceEUI = () => this.router.get('/deviceEUI/:deveui', (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const deveui = req.params.deveui;
+            yield this.enviromentalDeviceLogic.getDeviceByDeviceEUI(deveui)
                 .then(response => {
                 // Sending the response
                 Utils_1.default.sendRestResponse(response, res);
@@ -143,6 +250,18 @@ class EnviromentalDeviceRestRouter {
         this.getAllAdminDevicesCount = () => this.router.get('/count/council/:councilId', (req, res) => {
             const councilId = parseInt(req.params.councilId);
             this.enviromentalDeviceLogic.getAllAdminDevicesCount(councilId)
+                .then(response => {
+                // Sending the response            
+                Utils_1.default.sendRestResponse(response, res);
+            })
+                .catch(err => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
+            });
+        });
+        this.getAllAdminDevices = () => this.router.get('/council/:councilId', (req, res) => {
+            const councilId = parseInt(req.params.councilId);
+            this.enviromentalDeviceLogic.getAllAdminDevices(councilId)
                 .then(response => {
                 // Sending the response            
                 Utils_1.default.sendRestResponse(response, res);
@@ -439,9 +558,11 @@ class EnviromentalDeviceRestRouter {
             });
         }));
         this.getDeviceById();
+        this.getDeviceByDeviceEUI();
         this.getAllUserDevices();
         this.getAllUserDevicesCount();
         this.getAllAdminDevicesCount();
+        this.getAllAdminDevices();
         this.getAllRootDevicesCount();
         this.getUserDevicePagination();
         this.getAllCouncilDevices();
@@ -451,6 +572,9 @@ class EnviromentalDeviceRestRouter {
         this.getRootDevicePagination();
         this.getCouncilDevicePagination();
         this.removeDevice();
+        this.getMapJsonDataUser();
+        //this.getMapJsonDataAdmin();
+        this.getMapJsonDataRoot();
     }
 }
 const enviromentalDeviceRestRouter = new EnviromentalDeviceRestRouter();

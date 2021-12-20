@@ -17,7 +17,7 @@ class Sensor {
      * @returns id: sensor ID
      */
     getId() {
-        return this._id;
+        return this.id;
     }
     /**
      * Sets the id of the sensor
@@ -25,7 +25,7 @@ class Sensor {
      * @param value: new sensor id
      */
     setId(value) {
-        this._id = value;
+        this.id = value;
     }
     /**
      * Gets the ID of the device
@@ -33,7 +33,7 @@ class Sensor {
      * @returns id: device ID
      */
     getDeviceId() {
-        return this._deviceId;
+        return this.deviceId;
     }
     /**
      * Sets the id of the device
@@ -41,7 +41,7 @@ class Sensor {
      * @param value: new device id
      */
     setDeviceId(value) {
-        this._deviceId = value;
+        this.deviceId = value;
     }
     /**
      * Gets the ID of the sensor
@@ -49,7 +49,7 @@ class Sensor {
      * @returns _deviceEUI: device EUI identifier
      */
     getDeviceEUI() {
-        return this._deviceEUI;
+        return this.deviceEUI;
     }
     /**
      * Sets the id of the sensor
@@ -57,7 +57,7 @@ class Sensor {
      * @param value: new device EUI
      */
     setDeviceEUI(value) {
-        this._deviceEUI = value;
+        this.deviceEUI = value;
     }
     /**
      * Gets the ID of the sensor
@@ -65,7 +65,7 @@ class Sensor {
      * @returns name: name of the device
      */
     getName() {
-        return this._name;
+        return this.name;
     }
     /**
      * Sets the id of the sensor
@@ -73,7 +73,7 @@ class Sensor {
      * @param value: new name for the device
      */
     setName(value) {
-        this._name = value;
+        this.name = value;
     }
     /**
      * Gets the ID of the sensor
@@ -81,7 +81,7 @@ class Sensor {
      * @returns _type: sensor type
      */
     getType() {
-        return this._type;
+        return this.type;
     }
     /**
      * Sets the type of the sensor
@@ -89,7 +89,7 @@ class Sensor {
      * @param value: new sensor type
      */
     setType(value) {
-        this._type = value;
+        this.type = value;
     }
     /**
      * Gets the sensor status
@@ -97,7 +97,7 @@ class Sensor {
      * @returns _status: sensor status
      */
     getStatus() {
-        return this._status;
+        return this.status;
     }
     /**
      * Sets the id of the sensor
@@ -105,7 +105,7 @@ class Sensor {
      * @param value: new status value
      */
     setStatus(value) {
-        this._status = value;
+        this.status = value;
     }
 }
 exports.default = Sensor;

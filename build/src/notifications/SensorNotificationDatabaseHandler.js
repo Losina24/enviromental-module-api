@@ -87,7 +87,6 @@ class SensorNotificationDatabaseHandler {
             var query = "SELECT COUNT(*) as count FROM `gateway` INNER JOIN device ON device.gateway_id = gateway.id INNER JOIN " +
                 "sensor ON sensor.device_id=device.id INNER JOIN notification ON sensor.id=notification.sensor_id WHERE gateway.council_id="
                 + councilId + ";";
-            console.log(query);
             return new Promise((resolve, reject) => {
                 database_1.default.getConnection((error, conn) => {
                     // If connection fails
@@ -110,6 +109,91 @@ class SensorNotificationDatabaseHandler {
                         }
                         catch (error) {
                             reject(Utils_1.default.generateLogicError("error getting user notifications count", error));
+                        }
+                    });
+                });
+            });
+        });
+    }
+    /**
+     * Get the user related notifications
+     * userId: N -> getNotificationsByUserIdFromDB() -> notification: SensorNotification[]
+     *
+     * @param userId - the id of the user you want to get the notifications from
+     * @returns
+     */
+    getAdminSensorNotificationsPaginatedFromDB(councilId, pageSize, pageIndex) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const firstValue = (pageSize * pageIndex) - pageSize;
+            const secondValue = (pageSize * pageIndex);
+            var query = "SELECT * FROM `gateway` INNER JOIN device ON device.gateway_id = gateway.id INNER JOIN " +
+                "sensor ON sensor.device_id=device.id INNER JOIN notification ON sensor.id=notification.sensor_id WHERE gateway.council_id="
+                + councilId + " ORDER BY notification.id DESC LIMIT " + firstValue + ', ' + secondValue;
+            return new Promise((resolve, reject) => {
+                database_1.default.getConnection((error, conn) => {
+                    // If connection fails
+                    if (error) {
+                        reject(Utils_1.default.generateLogicError("error getting admin notifications", error));
+                    }
+                    conn.query(query, (err, results) => {
+                        conn.release();
+                        // If connection fails
+                        if (err) {
+                            reject(Utils_1.default.generateLogicError("error getting admin notifications", err));
+                        }
+                        try {
+                            if (results) {
+                                resolve(Utils_1.default.generateLogicSuccess("admin notifications retrieved succesfully", results));
+                            }
+                            else {
+                                resolve(Utils_1.default.generateLogicSuccessEmpty("admin notifications couldnt be retrieved"));
+                            }
+                        }
+                        catch (error) {
+                            reject(Utils_1.default.generateLogicError("error getting admin notifications", error));
+                        }
+                    });
+                });
+            });
+        });
+    }
+    /**
+     * Get the user related notifications
+     * userId: N -> getNotificationsByUserIdFromDB() -> notification: SensorNotification[]
+     *
+     * @param userId - the id of the user you want to get the notifications from
+     * @returns
+     */
+    getUserSensorNotificationsPaginatedFromDB(userId, pageSize, pageIndex) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const firstValue = (pageSize * pageIndex) - pageSize;
+            const secondValue = (pageSize * pageIndex);
+            var query = "SELECT * FROM `user_device` INNER JOIN `device` ON" +
+                " `user_device`.`device_id` = `device`.`id` INNER JOIN `sensor` ON `device`.`id` = `sensor`.`device_id`" +
+                " INNER JOIN notification ON sensor.id=notification.sensor_id WHERE `user_device`.`user_id` = " + userId +
+                " ORDER BY notification.id DESC LIMIT " + firstValue + ', ' + secondValue;
+            return new Promise((resolve, reject) => {
+                database_1.default.getConnection((error, conn) => {
+                    // If connection fails
+                    if (error) {
+                        reject(Utils_1.default.generateLogicError("error getting user notifications", error));
+                    }
+                    conn.query(query, (err, results) => {
+                        conn.release();
+                        // If connection fails
+                        if (err) {
+                            reject(Utils_1.default.generateLogicError("error getting user notifications", err));
+                        }
+                        try {
+                            if (results) {
+                                resolve(Utils_1.default.generateLogicSuccess("user notifications retrieved succesfully", results));
+                            }
+                            else {
+                                resolve(Utils_1.default.generateLogicSuccessEmpty("user notifications couldnt be retrieved"));
+                            }
+                        }
+                        catch (error) {
+                            reject(Utils_1.default.generateLogicError("error getting user notifications", error));
                         }
                     });
                 });
@@ -150,6 +234,46 @@ class SensorNotificationDatabaseHandler {
                         }
                         catch (error) {
                             reject(Utils_1.default.generateLogicError("error getting user notifications count", error));
+                        }
+                    });
+                });
+            });
+        });
+    }
+    /**
+     * Get the user related notifications
+     * userId: N -> getNotificationsByUserIdFromDB() -> notification: SensorNotification[]
+     *
+     * @param userId - the id of the user you want to get the notifications from
+     * @returns
+     */
+    getRootSensorNotificationsPaginatedFromDB(pageSize, pageIndex) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const firstValue = (pageSize * pageIndex) - pageSize;
+            const secondValue = (pageSize * pageIndex);
+            var query = "SELECT * FROM notification ORDER BY id DESC LIMIT " + firstValue + ', ' + secondValue;
+            return new Promise((resolve, reject) => {
+                database_1.default.getConnection((error, conn) => {
+                    // If connection fails
+                    if (error) {
+                        reject(Utils_1.default.generateLogicError("error getting root notifications", error));
+                    }
+                    conn.query(query, (err, results) => {
+                        conn.release();
+                        // If connection fails
+                        if (err) {
+                            reject(Utils_1.default.generateLogicError("error getting root notifications", err));
+                        }
+                        try {
+                            if (results) {
+                                resolve(Utils_1.default.generateLogicSuccess("root notifications retrieved succesfully", results));
+                            }
+                            else {
+                                resolve(Utils_1.default.generateLogicSuccessEmpty("root notifications couldnt be retrieved"));
+                            }
+                        }
+                        catch (error) {
+                            reject(Utils_1.default.generateLogicError("error getting root notifications", error));
                         }
                     });
                 });
@@ -338,7 +462,7 @@ class SensorNotificationDatabaseHandler {
                     if (err) {
                         reject();
                     }
-                    resolve();
+                    resolve(Utils_1.default.generateLogicSuccess("notification removed succesfully", results));
                 });
             });
         });

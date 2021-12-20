@@ -48,6 +48,86 @@ class EnviromentalDeviceDatabaseHandler {
     getDeviceByIdFromDB(deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
             const query = "SELECT * FROM device WHERE id = " + deviceId;
+            return new Promise((resolve, reject) => {
+                database_1.default.getConnection((error, conn) => {
+                    // If connection fails
+                    if (error) {
+                        reject(Utils_1.default.generateLogicError("error getting device", error));
+                    }
+                    conn.query(query, (err, results) => {
+                        conn.release();
+                        // If connection fails
+                        if (err) {
+                            reject(Utils_1.default.generateLogicError("error getting device", err));
+                        }
+                        try {
+                            if (results.length != 0) {
+                                let device = new EnviromentalDevice_1.default();
+                                device.setId(results[0].id);
+                                device.setName(results[0].name);
+                                device.setDeviceEUI(results[0].device_EUI);
+                                device.setGatewayId(results[0].gateway_id);
+                                device.setCoords([results[0].latitude, results[0].longitude]);
+                                device.setStatus(results[0].status);
+                                resolve(Utils_1.default.generateLogicSuccess("device found with the given id", device));
+                            }
+                        }
+                        catch (error) {
+                            reject(Utils_1.default.generateLogicError("error getting device", error));
+                        }
+                        resolve(Utils_1.default.generateLogicSuccessEmpty("no device found with the given id"));
+                    });
+                });
+            });
+        });
+    }
+    getDeviceByDeviceEUIFromDB(deviceEUI) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const query = "SELECT * FROM device WHERE device_EUI = '" + deviceEUI + "'";
+            console.log(query);
+            return new Promise((resolve, reject) => {
+                database_1.default.getConnection((error, conn) => {
+                    // If connection fails
+                    if (error) {
+                        reject(Utils_1.default.generateLogicError("error getting device", error));
+                    }
+                    conn.query(query, (err, results) => {
+                        conn.release();
+                        // If connection fails
+                        if (err) {
+                            reject(Utils_1.default.generateLogicError("error getting device", err));
+                        }
+                        try {
+                            if (results.length != 0) {
+                                let device = new EnviromentalDevice_1.default();
+                                device.setId(results[0].id);
+                                device.setName(results[0].name);
+                                device.setDeviceEUI(results[0].device_EUI);
+                                device.setGatewayId(results[0].gateway_id);
+                                device.setCoords([results[0].latitude, results[0].longitude]);
+                                device.setStatus(results[0].status);
+                                resolve(Utils_1.default.generateLogicSuccess("device found with the given id", device));
+                            }
+                        }
+                        catch (error) {
+                            reject(Utils_1.default.generateLogicError("error getting device", error));
+                        }
+                        resolve(Utils_1.default.generateLogicSuccessEmpty("no device found with the given id"));
+                    });
+                });
+            });
+        });
+    }
+    /**
+   * Get the information about a enviromental device given their ID from the database
+   * deviceId: N -> getDeviceByIdFromDB() -> EnviromentalDevice
+   *
+   * @param userId - user id we wantto retrieve info from
+   * @returns
+   */
+    getMapJsonDataUserFromDB(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const query = "SELECT * FROM device WHERE id = ";
             console.log(query);
             return new Promise((resolve, reject) => {
                 database_1.default.getConnection((error, conn) => {
@@ -190,6 +270,37 @@ class EnviromentalDeviceDatabaseHandler {
                     }
                     catch (error) {
                         reject(Utils_1.default.generateLogicError("error getting admin user devices count", err));
+                    }
+                });
+            });
+        });
+    }
+    getAllAdminDevicesFromDB(councilId) {
+        var query = "SELECT * FROM `gateway` INNER JOIN device ON device.gateway_id = gateway.id  WHERE gateway.council_id=" + councilId + ";";
+        return new Promise((resolve, reject) => {
+            database_1.default.getConnection((error, conn) => {
+                // If connection fails
+                if (error) {
+                    reject(Utils_1.default.generateLogicError("error getting admin user devices", error));
+                }
+                conn.query(query, (err, results) => {
+                    conn.release();
+                    // If connection fails
+                    if (err) {
+                        reject(Utils_1.default.generateLogicError("error getting admin user devices", err));
+                    }
+                    try {
+                        console.log("results.count");
+                        console.log(results);
+                        if (results) {
+                            resolve(Utils_1.default.generateLogicSuccess("admin user devices retrieved succesfully", results));
+                        }
+                        else {
+                            resolve(Utils_1.default.generateLogicSuccessEmpty("admin user has no related devices"));
+                        }
+                    }
+                    catch (error) {
+                        reject(Utils_1.default.generateLogicError("error getting admin user devices", err));
                     }
                 });
             });

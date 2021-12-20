@@ -151,6 +151,70 @@ class NetworkServerDatabaseHandler {
         });
     }
     /**
+     * Get all network servers paginated
+     * pageSize: N, pageIndex: N -> getUserNetworkServersByIdCountFromDB() -> networkServers: NetworkServer[]
+     *
+     * @param pageSize - Number of gateways returned by request
+     * @param pageIndex - Index of the page that you want to receive from the request
+     * @returns
+     */
+    getAllNetworkServersPaginatedFromDB(pageSize, pageIndex) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const firstValue = (pageSize * pageIndex) - pageSize;
+            const secondValue = (pageSize * pageIndex);
+            var query = "SELECT * FROM `network_server` ORDER BY id DESC LIMIT " + firstValue + ', ' + secondValue;
+            return new Promise((resolve, reject) => {
+                database_1.default.getConnection((error, conn) => {
+                    // If connection fails
+                    if (error) {
+                        reject(Utils_1.default.generateLogicError("error getting all network servers", error));
+                    }
+                    conn.query(query, (err, results) => {
+                        conn.release();
+                        // If connection fails
+                        if (err) {
+                            reject(Utils_1.default.generateLogicError("error getting all network servers", err));
+                        }
+                        try {
+                            if (results) {
+                                resolve(Utils_1.default.generateLogicSuccess("all network servers retrieved succesfully", results));
+                            }
+                            else {
+                                resolve(Utils_1.default.generateLogicSuccessEmpty("no network servers found"));
+                            }
+                        }
+                        catch (error) {
+                            reject(Utils_1.default.generateLogicError("error getting all network servers", error));
+                        }
+                    });
+                });
+            });
+        });
+    }
+    /**
+     * Get all netwo
+                    conn.release();
+
+                    // If connection fails
+                    if (err) {
+                        reject(Utils.generateLogicError("error getting council network servers", err))
+                    }
+                    try {
+                        if (results) {
+                            resolve(Utils.generateLogicSuccess("council network servers retrieved succesfully", results));
+                        } else {
+                            resolve(Utils.generateLogicSuccessEmpty("no council network servers found"));
+                        }
+                    } catch (error) {
+                        reject(Utils.generateLogicError("error getting council network servers", error))
+                    }
+                })
+
+            })
+        })
+    }
+
+    /**
          * Get admin network servers ( * COUNT * )
          * councilId: N -> getAdminNetworkServersFromDB() -> networkServers: NetworkServer[]
          *
@@ -183,6 +247,51 @@ class NetworkServerDatabaseHandler {
                         }
                         catch (error) {
                             reject(Utils_1.default.generateLogicError("error getting admin network servers count", error));
+                        }
+                    });
+                });
+            });
+        });
+    }
+    /**
+     * Get all network servers paginated
+     * pageSize: N, pageIndex: N -> getCouncilNetworkServersPaginatedFromDB() -> networkServers: NetworkServer[]
+     *
+     * @param councilId - id of the council we want to retrieve the network servers from
+     * @param pageSize - Number of gateways returned by request
+     * @param pageIndex - Index of the page that you want to receive from the request
+     * @returns
+     */
+    getCouncilNetworkServersPaginatedFromDB(councilId, pageSize, pageIndex) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const firstValue = (pageSize * pageIndex) - pageSize;
+            const secondValue = (pageSize * pageIndex);
+            var query = "SELECT COUNT(*) as count FROM `gateway` INNER JOIN gateway_network_server ON gateway_network_server.gateway_id=gateway.id INNER" +
+                " JOIN network_server ON network_server.id=gateway_network_server.network_server_id WHERE gateway.council_id="
+                + councilId + " ORDER BY id DESC LIMIT " + firstValue + ', ' + secondValue;
+            ;
+            return new Promise((resolve, reject) => {
+                database_1.default.getConnection((error, conn) => {
+                    // If connection fails
+                    if (error) {
+                        reject(Utils_1.default.generateLogicError("error getting council network servers", error));
+                    }
+                    conn.query(query, (err, results) => {
+                        conn.release();
+                        // If connection fails
+                        if (err) {
+                            reject(Utils_1.default.generateLogicError("error getting council network servers", err));
+                        }
+                        try {
+                            if (results) {
+                                resolve(Utils_1.default.generateLogicSuccess("council network servers retrieved succesfully", results));
+                            }
+                            else {
+                                resolve(Utils_1.default.generateLogicSuccessEmpty("no council network servers found"));
+                            }
+                        }
+                        catch (error) {
+                            reject(Utils_1.default.generateLogicError("error getting council network servers", error));
                         }
                     });
                 });

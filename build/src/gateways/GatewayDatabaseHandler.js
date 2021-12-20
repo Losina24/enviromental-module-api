@@ -65,6 +65,39 @@ class GatewayDatabaseHandler {
         });
     }
     /**
+     * Get gateway information by given mac
+     * gatewayMac: N -> getGatewayByMacFromDB() -> gateway: Gateway
+     *
+     * @param mac - Mac of the gateway you want to get data from
+     * @returns
+     */
+    getGatewayByMacAndAdminIdFromDB(mac) {
+        var query = "SELECT gateway.id as gatewayId, user.id as adminId FROM `gateway` INNER JOIN user ON user.council_id=gateway.council_id WHERE mac = '" + mac + "';";
+        console.log(query);
+        return new Promise((resolve, reject) => {
+            database_1.default.getConnection((error, conn) => {
+                // If connection fails
+                if (error) {
+                    reject();
+                }
+                conn.query(query, (err, results) => {
+                    conn.release();
+                    // If connection fails
+                    if (err) {
+                        reject();
+                    }
+                    console.log("gatewayByMac", results);
+                    try {
+                        resolve({ gatewayId: results[0].gatewayId, adminId: results[0].adminId });
+                    }
+                    catch (error) {
+                        reject(error);
+                    }
+                });
+            });
+        });
+    }
+    /**
      * Get user related gateways
      * gatewayId: N -> getUserGatewaysFromDB() -> count: N
      *
@@ -89,7 +122,7 @@ class GatewayDatabaseHandler {
                     if (results && results.length != 0) {
                         gateways = this.queryResultsToGateways(results);
                     }
-                    resolve(gateways);
+                    resolve(Utils_1.default.generateLogicSuccess("user gateways retrieved succesfully", gateways));
                 });
             });
         });
@@ -193,6 +226,40 @@ class GatewayDatabaseHandler {
         });
     }
     /**
+         * Get all council related gateways with pagination
+         * councilId: N, pageSize: N, pageIndex: N -> getCouncilGatewayPaginationFromDB() -> gateways: Gateway[]
+         *
+         * @param pageSize - Number of gateways returned by request
+         * @param pageIndex - Index of the page that you want to receive from the request
+         * @returns
+         */
+    getAllGatewaysRootPaginationFromDB(pageSize, pageIndex) {
+        const firstValue = (pageSize * pageIndex) - pageSize;
+        const secondValue = (pageSize * pageIndex);
+        var query = "SELECT * FROM `gateway` ORDER BY gateway.id DESC LIMIT " + firstValue + ', ' + secondValue;
+        console.log(query);
+        return new Promise((resolve, reject) => {
+            database_1.default.getConnection((error, conn) => {
+                // If connection fails
+                if (error) {
+                    reject();
+                }
+                conn.query(query, (err, results) => {
+                    conn.release();
+                    // If connection fails
+                    if (err) {
+                        reject();
+                    }
+                    let gateways;
+                    if (results.length != 0) {
+                        gateways = this.queryResultsToGateways(results);
+                    }
+                    resolve(gateways);
+                });
+            });
+        });
+    }
+    /**
      * Get network server related gateways
      * networkServerId: N -> getGatewaysFromNetworkServerInDB() -> gateways: Gateway[]
      *
@@ -260,6 +327,42 @@ class GatewayDatabaseHandler {
         });
     }
     /**
+     * Get council related gateways count
+     * councilId: N -> getGatewaysCountAdmin() -> gateways: Gateway[]
+     *
+     * @param councilId - ID of the council we want to get the gateways from
+     * @returns
+     */
+    getGatewaysAdmin(councilId) {
+        var query = "SELECT * FROM `gateway` WHERE council_id = " + councilId;
+        return new Promise((resolve, reject) => {
+            database_1.default.getConnection((error, conn) => {
+                // If connection fails
+                if (error) {
+                    reject(Utils_1.default.generateLogicError("error getting admin gateways", error));
+                }
+                conn.query(query, (err, results) => {
+                    conn.release();
+                    // If connection fails
+                    if (err) {
+                        reject(Utils_1.default.generateLogicError("error getting admin gateways", err));
+                    }
+                    try {
+                        if (results) {
+                            resolve(Utils_1.default.generateLogicSuccess("admin gateways retrieved succesfully", results));
+                        }
+                        else {
+                            resolve(Utils_1.default.generateLogicSuccessEmpty("admin has no related gateways"));
+                        }
+                    }
+                    catch (error) {
+                        reject(Utils_1.default.generateLogicError("error getting admin gateways", error));
+                    }
+                });
+            });
+        });
+    }
+    /**
      * Get root related gateways count
      * networkServerId: N -> getGatewaysFromNetworkServerInDB() -> gateways: Gateway[]
      *
@@ -303,7 +406,7 @@ class GatewayDatabaseHandler {
      */
     storeGatewayInDB(gateway) {
         var query = "INSERT INTO `gateway` (`mac`, `council_id`, `name`, `latitude`, `longitude`, `status`) VALUES ('" + gateway.getMac() +
-            "', " + gateway.getCouncilId() + ", '" + gateway.getName() + "', '" + gateway.getCoords()[0] + "', '" + gateway.getCouncilId()[1] + "', " +
+            "', " + gateway.getCouncilId() + ", '" + gateway.getName() + "', '" + gateway.getCoords()[0] + "', '" + gateway.getCoords()[1] + "', " +
             gateway.getStatus() + ")\n";
         console.log(query);
         return new Promise((resolve, reject) => {

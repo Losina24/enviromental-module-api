@@ -62,6 +62,50 @@ class NetworkServerRestRouter {
             });
         });
         /**
+         * Get all network servers paginated
+         * pageSize: N, pageIndex: N -> getAllNetworkServersPaginated() -> networkServers: NetworkServer[]
+         *
+         * @param pageSize - Number of network servers returned by request
+         * @param pageIndex - Index of the page that you want to receive from the request
+         * @returns
+         */
+        this.getAllNetworkServersPaginated = () => this.router.get('/root/:pageSize/:pageIndex', (req, res) => {
+            const pageSize = parseInt(req.params.pageSize);
+            const pageIndex = parseInt(req.params.pageIndex);
+            this.networkServerLogic.getAllNetworkServersPaginated(pageSize, pageIndex)
+                .then(response => {
+                // Sending the response            
+                Utils_1.default.sendRestResponse(response, res);
+            })
+                .catch(err => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
+            });
+        });
+        /**
+         * Get all network servers paginated
+         * pageSize: N, pageIndex: N -> getAllNetworkServersPaginated() -> networkServers: NetworkServer[]
+         *
+         * @param councilId - id of the council we want to retrieve the network servers from
+         * @param pageSize - Number of network servers returned by request
+         * @param pageIndex - Index of the page that you want to receive from the request
+         * @returns
+         */
+        this.getCouncilNetworkServersPaginated = () => this.router.get('/council/:councilId/:pageSize/:pageIndex', (req, res) => {
+            const councilId = parseInt(req.params.councilId);
+            const pageSize = parseInt(req.params.pageSize);
+            const pageIndex = parseInt(req.params.pageIndex);
+            this.networkServerLogic.getCouncilNetworkServersPaginated(councilId, pageSize, pageIndex)
+                .then(response => {
+                // Sending the response            
+                Utils_1.default.sendRestResponse(response, res);
+            })
+                .catch(err => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
+            });
+        });
+        /**
          * Get the information about a enviromental device
          * GET /device/:id
          *
@@ -265,9 +309,11 @@ class NetworkServerRestRouter {
         this.getUserNetworkServersCountById();
         this.getRootNetworkServersCount();
         this.getAdminNetworkServersCount();
+        this.getAllNetworkServersPaginated();
         this.createNetworkServer();
         this.editNetworkServer();
         this.removeNetworkServer();
+        this.getCouncilNetworkServersPaginated();
     }
 }
 const enviromentalDeviceRestRouter = new NetworkServerRestRouter();

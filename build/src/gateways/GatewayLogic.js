@@ -47,6 +47,26 @@ class GatewayLogic {
         });
     }
     /**
+     * Get gateway information by given mac
+     * mac: N -> getGatewayById() -> gateway: Gateway
+     *
+     * @param mac - Mac of the gateway you want to get data from
+     * @returns
+     */
+    getGatewayByMacAndAdminId(mac) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.gatewayDB.getGatewayByMacAndAdminIdFromDB(mac)
+                    .then(res => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
      * Get user related gateways
      * gatewayId: N -> getUserGateways() -> gateways: Gateway[]
      *
@@ -110,6 +130,26 @@ class GatewayLogic {
      * Get user related gateways
      * gatewayId: N -> getUserGatewaysCount() -> count: N
      *
+     * @param councilId - ID of the council we want to get the gateways from
+     * @returns
+     */
+    getAdminGateways(councilId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.gatewayDB.getGatewaysAdmin(councilId)
+                    .then(res => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
+     * Get user related gateways
+     * gatewayId: N -> getUserGatewaysCount() -> count: N
+     *
      * @returns
      */
     getRootGatewaysCount() {
@@ -158,6 +198,27 @@ class GatewayLogic {
         return __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => {
                 this.gatewayDB.getCouncilGatewayPaginationFromDB(councilId, pageSize, pageIndex)
+                    .then(res => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
+     * Get all gateways with pagination
+     * pageSize: N, pageIndex: N -> getAllGatewaysRootPagination() -> gateways: Gateway[]
+     *
+     * @param pageSize - Number of gateways returned by request
+     * @param pageIndex - Index of the page that you want to receive from the request
+     * @returns
+     */
+    getAllGatewaysRootPagination(pageSize, pageIndex) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.gatewayDB.getAllGatewaysRootPaginationFromDB(pageSize, pageIndex)
                     .then(res => {
                     resolve(res);
                 })

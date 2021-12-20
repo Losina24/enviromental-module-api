@@ -431,9 +431,11 @@ export default class SensorDatabaseHandler {
      * @returns
      */
     public storeSensorInDB(sensor: Sensor): Promise<number> {
+        let status = 0;
+        if (sensor.getStatus()) status = 1;
         var query = "INSERT INTO `sensor` (`sensor_type_id`, `device_id`, `device_EUI`, `name`, `status`)" +
             " VALUES ('" + sensor.getType() + "', '" + sensor.getDeviceId() + "', '" + sensor.getDeviceEUI() + "', '" +
-            sensor.getName() + "', '" + sensor.getStatus() + "');"
+            sensor.getName() + "', '" + status + "');"
         console.log(query);
 
         return new Promise<number>((resolve: any, reject: any) => {

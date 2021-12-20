@@ -20,6 +20,104 @@ class SensorNotificationRestRouter {
         // This is Rest entry point that the express server uses.
         this.router = (0, express_1.Router)();
         /**
+     * Get the information about a enviromental device
+     * GET /device/:id
+     *
+     * Response: {
+     *  "http": 200,
+     *  "status": "OK",
+     *  "response": {
+     *      "id": 32,
+     *      "name": "Device 32",
+     *      "mac": "2c549188c9e3",
+     *      "gatewayId": 6,
+     *      "sensors": [100, 101, 102, 103, 104],
+     *      "coords": [21.2222, -34.3333],
+     *      "status": true
+     *  }
+     * }
+     *
+     */
+        this.getUserSensorNotificationsPaginated = () => this.router.get('/user/:userId/:pageSize/:pageIndex', (req, res) => {
+            const userId = parseInt(req.params.userId);
+            const pageSize = parseInt(req.params.pageSize);
+            const pageIndex = parseInt(req.params.pageIndex);
+            this.notificationLogic.getUserSensorNotificationsPaginated(userId, pageSize, pageIndex)
+                .then(response => {
+                // Sending the response            
+                Utils_1.default.sendRestResponse(response, res);
+            })
+                .catch(err => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
+            });
+        });
+        /**
+    * Get the information about a enviromental device
+    * GET /device/:id
+    *
+    * Response: {
+    *  "http": 200,
+    *  "status": "OK",
+    *  "response": {
+    *      "id": 32,
+    *      "name": "Device 32",
+    *      "mac": "2c549188c9e3",
+    *      "gatewayId": 6,
+    *      "sensors": [100, 101, 102, 103, 104],
+    *      "coords": [21.2222, -34.3333],
+    *      "status": true
+    *  }
+    * }
+    *
+    */
+        this.getAdminSensorNotificationsPaginated = () => this.router.get('/admin/:adminId/:pageSize/:pageIndex', (req, res) => {
+            const adminId = parseInt(req.params.adminId);
+            const pageSize = parseInt(req.params.pageSize);
+            const pageIndex = parseInt(req.params.pageIndex);
+            this.notificationLogic.getAdminSensorNotificationsPaginated(adminId, pageSize, pageIndex)
+                .then(response => {
+                // Sending the response            
+                Utils_1.default.sendRestResponse(response, res);
+            })
+                .catch(err => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
+            });
+        });
+        /**
+     * Get the information about a enviromental device
+     * GET /device/:id
+     *
+     * Response: {
+     *  "http": 200,
+     *  "status": "OK",
+     *  "response": {
+     *      "id": 32,
+     *      "name": "Device 32",
+     *      "mac": "2c549188c9e3",
+     *      "gatewayId": 6,
+     *      "sensors": [100, 101, 102, 103, 104],
+     *      "coords": [21.2222, -34.3333],
+     *      "status": true
+     *  }
+     * }
+     *
+     */
+        this.getRootSensorNotificationsPaginated = () => this.router.get('/root/:pageSize/:pageIndex', (req, res) => {
+            const pageSize = parseInt(req.params.pageSize);
+            const pageIndex = parseInt(req.params.pageIndex);
+            this.notificationLogic.getRootSensorNotificationsPaginated(pageSize, pageIndex)
+                .then(response => {
+                // Sending the response            
+                Utils_1.default.sendRestResponse(response, res);
+            })
+                .catch(err => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
+            });
+        });
+        /**
          * Get the information about a enviromental device
          * GET /device/:id
          *
@@ -334,6 +432,9 @@ class SensorNotificationRestRouter {
         this.getUserSensorNotificationsCount();
         this.getAdminSensorNotificationsCount();
         this.getRootSensorNotificationsCount();
+        this.getUserSensorNotificationsPaginated();
+        this.getAdminSensorNotificationsPaginated();
+        this.getRootSensorNotificationsPaginated();
     }
 }
 const enviromentalDeviceRestRouter = new SensorNotificationRestRouter();

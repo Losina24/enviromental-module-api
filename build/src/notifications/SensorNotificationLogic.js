@@ -53,6 +53,66 @@ class SensorNotificationLogic {
      * @param deviceId - ID of the enviromental device you want to get data from
      * @returns
      */
+    getUserSensorNotificationsPaginated(userId, pageSize, pageIndex) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.notificationDB.getUserSensorNotificationsPaginatedFromDB(userId, pageSize, pageIndex)
+                    .then(res => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
+     * Get the information about a enviromental device given their ID
+     * userId: N -> getDeviceById() -> EnviromentalDevice
+     *
+     * @param deviceId - ID of the enviromental device you want to get data from
+     * @returns
+     */
+    getAdminSensorNotificationsPaginated(adminId, pageSize, pageIndex) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.notificationDB.getAdminSensorNotificationsPaginatedFromDB(adminId, pageSize, pageIndex)
+                    .then(res => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
+     * Get the information about a enviromental device given their ID
+     * userId: N -> getDeviceById() -> EnviromentalDevice
+     *
+     * @param deviceId - ID of the enviromental device you want to get data from
+     * @returns
+     */
+    getRootSensorNotificationsPaginated(pageSize, pageIndex) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.notificationDB.getRootSensorNotificationsPaginatedFromDB(pageSize, pageIndex)
+                    .then(res => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
+     * Get the information about a enviromental device given their ID
+     * userId: N -> getDeviceById() -> EnviromentalDevice
+     *
+     * @param deviceId - ID of the enviromental device you want to get data from
+     * @returns
+     */
     getAdminNotificationsCount(councilId) {
         return __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => {

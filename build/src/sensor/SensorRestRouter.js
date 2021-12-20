@@ -50,6 +50,36 @@ class SensorRestRouter {
             });
         });
         /**
+         * Get the information about a sensor
+         * GET /sensors/:id
+         *
+         * Response: {
+         *  "http": 200,
+         *  "status": "OK",
+         *  "response": {
+                "_id": 1,
+                "_deviceEUI": "AS63126",
+                "_deviceId": 1,
+                "_name": "ambientalSensor1",
+                "_type": 1,
+                "_status": 1
+            }
+         * }
+         *
+         */
+        this.getSensorByName = () => this.router.get('/name/:name', (req, res) => {
+            const name = req.params.name;
+            this.sensorLogic.getSensorByName(name)
+                .then(response => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(response, res);
+            })
+                .catch(err => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
+            });
+        });
+        /**
          * Get all sensors from a user
          * GET /sensors/list/:userId
          *
@@ -282,26 +312,49 @@ class SensorRestRouter {
          *
          */
         this.storeSensor = () => this.router.post('/', (req, res) => {
+            console.log(req.body);
             let sensor = new Sensor_1.default();
             sensor.setDeviceId(req.body.deviceId);
             sensor.setName(req.body.name);
             sensor.setDeviceEUI(req.body.deviceEUI);
             sensor.setType(req.body.type);
             sensor.setStatus(req.body.status);
-            /*if(req.body.deviceId && req.body.name && req.body.deviceEUI && req.body.type && req.body.status){
-                sensor.setDeviceId(req.body.deviceId)
-                sensor.setName(req.body.name)
-                sensor.setDeviceEUI(req.body.deviceEUI)
-                sensor.setType(req.body.type)
-                sensor.setStatus(req.body.status)
-            } else {
-                Utils.sendRestResponse(Utils.generateLogicSuccessEmpty("No body params found"), res)
-            }*/
             this.sensorLogic.storeSensor(sensor)
                 .then(response => {
                 // Sending the response
-                console.log(response);
-                console.log(Utils_1.default.sendRestResponse(response, res));
+                Utils_1.default.sendRestResponse(response, res);
+            })
+                .catch(err => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
+            });
+        });
+        /**
+         * Update a sensor in db
+         * POST /sensors/
+         *
+         * Response: {
+         *  "http": 200,
+         *  "status": "OK",
+         *  "response": {
+                "http": 200,
+                "status": "OK"
+        *  }
+        *
+        */
+        this.updateSensor = () => this.router.put('/:sensorId', (req, res) => {
+            const sensorId = parseInt(req.params.sensorId);
+            let sensor = new Sensor_1.default();
+            sensor.setId(sensorId);
+            sensor.setDeviceId(req.body.deviceId);
+            sensor.setName(req.body.name);
+            sensor.setDeviceEUI(req.body.deviceEUI);
+            sensor.setType(req.body.type);
+            sensor.setStatus(req.body.status);
+            this.sensorLogic.updateSensor(sensor)
+                .then(response => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(response, res);
             })
                 .catch(err => {
                 // Sending the response
@@ -331,6 +384,37 @@ class SensorRestRouter {
             const pageSize = parseInt(req.params.pageSize);
             const pageIndex = parseInt(req.params.pageIndex);
             this.sensorLogic.getAdminSensorPagination(adminId, pageSize, pageIndex)
+                .then(response => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(response, res);
+            })
+                .catch(err => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
+            });
+        });
+        /**
+         * Get all sensors with pagination
+         * GET /root/:pageSize/:pageIndex
+         *
+         * Response: {
+         *  "http": 200,
+         *  "status": "OK",
+         *  "response": [{
+                "_id": 1,
+                "_deviceEUI": "AS63126",
+                "_deviceId": 1,
+                "_name": "ambientalSensor1",
+                "_type": 1,
+                "_status": 1
+            }]
+         * }
+         *
+         */
+        this.getAllSensorsPagination = () => this.router.get('/root/:pageSize/:pageIndex', (req, res) => {
+            const pageSize = parseInt(req.params.pageSize);
+            const pageIndex = parseInt(req.params.pageIndex);
+            this.sensorLogic.getAllSensorsPagination(pageSize, pageIndex)
                 .then(response => {
                 // Sending the response
                 Utils_1.default.sendRestResponse(response, res);
@@ -429,11 +513,14 @@ class SensorRestRouter {
         this.getUserSensorPagination();
         this.getAllCouncilSensors();
         this.storeSensor();
+        this.updateSensor();
         this.getAdminSensorPagination();
         this.getAdminAllSensors();
         this.getCouncilSensorPagination();
         this.getDeviceSensors();
         this.removeSensor();
+        this.getAllSensorsPagination();
+        this.getSensorByName();
     }
 }
 const sensorRestRouter = new SensorRestRouter();

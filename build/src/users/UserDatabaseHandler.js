@@ -313,5 +313,84 @@ class UserDatabaseHandler {
             });
         });
     }
+    /**
+     * Get all users paginated
+     * pageSize: N, pageIndex: N -> getAllUsersPaginatedFromDB() -> users: [User]
+     *
+     * @param pageSize - Number of network servers returned by request
+     * @param pageIndex - Index of the page that you want to receive from the request
+     * @returns
+     */
+    getAllUsersPaginatedFromDB(pageSize, pageIndex) {
+        const firstValue = (pageSize * pageIndex) - pageSize;
+        const secondValue = (pageSize * pageIndex);
+        var query = "SELECT * FROM `user` ORDER BY id DESC LIMIT " + firstValue + ', ' + secondValue;
+        return new Promise((resolve, reject) => {
+            database_1.default.getConnection((error, conn) => {
+                // If connection fails
+                if (error) {
+                    reject(Utils_1.default.generateLogicError("error retrieving users", error));
+                }
+                conn.query(query, (err, results) => {
+                    conn.release();
+                    // If connection fails
+                    if (err) {
+                        reject(Utils_1.default.generateLogicError("error getting all users", err));
+                    }
+                    try {
+                        if (results) {
+                            resolve(Utils_1.default.generateLogicSuccess("all users retrieved succesfully", results));
+                        }
+                        else {
+                            resolve(Utils_1.default.generateLogicSuccessEmpty("no users found"));
+                        }
+                    }
+                    catch (error) {
+                        reject(Utils_1.default.generateLogicError("error getting all users", error));
+                    }
+                });
+            });
+        });
+    }
+    /**
+     * Get council users paginated
+     * pageSize: N, pageIndex: N -> getCouncilUsersPaginatedFromDB() -> users: [User]
+     *
+     * @param pageSize - Number of network servers returned by request
+     * @param pageIndex - Index of the page that you want to receive from the request
+     * @returns
+     */
+    getCouncilUsersPaginatedFromDB(councilId, pageSize, pageIndex) {
+        const firstValue = (pageSize * pageIndex) - pageSize;
+        const secondValue = (pageSize * pageIndex);
+        var query = "SELECT * FROM `user` WHERE council_id='" + councilId + "' ORDER BY id DESC LIMIT "
+            + firstValue + ', ' + secondValue;
+        return new Promise((resolve, reject) => {
+            database_1.default.getConnection((error, conn) => {
+                // If connection fails
+                if (error) {
+                    reject(Utils_1.default.generateLogicError("error retrieving users", error));
+                }
+                conn.query(query, (err, results) => {
+                    conn.release();
+                    // If connection fails
+                    if (err) {
+                        reject(Utils_1.default.generateLogicError("error getting council users", err));
+                    }
+                    try {
+                        if (results) {
+                            resolve(Utils_1.default.generateLogicSuccess("council users retrieved succesfully", results));
+                        }
+                        else {
+                            resolve(Utils_1.default.generateLogicSuccessEmpty("no council users found"));
+                        }
+                    }
+                    catch (error) {
+                        reject(Utils_1.default.generateLogicError("error getting council users", error));
+                    }
+                });
+            });
+        });
+    }
 }
 exports.default = UserDatabaseHandler;

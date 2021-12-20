@@ -278,7 +278,6 @@ ALTER TABLE `role`
 --
 ALTER TABLE `sensor`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `device_eui_unique_index` (`device_EUI`),
   ADD KEY `Foreign_key_sensor_type_id` (`sensor_type_id`),
   ADD KEY `Foreign_key_device_id` (`device_id`);
 
@@ -474,7 +473,7 @@ INSERT INTO `device` (`id`, `device_EUI`, `gateway_id`, `name`, `latitude`, `lon
 --
 -- sensor type seeds
 --
-INSERT INTO `sensor_type` (`id`, `name`) VALUES (1, 'ambiental_type');
+INSERT INTO sensor_type (id, name) VALUES (5, 'C12'), (4, 'CO'), (18, 'EPSILON'), (6, 'H2'), (7, 'H2S'), (8, 'HCL'), (9, 'HCN'), (2, 'HCO'), (10, 'HF'), (11, 'NH3'), (12, 'NO2'), (17, 'NOISE'), (14, 'O2'), (13, 'O3'), (15, 'SO2'), (1, 'SOIL'), (16, 'TEMP'), (3, 'VOC');
 --
 -- sensor seeds 
 --

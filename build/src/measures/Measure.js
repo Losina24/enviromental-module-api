@@ -33,18 +33,18 @@ class Measure {
         this.date = date;
     }
     /**
-     * Sets the measure's type
-     * type: Text -> setType() ->
-     */
-    setType(type) {
-        this.type = type;
-    }
-    /**
      * Sets the measure's unit
      * unit: Text -> setUnit() ->
      */
     setUnit(unit) {
         this.unit = unit;
+    }
+    /**
+     * Sets the measure's danger
+     * danger: Text -> setUnit() ->
+     */
+    setDanger(value) {
+        this.danger = value;
     }
     /**
      * Gets the measure's sensor ID
@@ -74,15 +74,6 @@ class Measure {
         return this.date;
     }
     /**
-     * Gets the measure's type
-     * -> getType() -> type: Text
-     *
-     * @returns type: Measure's type
-     */
-    getType() {
-        return this.type;
-    }
-    /**
      * Gets the measure's unit
      * -> getUnit() -> id: N
      *
@@ -90,6 +81,15 @@ class Measure {
      */
     getUnit() {
         return this.unit;
+    }
+    /**
+     * Gets the measure's danger
+     * -> getUnit() -> id: N
+     *
+     * @returns
+     */
+    getDanger() {
+        return this.danger;
     }
     /**
      * Set the measurement by payload
@@ -100,18 +100,16 @@ class Measure {
     formatPayload(payload) {
         const formated = JSON.parse(payload);
         this.value = formated.value;
-        this.type = formated.type;
         this.unit = formated.unit;
         this.sensorId = formated.deviceEui;
-        this.date = new Date();
+        this.date = formated.date;
     }
     toObject() {
         return {
             "sensor_id": this.sensorId,
             "value": this.value,
             "unit": this.unit,
-            "type": this.type,
-            "date": this.date.getMilliseconds()
+            "date": this.date
         };
     }
 }

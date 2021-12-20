@@ -47,6 +47,27 @@ class CouncilLogic {
         });
     }
     /**
+     * Get all councils with pagination
+     * getRootCouncilsPagination() -> councils: Council[]
+     *
+     * @param pageSize - Number of councils returned by the request
+     * @param pageIndex - Index of the page that you want to receive from the request
+     * @returns
+     */
+    getRootCouncilsPagination(pageSize, pageIndex) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.councilDB.getRootCouncilsPaginationFromDB(pageSize, pageIndex)
+                    .then(res => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
      * Get root councils count
      * getCouncilCount() -> council: Council
      *

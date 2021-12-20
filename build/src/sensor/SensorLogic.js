@@ -47,6 +47,26 @@ class SensorLogic {
         });
     }
     /**
+     * Get the information about a sensor given their name
+     * name: text -> getSensorByName() -> JSON
+     *
+     * @param name - name of the sensor you want to get data from
+     * @returns
+     */
+    getSensorByName(name) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.sensorDB.getSensorByNameFromDB(name)
+                    .then(res => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
      * Get all user sensors
      * userId: N -> getAllUserSensors() -> [Sensor]
      *
@@ -194,6 +214,27 @@ class SensorLogic {
         });
     }
     /**
+     * Update sensor on database
+     * sensor: Sensor -> updateSensor()
+     *
+     * @param sensor - Sensor we want to update
+     * @returns
+     */
+    updateSensor(sensor) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.sensorDB.updateSensorInDB(sensor)
+                    .then(res => {
+                    //console.log(res);
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
      * Get all admin related sensors with pagination format
      * adminId: N, pageSize: N, pageIndex: N -> getAdminSensorPagination() -> [Sensor]
      *
@@ -206,6 +247,28 @@ class SensorLogic {
         return __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => {
                 this.sensorDB.getAdminSensorPaginationFromDB(adminId, pageSize, pageIndex)
+                    .then(res => {
+                    //console.log("logicaRes")
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
+     * Get all sensors with pagination format
+     * pageSize: N, pageIndex: N -> getAllSensorsPagination() -> [Sensor]
+     *
+     * @param pageSize - Number of sensors returned by the request
+     * @param pageIndex - Index of the page that you want to receive from the request
+     * @returns
+     */
+    getAllSensorsPagination(pageSize, pageIndex) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.sensorDB.getAllSensorsPaginationFromDB(pageSize, pageIndex)
                     .then(res => {
                     //console.log("logicaRes")
                     resolve(res);

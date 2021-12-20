@@ -27,16 +27,16 @@ class MeasureLogic {
     }
     // Logic methods
     /**
-     * Get the measures of a device
-     * deviceId: N -> getAllMeasuresByDeviceId() -> [Measure]
+     * Get user measures ( * PAGINATED * )
+     * userId: N -> insertMeasure() -> [Measure]
      *
-     * @param deviceId
+     * @param userId id of the user we want to retrieve the measures from
      * @returns
      */
-    getAllMeasuresByDeviceId(deviceId) {
+    insertMeasure(measure) {
         return __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => {
-                this.measureDB.getAllMeasuresByDeviceIdFromDB(deviceId)
+                this.measureDB.insertMeasureInDB(measure)
                     .then(res => {
                     resolve(res);
                 })
@@ -46,15 +46,199 @@ class MeasureLogic {
             });
         });
     }
-    storeMeasure(measure) {
+    /**
+     * Get the measures of a device
+     * deviceId: N -> getAllMeasuresByDeviceId() -> [Measure]
+     *
+     * @param deviceId
+     * @returns
+     */
+    getAllMeasuresByDeviceId(deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => {
-                this.measureDB.storeMeasureInDB(measure)
+                this.measureDB.getDeviceMeasuresFromDB(deviceId)
                     .then(res => {
-                    resolve(true);
+                    resolve(res);
                 })
                     .catch(err => {
-                    reject(false);
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
+     * Get user measures ( * COUNT * )
+     * userId: N -> getUserMeasuresCount() -> [Measure]
+     *
+     * @param userId id of the user we want to retrieve the measures from
+     * @returns
+     */
+    getUserMeasuresCount(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.measureDB.getUserMeasuresCountFromDB(userId)
+                    .then(res => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
+     * Get council measures ( * COUNT * )
+     * councilId: N -> getAdminMeasuresCount() -> [Measure]
+     *
+     * @param councilId id of the council we want to retrieve the measures from
+     * @returns
+     */
+    getAdminMeasuresCount(councilId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.measureDB.getAdminMeasuresCountFromDB(councilId)
+                    .then(res => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
+     * Get all measures ( * COUNT * )
+     * getRootMeasuresCount() -> [Measure]
+     *
+     * @returns
+     */
+    getRootMeasuresCount() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.measureDB.getRootMeasuresCountFromDB()
+                    .then(res => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
+ * Get user measures ( * PAGINATED * )
+ * userId: N -> getUserMeasuresPaginated() -> [Measure]
+ *
+ * @param userId id of the user we want to retrieve the measures from
+ * @returns
+ */
+    getUserMeasuresPaginated(userId, pageSize, pageIndex) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.measureDB.getUserMeasuresPaginatedFromDB(userId, pageSize, pageIndex)
+                    .then(res => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
+     * Get council measures ( * PAGINATED * )
+     * councilId: N -> getAdminMeasuresPaginated() -> [Measure]
+     *
+     * @param councilId id of the council we want to retrieve the measures from
+     * @returns
+     */
+    getAdminMeasuresPaginated(councilId, pageSize, pageIndex) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.measureDB.getAdminMeasuresPaginatedFromDB(councilId, pageSize, pageIndex)
+                    .then(res => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
+     * Get all measures ( * PAGINATED * )
+     * getRootMeasuresPaginated() -> [Measure]
+     *
+     * @returns
+     */
+    getRootMeasuresPaginated(pageSize, pageIndex) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.measureDB.getRootMeasuresPaginatedFromDB(pageSize, pageIndex)
+                    .then(res => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
+* Get user measures
+* userId: N -> getUserMeasures() -> [Measure]
+*
+* @param userId id of the user we want to retrieve the measures from
+* @returns
+*/
+    getUserMeasures(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.measureDB.getUserMeasuresFromDB(userId)
+                    .then(res => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
+     * Get council measures
+     * councilId: N -> getAdminMeasures() -> [Measure]
+     *
+     * @param councilId id of the council we want to retrieve the measures from
+     * @returns
+     */
+    getAdminMeasures(councilId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.measureDB.getAdminMeasuresFromDB(councilId)
+                    .then(res => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
+     * Get all measures
+     * getRootMeasures() -> [Measure]
+     *
+     * @returns
+     */
+    getRootMeasures() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.measureDB.getRootMeasuresFromDB()
+                    .then(res => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
                 });
             });
         });

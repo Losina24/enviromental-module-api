@@ -44,6 +44,57 @@ class UserRestRouter {
             });
         });
         /**
+         * Get all users paginated
+         * GET /users/:id
+         *
+         * Response: {
+                "http": 200,
+                "status": "OK",
+                "response": {
+                }
+         * }
+         *
+         */
+        this.getAllUsersPaginated = () => this.router.get('/root/:pageSize/:pageIndex', (req, res) => {
+            const pageSize = parseInt(req.params.pageSize);
+            const pageIndex = parseInt(req.params.pageIndex);
+            this.userLogic.getAllUsersPaginated(pageSize, pageIndex)
+                .then(response => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(response, res);
+            })
+                .catch(err => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
+            });
+        });
+        /**
+         * Get all users paginated
+         * GET /users/:id
+         *
+         * Response: {
+                "http": 200,
+                "status": "OK",
+                "response": {
+                }
+         * }
+         *
+         */
+        this.getCouncilUsersPaginated = () => this.router.get('/council/:councilId/:pageSize/:pageIndex', (req, res) => {
+            const councilId = parseInt(req.params.councilId);
+            const pageSize = parseInt(req.params.pageSize);
+            const pageIndex = parseInt(req.params.pageIndex);
+            this.userLogic.getCouncilUsersPaginated(councilId, pageSize, pageIndex)
+                .then(response => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(response, res);
+            })
+                .catch(err => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
+            });
+        });
+        /**
     * Get user information by given id
     * GET /users/:id
     *
@@ -323,6 +374,8 @@ class UserRestRouter {
         this.editUser();
         this.removeUser();
         this.login();
+        this.getAllUsersPaginated();
+        this.getCouncilUsersPaginated();
     }
 }
 const sensorRestRouter = new UserRestRouter();

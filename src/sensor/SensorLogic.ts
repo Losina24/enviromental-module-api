@@ -45,7 +45,7 @@ export default class SensorLogic {
      * @param name - name of the sensor you want to get data from
      * @returns 
      */
-     public async getSensorByName(name: string): Promise<Sensor> {
+    public async getSensorByName(name: string): Promise<Sensor> {
         return new Promise<Sensor>((resolve, reject) => {
             this.sensorDB.getSensorByNameFromDB(name)
                 .then(res => {
@@ -85,6 +85,25 @@ export default class SensorLogic {
     public async getAllRootSensorsCount(): Promise<Sensor[]> {
         return new Promise<Sensor[]>((resolve, reject) => {
             this.sensorDB.getAllRootSensorsCountFromDB()
+                .then(res => {
+                    //console.log("logicaRes")
+                    resolve(res)
+                })
+                .catch(err => {
+                    reject(err)
+                })
+        })
+    }
+
+    /**
+         * Get all root sensors
+         * userId: N -> getAllRootSensors() -> [Sensor]
+         *
+         * @returns
+         */
+    public async getAllRootSensors(): Promise<Sensor[]> {
+        return new Promise<Sensor[]>((resolve, reject) => {
+            this.sensorDB.getAllRootSensorsFromDB()
                 .then(res => {
                     //console.log("logicaRes")
                     resolve(res)

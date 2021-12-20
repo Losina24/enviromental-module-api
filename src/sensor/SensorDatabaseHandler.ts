@@ -209,6 +209,38 @@ export default class SensorDatabaseHandler {
         })
     }
 
+    public getAllRootSensorsFromDB(): Promise<Sensor[]> {
+        var query = "SELECT * FROM sensor;";
+        console.log("getAllRootSensorsFromDB",query)
+        return new Promise<Sensor[]>((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+
+                // If connection fails
+                if (error) {
+                    reject(Utils.generateLogicError("error getting all sensors", error))
+                }
+
+                conn.query(query, (err: any, results: any) => {
+                    conn.release();
+                    // If connection fails
+                    if (err) {
+                        reject(Utils.generateLogicError("error getting all sensors", error))
+                    }
+                    try {
+                        if (results) {
+                            resolve(Utils.generateLogicSuccess("all sensors retrieved succesfully", results));
+                        } else {
+                            resolve(Utils.generateLogicSuccessEmpty("there are no sensors"));
+                        }
+                    } catch (error) {
+                        reject(Utils.generateLogicError("error getting all sensors", error))
+                    }
+                })
+
+            })
+        })
+    }
+
     /**
      * Get all sensors of a user from the database ( * COUNT * )
      * councilId: N -> getAllAdminSensorsCountFromDB() -> [JSON]

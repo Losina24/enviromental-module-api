@@ -37,6 +37,7 @@ class EnviromentalDeviceRestRouter {
         this.getMapJsonDataUser();
         //this.getMapJsonDataAdmin();
         this.getMapJsonDataRoot();
+        this.updateOTA();
     }
 
     /**
@@ -127,6 +128,20 @@ class EnviromentalDeviceRestRouter {
      *
      */
     public getMapJsonDataRoot = () => this.router.get('/map/root/', async (req: Request, res: Response) => {
+
+
+        await this.enviromentalDeviceLogic.getMapJsonDataRoot()
+            .then(response => {
+                // Sending the response
+                Utils.sendRestResponse(response, res)
+            })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
+            })
+    })
+
+    public updateOTA = () => this.router.get('/ota/update/', async (req: Request, res: Response) => {
 
 
         await this.enviromentalDeviceLogic.getMapJsonDataRoot()

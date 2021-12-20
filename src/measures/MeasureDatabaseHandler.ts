@@ -96,6 +96,54 @@ export default class MeasureDatabaseHandler {
     }
 
     /**
+     * Get council measures
+     * sensorId: N -> getAdminMeasures() -> [Measure]
+     * 
+     * @param sensorId id of the council we want to retrieve the measures from
+     * @returns 
+     */
+    public async getSensorLastMeasureFromDB(sensorId: number): Promise<Measure[]> {
+        var query = "SELECT measure.* , sensor_type.name as sensor_type_name FROM `measure` INNER JOIN sensor ON sensor.id=measure.sensor_id INNER JOIN sensor_type ON sensor_type.id=sensor.sensor_type_id" +
+            " WHERE sensor_id=" + sensorId + " ORDER BY timestamp DESC LIMIT 1;";
+        return new Promise<Measure[]>((resolve: any, reject: any) => {
+            db.getConnection((error: any, conn: any) => {
+
+                // If connection fails
+                if (error) {
+                    reject(Utils.generateLogicError("error getting last sensor measure", error))
+                }
+
+                conn.query(query, (err: any, results: any) => {
+                    conn.release();
+
+                    // If connection fails
+                    if (err) {
+                        reject(Utils.generateLogicError("error getting last sensor measure", err))
+                    }
+                    try {
+                        if (results[0]) {
+                            console.log(results[0])
+                            let mapFormatRes: any = {
+                                type: results[0].sensor_type_name,
+                                value: results[0].value,
+                                unit: results[0].unit,
+                                dangerous: results[0].danger,
+                                date: results[0].timestamp
+                            }
+                            resolve(Utils.generateLogicSuccess("sensor last measure retrieved succesfully", mapFormatRes));
+                        } else {
+                            resolve(Utils.generateLogicSuccessEmpty("no measures found"));
+                        }
+                    } catch (error) {
+                        reject(Utils.generateLogicError("error getting last sensor measure", error))
+                    }
+                })
+
+            })
+        })
+    }
+
+    /**
         * Get user measures
         * userId: N -> getUserMeasures() -> [Measure]
         * 
@@ -477,26 +525,26 @@ export default class MeasureDatabaseHandler {
      * @param deviceId 
      * @returns [Measure]
      */
-/*    public async getAllMeasuresByDeviceIdFromDB(deviceId: number): Promise<Measure[]> {
-
-        return new Promise<Measure[]>((resolve: any, reject: any) => {
-            let measur = fs.readFileSync("/Users/losina/Desktop/Desarrollo/enviromental-module-api/db/measures.json", 'utf-8');
-            let array = JSON.parse(measur);
-            let res: any = [];
-
-            array.forEach((element: any) => {
-                let measure = new Measure();
-                let ss = JSON.parse(element)
-                measure.setSensorId(ss.sensor_id)
-                measure.setDate(ss.date)
-                measure.setValue(ss.value)
-                measure.setUnit(ss.unit)
-                res.push(measure)
-            });
-
-            resolve(res)
-        })
-    }*/
+    /*    public async getAllMeasuresByDeviceIdFromDB(deviceId: number): Promise<Measure[]> {
+    
+            return new Promise<Measure[]>((resolve: any, reject: any) => {
+                let measur = fs.readFileSync("/Users/losina/Desktop/Desarrollo/enviromental-module-api/db/measures.json", 'utf-8');
+                let array = JSON.parse(measur);
+                let res: any = [];
+    
+                array.forEach((element: any) => {
+                    let measure = new Measure();
+                    let ss = JSON.parse(element)
+                    measure.setSensorId(ss.sensor_id)
+                    measure.setDate(ss.date)
+                    measure.setValue(ss.value)
+                    measure.setUnit(ss.unit)
+                    res.push(measure)
+                });
+    
+                resolve(res)
+            })
+        }*/
 
     /**
      * Save a measure in the database
@@ -505,15 +553,15 @@ export default class MeasureDatabaseHandler {
      * @param measure 
      * @returns boolean
      *//*
-    public async storeMeasureInDB(measure: Measure): Promise<boolean> {
-        return new Promise<boolean>((resolve: any, reject: any) => {
-            let measur = fs.readFileSync("/Users/losina/Desktop/Desarrollo/enviromental-module-api/db/measures.json", 'utf-8');
-            let array = JSON.parse(measur);
-            array.push(JSON.stringify(measure.toObject()))
+public async storeMeasureInDB(measure: Measure): Promise<boolean> {
+    return new Promise<boolean>((resolve: any, reject: any) => {
+        let measur = fs.readFileSync("/Users/losina/Desktop/Desarrollo/enviromental-module-api/db/measures.json", 'utf-8');
+        let array = JSON.parse(measur);
+        array.push(JSON.stringify(measure.toObject()))
 
-            fs.writeFileSync('/Users/losina/Desktop/Desarrollo/enviromental-module-api/db/measures.json', JSON.stringify(array))
-            resolve(true)
-        })
-    }*/
+        fs.writeFileSync('/Users/losina/Desktop/Desarrollo/enviromental-module-api/db/measures.json', JSON.stringify(array))
+        resolve(true)
+    })
+}*/
 
 }

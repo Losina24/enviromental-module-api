@@ -208,6 +208,25 @@ export default class MeasureLogic {
     }
 
     /**
+     * Get council measures
+     * councilId: N -> getAdminMeasures() -> [Measure]
+     * 
+     * @param councilId id of the council we want to retrieve the measures from
+     * @returns 
+     */
+     public async getLastSensorMeasure(sensorId: number): Promise<Measure[]> {
+        return new Promise<Measure[]>((resolve, reject) => {
+            this.measureDB.getSensorLastMeasureFromDB(sensorId)
+                .then(res => {
+                    resolve(res)
+                })
+                .catch(err => {
+                    reject(err)
+                })
+        })
+    }
+
+    /**
      * Get all measures
      * getRootMeasures() -> [Measure]
      *  

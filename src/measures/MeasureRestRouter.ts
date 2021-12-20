@@ -20,7 +20,7 @@ class MeasureRestRouter {
     // All methods created in a Rest Router class must be called in the constructor for them to work
     constructor() {
         this.getAllMeasuresByDeviceId();
-        //this.getLastDeviceMeasure();
+        this.getLastSensorMeasure();
         this.getUserMeasuresPaginated();
         this.getAdminMeasuresPaginated();
         this.getRootMeasuresPaginated();
@@ -105,6 +105,19 @@ class MeasureRestRouter {
     public getUserMeasures = () => this.router.get('/user/:userId', (req: Request, res: Response) => {
         const userId = parseInt(req.params.userId);
         this.measureLogic.getUserMeasures(userId)
+            .then(response => {
+                // Sending the response            
+                Utils.sendRestResponse(response, res)
+            })
+            .catch(err => {
+                // Sending the response
+                Utils.sendRestResponse(err, res)
+            })
+    })
+
+    public getLastSensorMeasure = () => this.router.get('/last/sensor/:sensorId', (req: Request, res: Response) => {
+        const sensorId = parseInt(req.params.sensorId);
+        this.measureLogic.getLastSensorMeasure(sensorId)
             .then(response => {
                 // Sending the response            
                 Utils.sendRestResponse(response, res)

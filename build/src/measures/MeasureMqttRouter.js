@@ -31,18 +31,21 @@ class MeasureMqttRouter extends MqttRouter_1.default {
     constructor() {
         super();
         this.measureLogic = new MeasureLogic_1.default();
+        this.updateOTA = () => {
+            this.publish("46701/ambiental/2", "UPDATE");
+        };
         /**
-     * Save a new measure
-     * GET postalcode/ambiental/1/#
-     *
-     * Body: {
-     *  "deviceEui": 1,
-     *  "value": 10.32,
-     *  "unit": "ppm"
-     *  "type": "CO2"
-     * }
-     *
-     */
+         * Save a new measure
+         * GET postalcode/ambiental/1/#
+         *
+         * Body: {
+         *  "deviceEui": 1,
+         *  "value": 10.32,
+         *  "unit": "ppm"
+         *  "type": "CO2"
+         * }
+         *
+         */
         this.addSensorMeasure = () => {
             this.suscribe('measure/send');
             this.client.on("message", (topic, message) => __awaiter(this, void 0, void 0, function* () {
@@ -72,6 +75,7 @@ class MeasureMqttRouter extends MqttRouter_1.default {
                             let sensorToCreate = new Sensor_1.default();
                             sensorToCreate.setDeviceEUI(jsonData.deviceEui);
                             sensorToCreate.setDeviceId(deviceByDevEui.result.id);
+                            console.log('123321', jsonData.type);
                             sensorToCreate.setName(jsonData.deviceEui + "-" + jsonData.name);
                             sensorToCreate.setStatus(false);
                             let typeId = this.getSensorTypeId(jsonData.type);
@@ -236,7 +240,6 @@ class MeasureMqttRouter extends MqttRouter_1.default {
         this.addSensorMeasure();
     }
     getSensorTypeId(typeStr) {
-        console.log('puta', typeStr);
         switch (typeStr) {
             case 'SOIL':
                 return "1";
@@ -244,7 +247,7 @@ class MeasureMqttRouter extends MqttRouter_1.default {
                 return "2";
             case 'VOC':
                 return "3";
-            case 'CO':
+            case 'CO2':
                 return "4";
             case 'C12':
                 return "5";
@@ -275,7 +278,7 @@ class MeasureMqttRouter extends MqttRouter_1.default {
             case 'EPSILON':
                 return "18";
             default:
-                break;
+                return "4";
         }
     }
 }

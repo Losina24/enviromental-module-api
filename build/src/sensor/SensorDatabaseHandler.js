@@ -196,6 +196,36 @@ class SensorDatabaseHandler {
             });
         });
     }
+    getAllRootSensorsFromDB() {
+        var query = "SELECT * FROM sensor;";
+        console.log("getAllRootSensorsFromDB", query);
+        return new Promise((resolve, reject) => {
+            database_1.default.getConnection((error, conn) => {
+                // If connection fails
+                if (error) {
+                    reject(Utils_1.default.generateLogicError("error getting all sensors", error));
+                }
+                conn.query(query, (err, results) => {
+                    conn.release();
+                    // If connection fails
+                    if (err) {
+                        reject(Utils_1.default.generateLogicError("error getting all sensors", error));
+                    }
+                    try {
+                        if (results) {
+                            resolve(Utils_1.default.generateLogicSuccess("all sensors retrieved succesfully", results));
+                        }
+                        else {
+                            resolve(Utils_1.default.generateLogicSuccessEmpty("there are no sensors"));
+                        }
+                    }
+                    catch (error) {
+                        reject(Utils_1.default.generateLogicError("error getting all sensors", error));
+                    }
+                });
+            });
+        });
+    }
     /**
      * Get all sensors of a user from the database ( * COUNT * )
      * councilId: N -> getAllAdminSensorsCountFromDB() -> [JSON]
@@ -409,7 +439,7 @@ class SensorDatabaseHandler {
         var query = "INSERT INTO `sensor` (`sensor_type_id`, `device_id`, `device_EUI`, `name`, `status`)" +
             " VALUES ('" + sensor.getType() + "', '" + sensor.getDeviceId() + "', '" + sensor.getDeviceEUI() + "', '" +
             sensor.getName() + "', '" + status + "');";
-        console.log(query);
+        console.log('9889989', query);
         return new Promise((resolve, reject) => {
             database_1.default.getConnection((error, conn) => {
                 // If connection fails

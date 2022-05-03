@@ -107,6 +107,26 @@ class SensorLogic {
         });
     }
     /**
+         * Get all root sensors
+         * userId: N -> getAllRootSensors() -> [Sensor]
+         *
+         * @returns
+         */
+    getAllRootSensors() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.sensorDB.getAllRootSensorsFromDB()
+                    .then(res => {
+                    //console.log("logicaRes")
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
      * Get all admin sensors ( * COUNT * )
      * councilId: N -> getAllAdminSensorsCount() -> [Sensor]
      *

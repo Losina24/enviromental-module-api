@@ -225,6 +225,26 @@ class MeasureLogic {
         });
     }
     /**
+     * Get council measures
+     * councilId: N -> getAdminMeasures() -> [Measure]
+     *
+     * @param councilId id of the council we want to retrieve the measures from
+     * @returns
+     */
+    getLastSensorMeasure(sensorId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.measureDB.getSensorLastMeasureFromDB(sensorId)
+                    .then(res => {
+                    resolve(res);
+                })
+                    .catch(err => {
+                    reject(err);
+                });
+            });
+        });
+    }
+    /**
      * Get all measures
      * getRootMeasures() -> [Measure]
      *

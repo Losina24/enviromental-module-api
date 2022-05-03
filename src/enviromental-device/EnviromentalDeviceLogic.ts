@@ -20,7 +20,6 @@ export default class EnviromentaDeviceLogic {
 
     // This atribute is used to manage the db interactions in the logic
     private enviromentalDeviceDB: EnviromentalDeviceDatabaseHandler = new EnviromentalDeviceDatabaseHandler();
-    private measureMqttRouter : MeasureMqttRouter = new MeasureMqttRouter()
 
     // Constructor
     constructor() {
@@ -526,9 +525,6 @@ export default class EnviromentaDeviceLogic {
         })
     }
 
-    public async updateOTA(): Promise<void> {
-        this.measureMqttRouter.updateOTA()
-    }
 
     /**
     * Get all enviroment devices of root ( * COUNT * )

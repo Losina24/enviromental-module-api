@@ -97,6 +97,18 @@ class MeasureRestRouter {
                 Utils_1.default.sendRestResponse(err, res);
             });
         });
+        this.getLastSensorMeasure = () => this.router.get('/last/sensor/:sensorId', (req, res) => {
+            const sensorId = parseInt(req.params.sensorId);
+            this.measureLogic.getLastSensorMeasure(sensorId)
+                .then(response => {
+                // Sending the response            
+                Utils_1.default.sendRestResponse(response, res);
+            })
+                .catch(err => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
+            });
+        });
         /**
         * Get council measures
         * GET /measures/council/:councilId
@@ -328,7 +340,7 @@ class MeasureRestRouter {
             });
         });
         this.getAllMeasuresByDeviceId();
-        //this.getLastDeviceMeasure();
+        this.getLastSensorMeasure();
         this.getUserMeasuresPaginated();
         this.getAdminMeasuresPaginated();
         this.getRootMeasuresPaginated();

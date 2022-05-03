@@ -26,7 +26,6 @@ export default class MeasureMqttRouter extends MqttRouter {
         this.storeMeasure();
         this.syncDevice();
         this.addSensorMeasure();
-        this.updateOTA();
     }
 
     public updateOTA = () => {
@@ -75,6 +74,8 @@ export default class MeasureMqttRouter extends MqttRouter {
                         let sensorToCreate: Sensor = new Sensor()
                         sensorToCreate.setDeviceEUI(jsonData.deviceEui)
                         sensorToCreate.setDeviceId(deviceByDevEui.result.id)
+                        console.log('123321', jsonData.type);
+                        
                         sensorToCreate.setName(jsonData.deviceEui + "-" + jsonData.name)
                         sensorToCreate.setStatus(false)
                         let typeId: string = this.getSensorTypeId(jsonData.type)
@@ -122,7 +123,7 @@ export default class MeasureMqttRouter extends MqttRouter {
                 return "2"
             case 'VOC':
                 return "3"
-            case 'CO':
+            case 'CO2':
                 return "4"
             case 'C12':
                 return "5"
@@ -153,7 +154,7 @@ export default class MeasureMqttRouter extends MqttRouter {
             case 'EPSILON':
                 return "18"
             default:
-                break;
+                return "4";
         }
     }
 

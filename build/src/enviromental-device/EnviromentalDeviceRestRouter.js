@@ -123,6 +123,17 @@ class EnviromentalDeviceRestRouter {
                 Utils_1.default.sendRestResponse(err, res);
             });
         }));
+        this.updateOTA = () => this.router.get('/ota/update/', (req, res) => __awaiter(this, void 0, void 0, function* () {
+            yield this.enviromentalDeviceLogic.getMapJsonDataRoot()
+                .then(response => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(response, res);
+            })
+                .catch(err => {
+                // Sending the response
+                Utils_1.default.sendRestResponse(err, res);
+            });
+        }));
         /**
          * Get the information about a enviromental device
          * GET enviromental/devices /device/:id
@@ -575,6 +586,7 @@ class EnviromentalDeviceRestRouter {
         this.getMapJsonDataUser();
         //this.getMapJsonDataAdmin();
         this.getMapJsonDataRoot();
+        this.updateOTA();
     }
 }
 const enviromentalDeviceRestRouter = new EnviromentalDeviceRestRouter();

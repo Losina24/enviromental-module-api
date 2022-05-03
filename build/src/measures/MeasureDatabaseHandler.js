@@ -101,6 +101,53 @@ class MeasureDatabaseHandler {
         });
     }
     /**
+     * Get council measures
+     * sensorId: N -> getAdminMeasures() -> [Measure]
+     *
+     * @param sensorId id of the council we want to retrieve the measures from
+     * @returns
+     */
+    getSensorLastMeasureFromDB(sensorId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var query = "SELECT measure.* , sensor_type.name as sensor_type_name FROM `measure` INNER JOIN sensor ON sensor.id=measure.sensor_id INNER JOIN sensor_type ON sensor_type.id=sensor.sensor_type_id" +
+                " WHERE sensor_id=" + sensorId + " ORDER BY timestamp DESC LIMIT 1;";
+            return new Promise((resolve, reject) => {
+                database_1.default.getConnection((error, conn) => {
+                    // If connection fails
+                    if (error) {
+                        reject(Utils_1.default.generateLogicError("error getting last sensor measure", error));
+                    }
+                    conn.query(query, (err, results) => {
+                        conn.release();
+                        // If connection fails
+                        if (err) {
+                            reject(Utils_1.default.generateLogicError("error getting last sensor measure", err));
+                        }
+                        try {
+                            if (results[0]) {
+                                console.log(results[0]);
+                                let mapFormatRes = {
+                                    type: results[0].sensor_type_name,
+                                    value: results[0].value,
+                                    unit: results[0].unit,
+                                    dangerous: results[0].danger,
+                                    date: results[0].timestamp
+                                };
+                                resolve(Utils_1.default.generateLogicSuccess("sensor last measure retrieved succesfully", mapFormatRes));
+                            }
+                            else {
+                                resolve(Utils_1.default.generateLogicSuccessEmpty("no measures found"));
+                            }
+                        }
+                        catch (error) {
+                            reject(Utils_1.default.generateLogicError("error getting last sensor measure", error));
+                        }
+                    });
+                });
+            });
+        });
+    }
+    /**
         * Get user measures
         * userId: N -> getUserMeasures() -> [Measure]
         *

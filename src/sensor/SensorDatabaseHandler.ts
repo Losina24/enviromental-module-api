@@ -468,7 +468,7 @@ export default class SensorDatabaseHandler {
         var query = "INSERT INTO `sensor` (`sensor_type_id`, `device_id`, `device_EUI`, `name`, `status`)" +
             " VALUES ('" + sensor.getType() + "', '" + sensor.getDeviceId() + "', '" + sensor.getDeviceEUI() + "', '" +
             sensor.getName() + "', '" + status + "');"
-        console.log(query);
+        console.log('9889989', query);
 
         return new Promise<number>((resolve: any, reject: any) => {
             db.getConnection((error: any, conn: any) => {

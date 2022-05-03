@@ -64,6 +64,8 @@ class Server {
             console.log('Server on port', this.app.get('port'))
         })
     }
+
+    
 }
 
 const server = new Server();
